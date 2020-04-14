@@ -6,10 +6,10 @@ I maintain my configuration files almost every other week to keep up with the la
 - Current HA version [here](.HA_VERSION).
 
 Please :star: this repo if you like my work and also check out my other repos like 
-- [Alexa Talking Clock](https://github.com/UbhiTS/ad-alexatalkingclock)!
+- [Alexa Talking Clock](https://github.com/UbhiTS/ad-alexatalkingclock)
 
 Also, if you want to see a walkthrough of my Home Assistant configuration, I have my video walkthrough on youtube below
-- [Home Automation on STEROIDS : Video Walkthrough](https://youtu.be/qqktLE9_45A)
+- [Home Automation on 'STEROIDS' : Video Walkthrough](https://youtu.be/qqktLE9_45A)
 
 ## Dashboard Screenshots
 

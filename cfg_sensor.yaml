@@ -1,0 +1,219 @@
+# Weather prediction
+  - platform: yr
+
+  - platform: systemmonitor
+    resources:
+      - type: disk_use_percent
+        arg: /
+      - type: disk_use
+        arg: /
+      - type: disk_free
+        arg: /
+      - type: memory_use_percent
+      - type: memory_use
+      - type: memory_free
+      - type: swap_use_percent
+      - type: swap_use
+      - type: swap_free
+      - type: load_1m
+      - type: load_5m
+      - type: load_15m
+      - type: network_in
+        arg: eth0
+      - type: network_out
+        arg: eth0
+      - type: ipv4_address
+        arg: eth0
+      - type: processor_use
+      - type: last_boot
+
+  - platform: time_date
+    display_options:
+      - 'time'
+      - 'date'
+      - 'date_time'
+      - 'time_date'
+      - 'time_utc'
+      - 'beat'
+
+  - platform: google_wifi
+    host: !secret google_wifi_host
+
+  - platform: uptime
+
+  - platform: qnap
+    host: !secret ubhinas_ip
+    port: !secret ubhinas_port
+    username: !secret ubhinas_username
+    password: !secret ubhinas_password
+    timeout: !secret ubhinas_timeout
+    ssl: !secret ubhinas_ssl
+    verify_ssl: !secret ubhinas_verify_ssl
+    monitored_conditions:
+      - status
+      - system_temp
+      - cpu_temp
+      - cpu_usage
+      - memory_free
+      - memory_used
+      - memory_percent_used
+      - network_link_status
+      - network_tx
+      - network_rx
+      - drive_smart_status
+      - drive_temp
+      - volume_size_free
+      - volume_size_used
+      - volume_percentage_used
+  
+  - platform: rest
+    name: Grid Status
+    resource: !secret energy_gateway_grid_status_url
+    method: GET
+    verify_ssl: !secret energy_gateway_verify_ssl
+    scan_interval: !secret energy_gateway_scan_interval
+    value_template: "{{ value_json.grid_status }}"
+    
+  
+  - platform: rest
+    name: House Load
+    resource: !secret energy_gateway_aggregates_url
+    method: !secret energy_gateway_method
+    verify_ssl: !secret energy_gateway_verify_ssl
+    scan_interval: !secret energy_gateway_scan_interval
+    value_template: '{{ value_json.load.instant_power | float | multiply(0.001) | round(1) }}'
+    unit_of_measurement: kW
+    device_class: power
+
+  - platform: rest
+    name: Grid Power
+    resource: !secret energy_gateway_aggregates_url
+    method: !secret energy_gateway_method
+    verify_ssl: !secret energy_gateway_verify_ssl
+    scan_interval: !secret energy_gateway_scan_interval
+    value_template: '{{ value_json.site.instant_power | float | multiply(0.001) | round(1) }}'
+    unit_of_measurement: kW
+    device_class: power
+
+  - platform: rest
+    name: Grid Bar Target
+    resource: !secret energy_gateway_aggregates_url
+    method: !secret energy_gateway_method
+    verify_ssl: !secret energy_gateway_verify_ssl
+    scan_interval: !secret energy_gateway_scan_interval
+    value_template: >
+      {% if value_json.site.instant_power | float > 0 %}
+        0
+      {% else %}
+        {{ value_json.site.instant_power | float | multiply(-0.001) | round(1) }}
+      {% endif %}
+    unit_of_measurement: kW
+    device_class: power
+
+  - platform: rest
+    name: Solar Power
+    resource: !secret energy_gateway_aggregates_url
+    method: !secret energy_gateway_method
+    verify_ssl: !secret energy_gateway_verify_ssl
+    scan_interval: !secret energy_gateway_scan_interval
+    value_template: '{{ value_json.solar.instant_power | float | multiply(0.001) | round(1) }}'
+    unit_of_measurement: kW
+    device_class: power
+
+  - platform: rest
+    name: PowerWall Power
+    resource: !secret energy_gateway_aggregates_url
+    method: !secret energy_gateway_method
+    verify_ssl: !secret energy_gateway_verify_ssl
+    scan_interval: !secret energy_gateway_scan_interval
+    value_template: '{{ value_json.battery.instant_power | float | multiply(0.001) | round(1) }}'
+    unit_of_measurement: kW
+    device_class: power
+
+  - platform: rest
+    name: PowerWall Capacity
+    resource: !secret energy_gateway_soe_url
+    method: !secret energy_gateway_method
+    verify_ssl: !secret energy_gateway_verify_ssl
+    scan_interval: !secret energy_gateway_scan_interval
+    value_template: '{{ (value_json.percentage | float | round(1)) }}'
+    unit_of_measurement: '%'
+    device_class: battery
+
+  - platform: rest
+    name: PowerWall Bar Target
+    resource: !secret energy_gateway_soe_url
+    method: !secret energy_gateway_method
+    verify_ssl: !secret energy_gateway_verify_ssl
+    scan_interval: !secret energy_gateway_scan_interval
+    value_template: '{{ (value_json.percentage | float | multiply(0.08) | round(1)) }}'
+    unit_of_measurement: 'kW'
+    device_class: battery
+
+  - platform: rest
+    name: PowerWall Charge
+    resource: !secret energy_gateway_soe_url
+    method: !secret energy_gateway_method
+    verify_ssl: !secret energy_gateway_verify_ssl
+    scan_interval: !secret energy_gateway_scan_interval
+    value_template: '{{ (13500 / (100 / value_json.percentage) | float) | round(0) }}'
+    unit_of_measurement: 'W'
+    device_class: battery
+
+  - platform: template
+    sensors:
+      grid_status_display:
+        friendly_name: "PG&E Status"
+        value_template: >-
+          {% if is_state('sensor.grid_status', 'SystemGridConnected') %}
+            Up
+          {% else %}
+            Down
+          {% endif %}
+        icon_template: >-
+          {% if is_state('sensor.grid_status', 'SystemGridConnected') %}
+            mdi:flash
+          {% else %}
+            mdi:flash-off
+          {% endif %}
+
+      powerwall_power_display:
+        friendly_name: "Powerwall Power"
+        unit_of_measurement: W
+        device_class: power
+        value_template: "{{ states('sensor.powerwall_power') }}"
+        icon_template: >-
+          {% if states('sensor.powerwall_power') | float > 0 %}
+            mdi:battery
+          {% else %}
+            mdi:battery-charging
+          {% endif %}
+        
+      powerwall_capacity_display:
+        friendly_name: "Powerwall Capacity"
+        unit_of_measurement: '%'
+        device_class: battery
+        value_template: "{{ states('sensor.powerwall_capacity') }}"
+        icon_template: >-
+          {% set battery = states('sensor.powerwall_capacity') | float %}
+          {% if battery > 90 %}
+          mdi:battery
+          {% elif battery > 80 %}
+          mdi:battery-90
+          {% elif battery > 70 %}
+          mdi:battery-80
+          {% elif battery > 60 %}
+          mdi:battery-70
+          {% elif battery > 50 %}
+          mdi:battery-60
+          {% elif battery > 40 %}
+          mdi:battery-50
+          {% elif battery > 30 %}
+          mdi:battery-40
+          {% elif battery > 20 %}
+          mdi:battery-30
+          {% elif battery > 10 %}
+          mdi:battery-20
+          {% else %}
+          mdi:battery-outline
+          {% endif %}

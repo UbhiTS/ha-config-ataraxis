@@ -1,0 +1,23 @@
+  - name: !secret zone1_name
+    latitude: !secret zone1_latitude
+    longitude: !secret zone1_longitude
+    radius: !secret zone1_radius
+    icon: !secret zone1_icon
+    
+  - name: !secret zone2_name
+    latitude: !secret zone2_latitude
+    longitude: !secret zone2_longitude
+    radius: !secret zone2_radius
+    icon: !secret zone2_icon
+    
+  - name: !secret zone3_name
+    latitude: !secret zone3_latitude
+    longitude: !secret zone3_longitude
+    radius: !secret zone3_radius
+    icon: !secret zone3_icon
+    
+  - name: !secret zone4_name
+    latitude: !secret zone4_latitude
+    longitude: !secret zone4_longitude
+    radius: !secret zone4_radius
+    icon: !secret zone4_icon

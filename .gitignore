@@ -1,0 +1,39 @@
+# Directory (contents) ignores
+.cloud
+.storage
+deps
+
+
+# Generic ignores
+*.log
+*.db
+*.db-shm
+*.db-wal
+*.pyc
+*.pickle
+._*
+__pycache__
+
+
+# Specific file ignores
+.google.token
+.uuid
+emulated_hue_ids.json
+google_calendars.yaml
+known_devices.yaml
+options.xml
+OZW_Log.txt
+pyozw.sqlite
+secrets.yaml
+webostv.conf
+zwcfg_*
+zwscene.xml
+
+
+# Ignore files created by IDE's
+.vscode
+
+
+# Specific keeps
+!.gitkeep
+!.gitignore

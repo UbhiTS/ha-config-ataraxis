@@ -1,0 +1,189 @@
+homeassistant:
+  name: Home
+  latitude: !secret home_latitude
+  longitude: !secret home_longitude
+  elevation: !secret home_elevation
+  time_zone: !secret home_timezone
+  unit_system: !secret home_unitsystem
+
+  customize: !include customize.yaml
+  customize_glob:
+    "binary_sensor.*door*":
+      device_class: door
+    "binary_sensor.*window*":
+      device_class: window
+
+# Enables the HASS cloud integration
+# cloud:
+
+# Enables configuration UI
+config:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+# conversation: 
+
+device_tracker:
+
+# Discover some devices automatically
+discovery:
+
+hassio:
+
+# Welcome Card in the Default View (Overview)
+# introduction:
+
+lovelace:
+  mode: yaml
+
+# Enables a map showing the location of tracked devices
+map:
+
+# Track the sun
+sun:
+
+# Checks for available updates
+updater:
+# Optional, allows Home Assistant developers to focus on popular components.
+# include_used_components: true
+
+frontend: !include frontend.yaml
+sensor: !include cfg_sensor.yaml
+camera: !include cfg_camera.yaml
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+
+binary_sensor:
+  - platform: mqtt
+    state_topic: dummy/floorplan/sensor
+    name: floorplan
+
+emulated_hue:
+  host_ip: !secret emulated_hue_host_ip
+  listen_port: !secret emulated_hue_listen_port
+  expose_by_default: true
+  exposed_domains:
+    - light
+    - fan
+    - switch
+
+geo_location:
+  - platform: usgs_earthquakes_feed
+    feed_type: 'past_week_significant_earthquakes'
+
+google:
+  client_id: !secret google_client_id
+  client_secret: !secret google_client_secret
+
+hacs:
+  token: !secret hacs_token
+  sidepanel_title: Community
+  sidepanel_icon: mdi:alpha-c-box
+  appdaemon: true
+
+history:
+  include: !include entity_tracking.yaml
+
+http:
+  base_url: !secret http_base_url
+  ssl_certificate: !secret http_ssl_certificate
+  ssl_key: !secret http_ssl_key
+
+influxdb:
+  host: !secret influxdb_host
+  port: !secret influxdb_port
+  username: !secret influxdb_username
+  password: !secret influxdb_password
+  database: home_assistant
+  max_retries: 3
+  default_measurement: state
+  ssl: !secret influxdb_ssl
+  verify_ssl: !secret influxdb_verify_ssl
+  tags_attributes:
+    - friendly_name
+  include: !include entity_tracking.yaml
+
+input_boolean:
+  buzz_home:
+    name: Buzz Home
+    initial: off
+    icon: mdi:contact-phone-outline
+
+ios:
+
+light:
+  - platform: switch
+    name: Kitchen Light
+    entity_id: switch.kitchen_light
+    
+#logbook:
+#  include: !include entity_tracking.yaml
+
+logger:
+  default: warning
+  logs:
+    homeassistant.components.camera: warning
+
+media_player:
+
+mobile_app:
+
+mqtt:
+  password: !secret mqtt_password
+
+nest:
+  client_id: !secret nest_client_id
+  client_secret: !secret nest_client_secret
+
+notify:
+
+recorder:
+  purge_keep_days: 7
+  include: !include entity_tracking.yaml
+
+speedtestdotnet:
+#  scan_interval:
+#    days: 0
+#    hours: 0
+#    minutes: 0
+  manual: true
+  monitored_conditions:
+    - ping
+    - download
+    - upload
+
+stream:
+
+system_health:
+
+tts:
+  - platform: google_translate
+
+vacuum:
+  - platform: roomba
+    name: Jhadoo
+    host: !secret roomba_host
+    username: !secret roomba_username
+    password: !secret roomba_password
+
+wake_on_lan:
+
+weather:
+  - platform: darksky
+    name: darksky
+    api_key: !secret darksky_api_key
+    mode: daily
+
+webostv:
+    host: !secret living_room_tv_host
+    name: tv_living_room
+    turn_on_action:
+      service: wake_on_lan.send_magic_packet
+      data:
+        mac: !secret living_room_tv_mac
+
+zone: !include cfg_zone.yaml
+
+zwave:
+  usb_path: /dev/ttyACM0
+  network_key: !secret zwave_network_key

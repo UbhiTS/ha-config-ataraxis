@@ -1,0 +1,14 @@
+sensor.grid_power:
+  friendly_name: 'PGE Power'
+
+sensor.speedtest_download:
+  friendly_name: 'D/L'
+sensor.speedtest_upload:
+  friendly_name: 'U/L'
+  
+camera.welcome_room_camera:
+  friendly_name: 'Welcome Room'
+camera.hallway_camera:
+  friendly_name: 'Hallway'
+camera.living_room_camera:
+  friendly_name: 'Living Room'

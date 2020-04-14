@@ -1,0 +1,14 @@
+secrets: /config/secrets.yaml
+appdaemon:
+  latitude: !secret home_latitude
+  longitude: !secret home_longitude
+  elevation: !secret home_elevation
+  time_zone: !secret home_timezone
+  plugins:
+    HASS:
+      type: hass
+http:
+  url: http://127.0.0.1:5050
+hadashboard:
+admin:
+api:

@@ -1,0 +1,161 @@
+alexa_talking_clock:
+  module: alexa_talking_clock
+  class: AlexaTalkingClock
+  alexa: media_player.kitchen_alexa
+  start_hour: 7
+  start_minute: 30
+  end_hour: 21
+  end_minute: 30
+  announce_hour: true
+  announce_half_hour: true
+  announce_quarter_hour: true
+
+door_window_announce:
+  module: door_window_announce_controller
+  class: DoorWindowAnnounceController
+  alexa: media_player.kitchen_alexa
+  doors_windows:
+    - cover.garage_door_big
+    - cover.garage_door_small
+
+doorbell:
+  module: doorbell_controller
+  class: DoorbellController
+  door: binary_sensor.main_door
+  motion_sensor: binary_sensor.main_door_motion
+  doorbell: switch.living_room_doorbell
+  alexa_kitchen: media_player.kitchen_alexa
+  alexa_entryway: media_player.entryway_alexa
+
+energy_meter:
+  module: energy_meter_controller
+  class: EnergyMeterController
+  energy_meter: sensor.hem_energy
+
+fan_speed_controller_master_bedroom:
+  module: fan_speed_controller
+  class: FanSpeedController
+  fan: fan.master_bedroom_fan
+  thermostat: sensor.thermostat_master_bedroom_temperature
+
+festival_lights_sentry:
+  module: festival_lights_sentry_controller
+  class: FestivalLightsSentryController
+  alexa: media_player.kitchen_alexa
+  alarm_time: 15
+
+home:
+  module: home_controller
+  class: HomeController
+  buzz_control: input_boolean.buzz_home
+  alexa_kitchen: media_player.kitchen_alexa
+  alexa_entryway: media_player.entryway_alexa
+
+hvac_living_room:
+  module: hvac_controller
+  class: HVACController
+  min_cool_temp: 67
+  max_heat_temp: 71
+  thermostat: climate.thermostat_living_room_mode
+  doors_windows:
+  alexa: media_player.living_room_alexa
+  air_cycle_minute: 3
+  
+hvac_entertainment_room:
+  module: hvac_controller
+  class: HVACController
+  min_cool_temp: 67
+  max_heat_temp: 72
+  thermostat: climate.thermostat_entertainment_room_mode
+  doors_windows:
+  alexa: media_player.living_room_alexa
+  air_cycle_minute: 1
+
+hvac_master_bedroom:
+  module: hvac_controller
+  class: HVACController
+  min_cool_temp: 67
+  max_heat_temp: 72
+  thermostat: climate.thermostat_master_bedroom_mode
+  doors_windows:
+    - binary_sensor.master_bedroom_door
+    - binary_sensor.master_bedroom_window_left
+    - binary_sensor.master_bedroom_window_right
+    - binary_sensor.master_bedroom_window_left_small
+    - binary_sensor.master_bedroom_window_right_small
+    - binary_sensor.master_bathroom_window
+  alexa: media_player.master_bedroom_alexa
+
+hvac_upper_big_bedroom:
+  module: hvac_controller
+  class: HVACController
+  min_cool_temp: 67
+  max_heat_temp: 72
+  thermostat: climate.thermostat_upper_big_bedroom_mode
+  doors_windows:
+    - binary_sensor.upper_big_bedroom_door
+    - binary_sensor.upper_big_bedroom_window_right
+    - binary_sensor.upper_big_bedroom_window_left
+  alexa: media_player.upper_big_bedroom_alexa
+  air_cycle_minute: 2
+  
+hvac_upper_small_bedroom:
+  module: hvac_controller
+  class: HVACController
+  min_cool_temp: 67
+  max_heat_temp: 71
+  thermostat: climate.thermostat_upper_small_bedroom_mode
+  doors_windows:
+    - binary_sensor.upper_small_bedroom_door
+    - binary_sensor.upper_small_bedroom_window
+  alexa: media_player.upper_small_bedroom_alexa
+  air_cycle_minute: 2
+
+hvac_upper_guest_bedroom:
+  module: hvac_controller
+  class: HVACController
+  min_cool_temp: 67
+  max_heat_temp: 71
+  thermostat: climate.thermostat_upper_guest_bedroom_mode
+  doors_windows:
+    - binary_sensor.upper_guest_bedroom_door
+  alexa: media_player.upper_guest_bedroom_alexa
+  air_cycle_minute: 2
+
+internet_health_monitor:
+  module: internet_health_controller
+  class: InternetHealthController
+  internet_switch: switch.garage_internet_switch
+  download: sensor.speedtest_download
+  upload: sensor.speedtest_upload
+  ping: sensor.speedtest_ping
+  alexa: media_player.kitchen_alexa
+
+ios_ha_companion:
+  module: ios_ha_companion_controller
+  class: IOSHACompanionController
+
+perimeter_lights:
+  module: perimeter_lights_controller
+  class: PerimeterLightsController
+  alexa: media_player.kitchen_alexa
+
+tv_notifications:
+  module: tv_notifications_controller
+  class: TVNotificationsController
+  tv: media_player.tv_living_room
+  calendar: calendar.important_dates
+  notification_service: notify/tv_living_room
+
+wallmote:
+  module: wallmote_controller
+  class: WallMoteController
+  alexa_master_bedroom: media_player.master_bedroom_alexa
+  alexa_master_bathroom: media_player.master_bathroom_alexa
+  alexa_living_room: media_player.living_room_alexa
+  alexa_kitchen: media_player.kitchen_alexa
+  alexa_upper_big_bedroom: media_player.upper_big_bedroom_alexa
+  alexa_upper_small_bedroom: media_player.upper_small_bedroom_alexa
+  alexa_upper_guest_bedroom: media_player.upper_guest_bedroom_alexa
+  doorbell: switch.living_room_doorbell
+  internet_switch: switch.garage_internet_switch

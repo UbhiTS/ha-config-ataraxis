@@ -1,0 +1,709 @@
+resources:
+  - url: /community_plugin/atomic_calendar/atomic_calendar.js
+    type: module
+  - url: /community_plugin/lovelace-auto-entities/auto-entities.js
+    type: module
+  - url: /community_plugin/bar-card/bar-card.js
+    type: js
+  - url: /community_plugin/bignumber-card/bignumber-card.js
+    type: js
+  - url: /community_plugin/calendar-card/calendar-card.js
+    type: js
+  - url: /community_plugin/custom-header/custom-header.js
+    type: module
+  - url: /community_plugin/lovelace-layout-card/layout-card.js
+    type: module
+  - url: /community_plugin/mini-graph-card/mini-graph-card-bundle.js
+    type: module
+  - url: /community_plugin/simple-thermostat/simple-thermostat.js
+    type: module
+  - url: /community_plugin/weather-card/weather-card.js
+    type: module
+  - url: /local/floorplan/floorplan-card.js?v=1.1.14
+    type: module
+    
+
+custom_header:
+  compact_mode: true
+
+views:
+  - title: Main Dashboard
+    icon: mdi:human-greeting
+    panel: true
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: vertical-stack
+            cards:
+              # WEATHER CARD
+              - type: custom:weather-card
+                entity: weather.darksky
+                forecast: true
+              # WEATHER CARD
+              # CALENDAR CARD
+              - type: custom:atomic-calendar
+                title: "Calendar"
+                enableModeChange: true
+                defaultMode: 2
+                entities:
+                - entity: calendar.important_dates
+                  color: red
+                  type: icon1,icon2,icon3
+                - entity: calendar.holidays_in_united_states
+                  type: holiday
+                fullDayEventText: 'All Day'
+                firstDayOfWeek: 0
+                untilText: 'Until'
+                showColors: true
+                showDate: true
+                showNoEventsForToday: true
+                maxDaysToShow: 90
+                showLocation: false
+                showMonth: true
+                showCurrentEventLine: false
+                dateColor: white
+                dateSize: 90
+                timeColor: blue
+                timeSize: 90
+                titleColor: lightgrey
+                titleSize: 110
+                locationIconColor: 'rgb(230, 124, 115)'
+                locationLinkColor: black
+                locationTextSize: 90
+                dimFinishedEvents: true
+                finishedEventOpacity: 0.6
+                finishedEventFilter: 'grayscale(100%)'
+                dayWrapperLineColor: black
+                eventBarColor: blue
+                showProgressBar: false
+                progressBarColor: blue
+                CalEventHolidayColor: magenta
+                CalEventIcon1Color: red
+                CalEventIcon2Color: cyan
+                CalEventIcon3Color: yellow
+                CalEventIcon1Filter: birthday,anniversary
+                CalEventIcon2Filter: receipt,claim
+                CalEventIcon3Filter: insurance,bill,invoice,vacation,reminder,blackberry,stocks,shares
+                CalEventIcon1: mdi:gift
+                CalEventIcon2: mdi:home
+                CalEventIcon3: mdi:octagram
+              # CALENDAR CARD
+          - type: vertical-stack
+            cards:
+              - type: horizontal-stack
+                cards:
+                                    # HOUSE ENERGY PROFILE BARS
+                  - type: custom:bar-card
+                    columns: 4
+                    height: 178px
+                    title_position: bottom
+                    direction: up
+                    indicator: off
+                    entities:
+                      - entity: sensor.solar_power
+                        title: "solar"
+                        target: sensor.solar_power
+                        min: 0
+                        max: 8
+                        icon: mdi:weather-sunset
+                        icon_position: inside
+                        severity:
+                        - value: 10
+                          color: 'yellow'
+                      - entity: sensor.grid_power
+                        title: "grid"
+                        target: sensor.grid_bar_target
+                        min: 0
+                        max: 8
+                        icon: mdi:transmission-tower
+                        icon_position: inside
+                        severity:
+                        - value: 10
+                          color: 'orange'
+                      - entity: sensor.powerwall_power
+                        title: "pwall"
+                        target: sensor.powerwall_bar_target
+                        min: 0
+                        max: 8
+                        icon: mdi:car-battery
+                        icon_position: inside
+                        severity:
+                        - value: 10
+                          color: 'green'
+                      - entity: sensor.house_load
+                        title: "load"
+                        target: sensor.house_load
+                        min: 0
+                        max: 8
+                        icon: mdi:home
+                        icon_position: inside
+                        severity:
+                        - value: 10
+                          color: 'red'
+                  # HOUSE ENERGY PROFILE BARS
+                  - type: custom:mini-graph-card
+                    entities:
+                     - sensor.hem_energy
+                    name: Grid Surplus
+                    icon: mdi:transmission-tower
+                    hours_to_show: 24
+                    points_per_hour: 2
+                    aggregate_func: max
+                    line_width: 2
+                    smoothing: false
+                    font_size: 83
+                    show:
+                      points: false
+                      extrema: true
+                      fill: fade
+              # HOUSE BUZZ BUTTON
+              - type: entities
+                show_header_toggle: false
+                entities: 
+                  - input_boolean.buzz_home
+                  - cover.garage_door_big
+                  - cover.garage_door_small
+              # HOUSE BUZZ BUTTON
+              # CURRENT HOUSE ENTITIES ON
+              - type: entity-filter
+                card:
+                  type: glance
+                  show_state: false
+                  show_icon: true
+                  show_name: true
+                  columns: 8
+                show_empty: false
+                state_filter:
+                - "on"
+                entities:
+                  - light.living_room_light
+                  - light.master_bedroom_light_left
+                  - light.master_bedroom_light_right
+                  - fan.master_bedroom_fan
+                  - switch.kitchen_light
+                  - switch.welcome_room_light
+                  - switch.entryway_outlet_switch
+                  - binary_sensor.main_door
+                  - cover.garage_door_big
+                  - cover.garage_door_small
+                  - binary_sensor.kitchen_door
+                  - binary_sensor.garage_side_door
+                  - binary_sensor.kitchen_window_left
+                  - binary_sensor.kitchen_window_right
+                  - binary_sensor.living_room_window_left
+                  - binary_sensor.living_room_window_right
+                  - binary_sensor.upper_big_bedroom_window_left
+                  - binary_sensor.upper_big_bedroom_window_right
+                  - binary_sensor.upper_big_bedroom_door
+                  - binary_sensor.upper_small_bedroom_window
+                  - binary_sensor.upper_small_bedroom_door
+                  - binary_sensor.upper_guest_bedroom_door
+                  - binary_sensor.upper_guest_bedroom_window
+                  - binary_sensor.master_bedroom_door
+                  - binary_sensor.master_bedroom_window_left
+                  - binary_sensor.master_bedroom_window_right
+                  - binary_sensor.master_bedroom_window_left_small
+                  - binary_sensor.master_bedroom_window_right_small
+                  - binary_sensor.master_bathroom_window
+                  - binary_sensor.welcome_window_peep
+                  - binary_sensor.welcome_window_front
+                  - binary_sensor.welcome_window_left
+                  - binary_sensor.welcome_window_right
+                  - binary_sensor.garage_laundry_door
+                  - binary_sensor.welcome_laundry_door
+              # CURRENT HOUSE ENTITIES ON
+              # INTERNET SPEED
+              - type: horizontal-stack
+                cards:
+                  - type: custom:bar-card
+                    title_position: left
+                    height: 25px
+                    entities:
+                      - entity: sensor.speedtest_download
+                        title: "D/L"
+                        min: 0
+                        max: 60
+                        severity:
+                        - value: 40
+                          color: '#bf4040'
+                        - value: 50
+                          color: '#bf9540'
+                        - value: 100
+                          color: '#40bf40'
+                      - entity: sensor.speedtest_upload
+                        title: "U/L"
+                        min: 0
+                        max: 5
+                        severity:
+                        - value: 3
+                          color: '#bf4040'
+                        - value: 4
+                          color: '#bf9540'
+                        - value: 10
+                          color: '#40bf40'
+                  - type: custom:bar-card
+                    title_position: left
+                    height: 25px
+                    entities:
+                      - entity: sensor.speedtest_ping
+                        title: "PING"
+                        min: 0
+                        max: 100
+                        severity:
+                        - value: 40
+                          color: '#40bf40'
+                        - value: 60
+                          color: '#bf9540'
+                        - value: 500
+                          color: '#bf4040'
+                      - entity: sensor.google_wifi_uptime
+                        title: "DAYS"
+                        min: 0
+                        max: 14
+                        severity:
+                        - value: 7
+                          color: '#40bf40'
+                        - value: 10
+                          color: '#bf9540'
+                        - value: 100
+                          color: '#bf4040'
+              # INTERNET SPEED
+              - type: horizontal-stack
+                cards:
+                - type: custom:bar-card
+                  title_position: left
+                  height: 64px
+                  entities:
+                    - entity: sensor.ubhinas_smart_status_drive_0_1
+                      title: 'HDD1'
+                - type: custom:bar-card
+                  title_position: left
+                  height: 64px
+                  entities:
+                    - entity: sensor.ubhinas_smart_status_drive_0_2
+                      title: 'HDD2'
+
+  - title: Thermostats
+    icon: mdi:radiator
+    cards:
+      - type: thermostat
+        entity: climate.thermostat_master_bedroom_mode
+        name: Master Bedroom
+      - type: thermostat
+        entity: climate.thermostat_living_room_mode
+        name: Living Room  
+      - type: thermostat
+        entity: climate.thermostat_entertainment_room_mode
+        name: Entertainment Room
+      - type: thermostat
+        entity: climate.thermostat_upper_big_bedroom_mode
+        name: Upper Big Bedroom 
+      - type: thermostat
+        entity: climate.thermostat_upper_small_bedroom_mode
+        name: Upper Small Bedroom 
+      - type: thermostat
+        entity: climate.thermostat_upper_guest_bedroom_mode
+        name: Upper Guest Bedroom
+      - type: thermostat
+        entity: climate.thermostat_attic_mode
+        name: Attic 
+
+  - title: Lights & Fans
+    icon: mdi:lightbulb-on
+    panel: true
+    cards:
+      - type: vertical-stack
+        cards:
+        - type: horizontal-stack
+          cards:
+          - type: entity-button
+            icon: mdi:lightbulb-on
+            entity: light.living_room_light
+          - type: entity-button
+            icon: mdi:lightbulb-on
+            entity: switch.kitchen_light
+        - type: horizontal-stack
+          cards:
+          - type: light
+            entity: light.master_bedroom_light_left
+          - type: light
+            entity: light.master_bedroom_light_right
+          - type: entity-button
+            icon: mdi:lightbulb-on
+            entity: switch.welcome_room_light
+        - type: horizontal-stack
+          cards:
+          - type: entity-button
+            icon: mdi:lightbulb-on
+            entity: switch.backyard_light_left
+          - type: entity-button
+            icon: mdi:lightbulb-on
+            entity: switch.backyard_light_right
+          - type: entity-button
+            icon: mdi:lightbulb-on
+            entity: switch.side_deck_light
+          - type: entity-button
+            icon: mdi:lightbulb-on
+            entity: switch.entryway_light
+          - type: entity-button
+            icon: mdi:lightbulb-on
+            entity: switch.entryway_outlet_switch
+
+  - title: Doors & Windows
+    icon: mdi:door-open
+    panel: true
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: entities
+            entities:
+              - binary_sensor.main_door
+              - cover.garage_door_big
+              - cover.garage_door_small
+              - binary_sensor.kitchen_door
+              - binary_sensor.garage_side_door
+              - binary_sensor.kitchen_window_left
+              - binary_sensor.kitchen_window_right
+              - binary_sensor.living_room_window_left
+              - binary_sensor.living_room_window_right
+          - type: entities
+            entities:
+              - binary_sensor.upper_big_bedroom_window_left
+              - binary_sensor.upper_big_bedroom_window_right
+              - binary_sensor.upper_big_bedroom_door
+              - binary_sensor.upper_small_bedroom_window
+              - binary_sensor.upper_small_bedroom_door
+              - binary_sensor.upper_guest_bedroom_door
+              - binary_sensor.upper_guest_bedroom_window
+              - binary_sensor.garage_laundry_door
+              - binary_sensor.welcome_laundry_door
+          - type: entities
+            entities:
+              - binary_sensor.master_bedroom_door
+              - binary_sensor.master_bedroom_window_left
+              - binary_sensor.master_bedroom_window_right
+              - binary_sensor.master_bedroom_window_left_small
+              - binary_sensor.master_bedroom_window_right_small
+              - binary_sensor.master_bathroom_window
+              - binary_sensor.welcome_window_peep
+              - binary_sensor.welcome_window_front
+              - binary_sensor.welcome_window_left
+              - binary_sensor.welcome_window_right
+
+  - title: Indoor Cams
+    icon: mdi:webcam
+    panel: true
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: picture-entity
+                entity: camera.living_room_camera
+                camera_image: camera.living_room_camera
+                camera_view: "auto"
+                show_name: false
+                show_state: false
+          - type: horizontal-stack
+            cards:
+              - type: picture-entity
+                entity: camera.welcome_room_camera
+                camera_image: camera.welcome_room_camera
+                camera_view: "auto"
+                show_name: false
+                show_state: false
+          - type: horizontal-stack
+            cards:
+              - type: picture-entity
+                entity: camera.hallway_camera
+                camera_image: camera.hallway_camera
+                camera_view: "auto"
+                show_name: false
+                show_state: false
+
+  - title: Outdoor Cams
+    icon: mdi:cctv
+    panel: true
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: vertical-stack
+            cards:
+              - type: picture-entity
+                entity: camera.front_left_camera
+                camera_image: camera.front_left_camera
+                camera_view: "auto"
+                show_name: false
+                show_state: false
+              - type: picture-entity
+                entity: camera.backyard_left_camera
+                camera_image: camera.backyard_left_camera
+                camera_view: "auto"
+                show_name: false
+                show_state: false
+              - type: picture-entity
+                entity: camera.garage_left_camera
+                camera_image: camera.garage_left_camera
+                camera_view: "auto"
+                show_name: false
+                show_state: false
+          - type: vertical-stack
+            cards:
+              - type: picture-entity
+                entity: camera.front_right_camera
+                camera_image: camera.front_right_camera
+                camera_view: "auto"
+                show_name: false
+                show_state: false
+              - type: picture-entity
+                entity: camera.backyard_right_camera
+                camera_image: camera.backyard_right_camera
+                camera_view: "auto"
+                show_name: false
+                show_state: false
+              - type: picture-entity
+                entity: camera.garage_right_camera
+                camera_image: camera.garage_right_camera
+                camera_view: "auto"
+                show_name: false
+                show_state: false
+          - type: vertical-stack
+            cards:
+              - type: picture-entity
+                entity: camera.main_door_camera
+                camera_image: camera.main_door_camera
+                camera_view: "auto"
+                show_name: false
+                show_state: false
+
+  - title: Side Cams
+    icon: mdi:video-outline
+    panel: true
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: vertical-stack
+            cards:
+              - type: picture-entity
+                entity: camera.side_deck_camera
+                camera_image: camera.side_deck_camera
+                camera_view: "auto"
+                show_name: false
+                show_state: false
+              - type: picture-entity
+                entity: camera.side_path_left_camera
+                camera_image: camera.side_path_left_camera
+                camera_view: "auto"
+                show_name: false
+                show_state: false
+          - type: vertical-stack
+            cards:
+              - type: picture-entity
+                entity: camera.electrical_mains_camera
+                camera_image: camera.electrical_mains_camera
+                camera_view: "auto"
+                show_name: false
+                show_state: false
+              - type: picture-entity
+                entity: camera.side_path_right_camera
+                camera_image: camera.side_path_right_camera
+                camera_view: "auto"
+                show_name: false
+                show_state: false
+
+  - title: Floorplan
+    icon: mdi:floor-plan
+    panel: true
+    cards:
+      - type: 'custom:floorplan-card'
+        config: !include floorplan.yaml
+
+  - title: Home
+    icon: mdi:home
+    cards:
+      - type: entities
+        title: People
+        show_header_toggle: false
+        entities:
+          - device_tracker.iphone_ubhits
+          - device_tracker.iphone_rcsdavis
+
+      - type: custom:auto-entities
+        card:
+          type: entities
+          title: Home Energy
+          show_header_toggle: false
+        filter:
+          include:
+            - group: group.home_energy
+          
+
+      - type: custom:auto-entities
+        card:
+          type: entities
+          title: Living Room
+          show_header_toggle: false
+        filter:
+          include:
+            - group: group.living_room
+
+      - type: custom:auto-entities
+        card:
+          type: entities
+          title: Kitchen
+          show_header_toggle: false
+        filter:
+          include:
+            - group: group.kitchen
+
+      - type: custom:auto-entities
+        card:
+          type: entities
+          title: Master Bedroom
+          show_header_toggle: false
+        filter:
+          include:
+            - group: group.master_bedroom
+
+      - type: custom:auto-entities
+        card:
+          type: entities
+          title: Master Bathroom
+          show_header_toggle: false
+        filter:
+          include:
+            - group: group.master_bathroom
+
+      - type: custom:auto-entities
+        card:
+          type: entities
+          title: Upper Big Bedroom
+          show_header_toggle: false
+        filter:
+          include:
+            - group: group.upper_big_bedroom
+
+      - type: custom:auto-entities
+        card:
+          type: entities
+          title: Upper Small Bedroom
+          show_header_toggle: false
+        filter:
+          include:
+            - group: group.upper_small_bedroom
+
+      - type: custom:auto-entities
+        card:
+          type: entities
+          title: Upper Guest Bedroom
+          show_header_toggle: false
+        filter:
+          include:
+            - group: group.upper_guest_bedroom
+
+      - type: custom:auto-entities
+        card:
+          type: entities
+          title: Entertainment Room
+          show_header_toggle: false
+        filter:
+          include:
+            - group: group.entertainment_room
+
+      - type: custom:auto-entities
+        card:
+          type: entities
+          title: Welcome Room
+          show_header_toggle: false
+        filter:
+          include:
+            - group: group.welcome_room
+
+      - type: custom:auto-entities
+        card:
+          type: entities
+          title: Attic
+          show_header_toggle: false
+        filter:
+          include:
+            - group: group.attic
+
+      - type: custom:auto-entities
+        card:
+          type: entities
+          title: Entryway
+          show_header_toggle: false
+        filter:
+          include:
+            - group: group.entryway
+
+      - type: custom:auto-entities
+        card:
+          type: entities
+          title: Garage
+          show_header_toggle: false
+        filter:
+          include:
+            - group: group.garage
+
+      - type: custom:auto-entities
+        card:
+          type: entities
+          title: Backyard
+          show_header_toggle: false
+        filter:
+          include:
+            - group: group.backyard
+
+      - type: custom:auto-entities
+        card:
+          type: entities
+          title: Side Deck
+          show_header_toggle: false
+        filter:
+          include:
+            - group: group.side_deck
+
+  - title: System Monitor
+    icon: mdi:monitor-dashboard
+    panel: true
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: custom:auto-entities
+            card:
+              type: entities
+              title: UbhiNAS
+              show_header_toggle: false
+            filter:
+              include:
+                - group: group.ubhinas
+              
+          - type: custom:auto-entities
+            card:
+              type: entities
+              title: System Monitor
+              show_header_toggle: false
+            filter:
+              include:
+                - group: group.system_monitor
+              
+          - type: vertical-stack
+            cards:
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  title: Internet
+                  show_header_toggle: false
+                filter:
+                  include:
+                    - group: group.internet
+                  
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  title: Time & Date
+                  show_header_toggle: false
+                filter:
+                  include:
+                    - group: group.time_date

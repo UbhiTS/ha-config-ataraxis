@@ -8,7 +8,7 @@ I maintain my configuration files almost every other week to keep up with the la
 Please :star: this repo if you like my work and also check out my other repos like 
 - [Alexa Talking Clock](https://github.com/UbhiTS/ad-alexatalkingclock)!
 
-## Dashboard Screens
+## Dashboard Screenshots
 
 <img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash1.png" alt="Home Assistant dashboard" />
 <img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash2.png" alt="Home Assistant dashboard" />

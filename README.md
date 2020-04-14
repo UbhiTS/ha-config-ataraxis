@@ -10,32 +10,18 @@ Please :star: this repo if you like my work and also check out my other repos li
 
 ## Dashboard Screens
 
-<img src="https://github.com/ubhits/ha-config-ataraxis/blob/master/hadash1.png" alt="Home Assistant dashboard" />
-
-<img src="https://github.com/ubhits/ha-config-ataraxis/blob/master/hadash2.png" alt="Home Assistant dashboard" />
-
-<img src="https://github.com/ubhits/ha-config-ataraxis/blob/master/hadash3.png" alt="Home Assistant dashboard" />
-
-<img src="https://github.com/ubhits/ha-config-ataraxis/blob/master/hadash4.png" alt="Home Assistant dashboard" />
-
-<img src="https://github.com/ubhits/ha-config-ataraxis/blob/master/hadash5.png" alt="Home Assistant dashboard" />
-
-<img src="https://github.com/ubhits/ha-config-ataraxis/blob/master/hadash6.png" alt="Home Assistant dashboard" />
-
-<img src="https://github.com/ubhits/ha-config-ataraxis/blob/master/hadash7.png" alt="Home Assistant dashboard" />
-
-<img src="https://github.com/ubhits/ha-config-ataraxis/blob/master/hadash8.png" alt="Home Assistant dashboard" />
-
-<img src="https://github.com/ubhits/ha-config-ataraxis/blob/master/hadash9.png" alt="Home Assistant dashboard" />
-
-<img src="https://github.com/ubhits/ha-config-ataraxis/blob/master/hadash10.png" alt="Home Assistant dashboard" />
-
-<img src="https://github.com/ubhits/ha-config-ataraxis/blob/master/hadash11.png" alt="Home Assistant dashboard" />
-
-<img src="https://github.com/ubhits/ha-config-ataraxis/blob/master/hadash12.png" alt="Home Assistant dashboard" />
-
-<img src="https://github.com/ubhits/ha-config-ataraxis/blob/master/hadash13.png" alt="Home Assistant dashboard" />
-
-<img src="https://github.com/ubhits/ha-config-ataraxis/blob/master/hadash14.png" alt="Home Assistant dashboard" />
-
-<img src="https://github.com/ubhits/ha-config-ataraxis/blob/master/hadash15.png" alt="Home Assistant dashboard" />
+<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash1.png" alt="Home Assistant dashboard" />
+<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash2.png" alt="Home Assistant dashboard" />
+<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash3.png" alt="Home Assistant dashboard" />
+<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash4.png" alt="Home Assistant dashboard" />
+<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash5.png" alt="Home Assistant dashboard" />
+<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash6.png" alt="Home Assistant dashboard" />
+<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash7.png" alt="Home Assistant dashboard" />
+<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash8.png" alt="Home Assistant dashboard" />
+<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash9.png" alt="Home Assistant dashboard" />
+<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash10.png" alt="Home Assistant dashboard" />
+<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash11.png" alt="Home Assistant dashboard" />
+<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash12.png" alt="Home Assistant dashboard" />
+<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash13.png" alt="Home Assistant dashboard" />
+<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash14.png" alt="Home Assistant dashboard" />
+<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash15.png" alt="Home Assistant dashboard" />

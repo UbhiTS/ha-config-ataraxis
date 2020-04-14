@@ -9,7 +9,7 @@ Please :star: this repo if you like my work and also check out my other repos li
 - [Alexa Talking Clock](https://github.com/UbhiTS/ad-alexatalkingclock)!
 
 Also, if you want to see a walkthrough of my Home Assistant configuration, I have my video walkthrough on youtube below
-- [Home Automation on Steroids : Video Walkthrough](https://youtu.be/qqktLE9_45A)
+- [Home Automation on STEROIDS : Video Walkthrough](https://youtu.be/qqktLE9_45A)
 
 ## Dashboard Screenshots
 

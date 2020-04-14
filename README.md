@@ -1,6 +1,6 @@
-# Home Assistant 'STEROIDS' Configuration
+# Home Assistant ***'STEROIDS'*** Configuration
 
-Here's my [Home Assistant](https://home-assistant.io/) configuration. I have installed HA on a [Raspberry Pi 3B+](https://www.amazon.com/dp/B07BDR5PDW) with a [Transcend High Endurance 32GB MicroSD Card](https://www.amazon.com/dp/B01BDKTQY6) using the [HassIO option](https://www.home-assistant.io/hassio/) as I figured that for my current needs, I honestly dont need to invest too much in hardware. Once my CPU spikes and Load starts increasing, I'll probably upgrade to an Intel NUC or similar.
+Here's my [Home Assistant](https://home-assistant.io/) configuration. I have installed HA on a [Raspberry Pi 3B+](https://www.amazon.com/dp/B07BDR5PDW) with a [Transcend High Endurance 32GB MicroSD Card](https://www.amazon.com/dp/B01BDKTQY6) using the [HassIO](https://www.home-assistant.io/hassio/) option. I figured that I honestly dont need to invest too much in hardware as the RPi is powerfull enough for my needs right now. Once my CPU spikes and load starts to increase, I'll probably upgrade to an Intel NUC or similar. Specially when I automate using facial recognition etc.
 
 I maintain my configuration files almost every other week to keep up with the latest from HA. 
 - Current HA version [here](.HA_VERSION).

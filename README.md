@@ -11,7 +11,7 @@ Please :star: this repo if you like my work and also check out my other repos li
 Also, if you want to see a walkthrough of my Home Assistant configuration, I have my video walkthrough on youtube below
 - [Home Automation on Steroids : Video Walkthrough](https://youtu.be/qqktLE9_45A)
 
-## Dashboard Screens
+## Dashboard Screenshots
 
 <img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash1.png" alt="Home Assistant dashboard" />
 <img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash2.png" alt="Home Assistant dashboard" />

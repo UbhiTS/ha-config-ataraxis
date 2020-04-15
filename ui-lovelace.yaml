@@ -21,6 +21,7 @@ resources:
     type: module
   - url: /local/floorplan/floorplan-card.js?v=1.1.14
     type: module
+
     
 
 custom_header:
@@ -306,7 +307,21 @@ views:
         name: Upper Guest Bedroom
       - type: thermostat
         entity: climate.thermostat_attic_mode
-        name: Attic 
+        name: Attic
+      - type: entity-filter
+        card:
+          type: entities
+        show_empty: false
+        state_filter:
+        - "On Low"
+        entities:
+          - sensor.fan_mode_master_bedroom
+          - sensor.fan_mode_living_room
+          - sensor.fan_mode_entertainment_room
+          - sensor.fan_mode_upper_big_bedroom
+          - sensor.fan_mode_upper_small_bedroom
+          - sensor.fan_mode_upper_guest_bedroom
+          - sensor.fan_mode_attic
 
   - title: Lights & Fans
     icon: mdi:lightbulb-on

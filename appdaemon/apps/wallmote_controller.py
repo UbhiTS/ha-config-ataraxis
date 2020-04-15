@@ -45,7 +45,7 @@ class WallMoteController(hass.Hass):
 
   def button_one_single_tap(self, event, data, kwargs):
     self.log("button_one_single_tap")
-    self.call_service("media_player/play_media", entity_id = self.alexa_living_room, media_content_type = "sequence", media_content_id = "Alexa.Joke.Play")
+    self.call_service("media_player/play_media", entity_id = self.alexa_kitchen, media_content_type = "sequence", media_content_id = "Alexa.Joke.Play")
 
 
   def button_one_hold(self, event, data, kwargs):
@@ -75,7 +75,7 @@ class WallMoteController(hass.Hass):
 
   def button_three_single_tap(self, event, data, kwargs):
     self.log("button_three_single_tap")
-    self.call_service("media_player/play_media", entity_id = self.alexa_living_room, media_content_type = "sequence", media_content_id = "Alexa.Joke.Play")
+    self.call_service("media_player/play_media", entity_id = self.alexa_kitchen, media_content_type = "sequence", media_content_id = "Alexa.Joke.Play")
 
 
   def button_three_hold(self, event, data, kwargs):
@@ -88,21 +88,21 @@ class WallMoteController(hass.Hass):
 
   def button_four_single_tap(self, event, data, kwargs):
     self.log("button_four_single_tap")
-    self.call_service("media_player/play_media", entity_id = self.alexa_living_room, media_content_type = "sequence", media_content_id = "Alexa.Joke.Play")
+    self.call_service("media_player/play_media", entity_id = self.alexa_kitchen, media_content_type = "sequence", media_content_id = "Alexa.Joke.Play")
 
 
   def button_four_hold(self, event, data, kwargs):
     self.log("button_four_hold")
-    self.reset_internet()
 
 
   def button_four_release(self, event, data, kwargs):
     self.log("button_four_release")
+    self.reset_internet()
 
 
   def reset_internet(self):
-      self.call_service("notify/alexa_media", data = {"type":"tts", "method":"all"}, target = self.alexa_kitchen, message = "Your attention please, internet power cycle in 5 seconds!")
-      self.run_in(self.turn_off_switch, 5)
+      self.call_service("notify/alexa_media", data = {"type":"tts", "method":"all"}, target = self.alexa_kitchen, message = "Your attention please, internet power cycle in 10 seconds!")
+      self.run_in(self.turn_off_switch, 10)
       self.run_in(self.turn_on_switch, 30)
 
 

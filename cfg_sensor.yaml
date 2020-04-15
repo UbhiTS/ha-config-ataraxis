@@ -217,3 +217,39 @@
           {% else %}
           mdi:battery-outline
           {% endif %}
+
+      fan_mode_master_bedroom:
+        value_template: '{{ (states.climate.thermostat_master_bedroom_mode.attributes.fan_mode) }}' 
+        friendly_name: 'Master Bedroom' 
+        icon_template: mdi:fan
+
+      fan_mode_living_room:
+        value_template: '{{ (states.climate.thermostat_living_room_mode.attributes.fan_mode) }}' 
+        friendly_name: 'Living Room' 
+        icon_template: mdi:fan
+
+      fan_mode_entertainment_room:
+        value_template: '{{ (states.climate.thermostat_entertainment_room_mode.attributes.fan_mode) }}' 
+        friendly_name: 'Entertainment Room' 
+        icon_template: mdi:fan
+
+      fan_mode_upper_big_bedroom:
+        value_template: '{{ (states.climate.thermostat_upper_big_bedroom_mode.attributes.fan_mode) }}' 
+        friendly_name: 'Upper Big Bedroom' 
+        icon_template: mdi:fan
+
+      fan_mode_upper_small_bedroom:
+        value_template: '{{ (states.climate.thermostat_upper_small_bedroom_mode.attributes.fan_mode) }}' 
+        friendly_name: 'Upper Small Bedroom' 
+        icon_template: mdi:fan
+
+      fan_mode_upper_guest_bedroom:
+        value_template: '{{ (states.climate.thermostat_upper_guest_bedroom_mode.attributes.fan_mode) }}' 
+        friendly_name: 'Upper Guest Bedroom' 
+        icon_template: mdi:fan
+
+      fan_mode_attic:
+        value_template: '{{ (states.climate.thermostat_attic_mode.attributes.fan_mode) }}' 
+        friendly_name: 'Attic' 
+        icon_template: mdi:fan
+

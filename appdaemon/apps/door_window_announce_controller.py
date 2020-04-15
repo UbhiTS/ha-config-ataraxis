@@ -27,6 +27,12 @@ class DoorWindowAnnounceController(hass.Hass):
     
     friendly_name = self.get_state(entity, attribute = "friendly_name")
     
+    self.log("DOOR WINDOW ANNOUNCE: " + entity + " (" + old + " > " + new + ")")
+    
+    # if the HA has just rebooted, old state would be unavailable. In that case, do not announce!
+    if old == "unavailable":
+      return
+    
     if new == "open" or new == "on":
       self.call_service("notify/alexa_media", data = {"type":"tts", "method":"all"}, target = self.alexa, message = "Your attention please. The " + friendly_name + " has been opened")
     if new == "closed" or new == "off":

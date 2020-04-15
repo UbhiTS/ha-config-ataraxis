@@ -26,8 +26,9 @@ class HomeController(hass.Hass):
 
 
   def buzz_kitchen(self, entity, attribute, old, new, kwargs):
-    
+
     if old == "off" and new == "on":
+      self.log("HOME BUZZ")
       self.call_service("notify/alexa_media", data = {"type":"announce", "method":"all"}, target = self.alexa_kitchen, message = "Someone's calling you. Please pick up the phone or call them back immediately!")
       self.call_service("input_boolean/turn_off", entity_id = self.buzz_control)
 

@@ -1,5 +1,6 @@
 import appdaemon.plugins.hass.hassapi as hass
 from datetime import datetime, time
+
 #
 # TV Notifications Controller App
 #
@@ -44,6 +45,10 @@ class TVNotificationsController(hass.Hass):
     event_date = datetime.strptime(event_date_str, '%Y-%m-%d %H:%M:%S')
     current_date = datetime.now().replace(hour = 0, minute = 0, second = 0, microsecond = 0)
     event_days_remaining = event_date - current_date
+    
+    event_message = event_message.replace("&","&amp;")
+    event_message = event_message.replace("<","&lt;")
+    event_message = event_message.replace(">","&gt;")
     
     if event_days_remaining.days == 0:
       return event_message + '<br/>Today'

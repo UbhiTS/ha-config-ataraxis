@@ -1,14 +1,25 @@
 alexa_talking_clock:
   module: alexa_talking_clock
   class: AlexaTalkingClock
-  alexa: media_player.kitchen_alexa
-  start_hour: 7
-  start_minute: 30
-  end_hour: 21
-  end_minute: 30
-  announce_hour: true
-  announce_half_hour: true
-  announce_quarter_hour: true
+  alexas:
+    - media_player.upper_big_bedroom_alexa
+    #- media_player.upper_small_bedroom_alexa
+    #- media_player.upper_guest_bedroom_alexa
+    #- media_player.master_bedroom_alexa
+    #- media_player.master_bathroom_alexa
+    #- media_player.kitchen_alexa
+  voice:
+    volume_offset: 0 # -40 to 4, default 0
+    pitch_offset: 0 # -33 to 50, default 0
+    rate: 100 # 20 to 250, default 100
+    whisper: false
+  announcements:
+    bell: true
+    start_time: "07:30:00"
+    end_time: "21:30:00"
+    half_hour: true
+    quarter_hour: true
+  debug: false
 
 door_window_announce:
   module: door_window_announce_controller

@@ -223,13 +223,13 @@ views:
                       - entity: sensor.speedtest_download
                         title: "D/L"
                         min: 0
-                        max: 60
+                        max: 125
                         severity:
                         - value: 40
                           color: '#bf4040'
-                        - value: 50
+                        - value: 75
                           color: '#bf9540'
-                        - value: 100
+                        - value: 125
                           color: '#40bf40'
                       - entity: sensor.speedtest_upload
                         title: "U/L"

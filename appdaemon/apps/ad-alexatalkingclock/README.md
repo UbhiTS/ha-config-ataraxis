@@ -2,7 +2,7 @@
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
-## New in v1.0.5: Multiple Alexas, Whisper Mode, Pitch, Volume, Rate and Bell Controls
+## New in v2.0.0: Multiple Alexas, Whisper Mode, Pitch, Volume, Rate and Bell Controls
 NOTE: * **Please update your apps.yaml with the new configuration structure** *
 
 <a href="https://www.buymeacoffee.com/ubhits" target="_blank">
@@ -31,7 +31,7 @@ alexa_talking_clock:
   module: alexa_talking_clock
   class: AlexaTalkingClock
   alexas:
-    - media_player.upper_big_bedroom_alexa
+    - media_player.bedroom_alexa
     - media_player.kitchen_alexa
   voice:
     volume_offset: 0 # -40 to 4, default 0

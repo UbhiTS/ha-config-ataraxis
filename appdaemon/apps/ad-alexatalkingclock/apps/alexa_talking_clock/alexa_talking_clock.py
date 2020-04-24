@@ -9,7 +9,7 @@ import datetime
 #  module: alexa_talking_clock
 #  class: AlexaTalkingClock
 #  alexas:
-#    - media_player.upper_big_bedroom_alexa
+#    - media_player.bedroom_alexa
 #    - media_player.kitchen_alexa
 #  voice:
 #    volume_offset: 0 # -40 to 4, default 0
@@ -69,21 +69,26 @@ class AlexaTalkingClock(hass.Hass):
     if self.rate < 20: self.rate = 20
     if self.rate > 250: self.rate = 250
     
+    self.run_in(self.configure, 5)
+    
+    
+  def configure(self, kwargs):
+    
     self.frequency = self.get_frequency()
     self.next_start = self.get_next_start()
     
     self.run_every(self.time_announce, self.next_start, (60 * self.frequency.interval))
     
     log_message = f"INITIALIZED: " + \
-      f"Start {str(self.start_hour).zfill(2)}:{str(self.start_minute).zfill(2)}, " + \
-      f"End {str(self.end_hour).zfill(2)}:{str(self.end_minute).zfill(2)}, " + \
-      f"Next {str(self.next_start.strftime('%H:%M:%S'))}, " + \
-      f"Freq {str(self.frequency.interval)} {str(self.frequency.announce_times)}"
+      f"Start [{str(self.start_hour).zfill(2)}:{str(self.start_minute).zfill(2)}], " + \
+      f"End [{str(self.end_hour).zfill(2)}:{str(self.end_minute).zfill(2)}], " + \
+      f"Next [{str(self.next_start.strftime('%H:%M'))}], " + \
+      f"Freq {str(self.frequency.announce_times)}"
     self.log(log_message)
 
     if self.debug: self.time_announce(None)
     
-
+    
   def get_frequency(self):
     
     frequency = Frequency()
@@ -134,9 +139,14 @@ class AlexaTalkingClock(hass.Hass):
     
     if time_speech is not None:
       msg = self.set_speech_parameters(time_speech)
-      self.log("HOUR_ANNOUNCE_MESSAGE " + time_speech)
+      seconds = 0
       for alexa in self.alexas:
-        self.call_service("notify/alexa_media", data = {"type": "announce" if self.announce_bell else "tts", "method": "all"}, target = alexa, message = msg)
+        seconds = seconds + 5
+        self.run_in(self.announce_time, seconds, alexa = alexa, time_speech = time_speech, msg = msg)
+
+  def announce_time(self, kwargs):
+    self.log(f"TIME_ANNOUNCE {kwargs['time_speech']}: {kwargs['alexa']}")
+    self.call_service("notify/alexa_media", data = {"type": "announce" if self.announce_bell else "tts", "method": "all"}, target = kwargs["alexa"], message = kwargs["msg"])
 
 
   def set_speech_parameters(self, time_speech):

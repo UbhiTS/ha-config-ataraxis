@@ -108,6 +108,10 @@ input_boolean:
     name: Buzz Home
     initial: off
     icon: mdi:contact-phone-outline
+  reset_internet:
+    name: Reset Internet
+    initial: off
+    icon: mdi:wifi-star
 
 ios:
 

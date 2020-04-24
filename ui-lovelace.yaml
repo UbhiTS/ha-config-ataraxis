@@ -161,7 +161,8 @@ views:
               - type: entities
                 show_header_toggle: false
                 entities: 
-                  - input_boolean.buzz_home
+                  #- input_boolean.buzz_home
+                  - input_boolean.reset_internet
                   - cover.garage_door_big
                   - cover.garage_door_small
               # HOUSE BUZZ BUTTON

@@ -2,12 +2,11 @@ alexa_talking_clock:
   module: alexa_talking_clock
   class: AlexaTalkingClock
   alexas:
+    - media_player.kitchen_alexa
+    - media_player.master_bedroom_alexa
     - media_player.upper_big_bedroom_alexa
-    #- media_player.upper_small_bedroom_alexa
-    #- media_player.upper_guest_bedroom_alexa
-    #- media_player.master_bedroom_alexa
-    #- media_player.master_bathroom_alexa
-    #- media_player.kitchen_alexa
+    - media_player.upper_small_bedroom_alexa
+    - media_player.upper_guest_bedroom_alexa
   voice:
     volume_offset: 0 # -40 to 4, default 0
     pitch_offset: 0 # -33 to 50, default 0
@@ -59,8 +58,11 @@ home:
   module: home_controller
   class: HomeController
   buzz_control: input_boolean.buzz_home
+  internet_control: input_boolean.reset_internet
+  internet_switch: switch.garage_internet_switch
   alexa_kitchen: media_player.kitchen_alexa
   alexa_entryway: media_player.entryway_alexa
+  
 
 hvac_living_room:
   module: hvac_controller

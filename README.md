@@ -1,24 +1,23 @@
-# Home Assistant ***'STEROIDS'*** Configuration
+# :house_with_garden: Home Assistant :boom:STEROIDS:boom: Configuration :anger:
 
 Here's my [Home Assistant](https://home-assistant.io/) configuration. I have installed HA on a [Raspberry Pi 3B+](https://www.amazon.com/dp/B07BDR5PDW) with a [Transcend High Endurance 32GB MicroSD Card](https://www.amazon.com/dp/B01BDKTQY6) using the [HassIO](https://www.home-assistant.io/hassio/) option. I figured that I honestly dont need to invest too much in hardware as the RPi is powerfull enough for my needs right now. Once my CPU spikes and load starts to increase, I'll probably upgrade to an Intel NUC or similar. Specially when I automate using facial recognition etc.
 
 I maintain my configuration files almost every other week to keep up with the latest from HA. 
 - Current HA version [here](.HA_VERSION).
 
-<a href="https://www.buymeacoffee.com/ubhits" target="_blank">
-<img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png"
-     alt="Buy Me A Beer" 
-     style="height:41px !important; width:174px !important;" />
-</a>
-
 Please :star: this repo if you like my work and also check out my other repos like 
-- [Alexa Talking Clock](https://github.com/UbhiTS/ad-alexatalkingclock)
+- [Home Assistant 'STEROIDS' Configuration](https://github.com/UbhiTS/ha-config-ataraxis)
+- [Alexa (& Sonos) Talking Clock](https://github.com/UbhiTS/ad-alexatalkingclock)
+- [Alexa (& Sonos) Doorbell](https://github.com/UbhiTS/ad-alexadoorbell)
+- [Alexa (& Sonos) Door/Window Announce](https://github.com/UbhiTS/ad-alexadoorwindowannounce)
+- [Alexa (& Sonos) Smart Talking Thermostat](https://github.com/UbhiTS/ad-alexasmarttalkingthermostat)
+- [Auto 'Crappy Internet' Rebooter](https://github.com/UbhiTS/ad-autointernetrebooter)
 
 Also, if you want to see a walkthrough of my Home Assistant configuration, I have my video walkthrough on youtube below
 - [Home Automation on 'STEROIDS' : Video Walkthrough](https://youtu.be/qqktLE9_45A)
 - [![Home Automation on 'STEROIDS' : Video Walkthrough](http://img.youtube.com/vi/qqktLE9_45A/0.jpg)](https://www.youtube.com/watch?v=qqktLE9_45A "Home Automation on 'STEROIDS' : Video Walkthrough")
 
-## Dashboard Screenshots
+## Dashboard Screenshots :alien:
 
 <img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash1.png" alt="Home Assistant dashboard" />
 <img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash2.png" alt="Home Assistant dashboard" />

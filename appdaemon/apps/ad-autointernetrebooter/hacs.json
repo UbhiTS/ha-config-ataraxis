@@ -1,0 +1,6 @@
+{
+    "name": "Auto 'Crappy Internet' Rebooter :rocket:",
+    "content_in_root" : "false",
+    "render_readme": "true",
+    "domains": ["media_player", "sensor", "switch"]
+}

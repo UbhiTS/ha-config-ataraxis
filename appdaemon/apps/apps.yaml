@@ -1,41 +1,196 @@
+home:
+  module: home_controller
+  class: HomeController
+  buzz_control: input_boolean.buzz_home
+  internet_control: input_boolean.reset_internet
+  internet_switch: switch.garage_internet_switch
+  alexa_kitchen: media_player.kitchen_alexa
+  alexa_entryway: media_player.entryway_alexa
+  
+alexa_door_window_announce:
+  module: alexa_door_window_announce
+  class: AlexaDoorWindowAnnounce
+  alexas:
+    - media_player.kitchen_alexa
+  doors_windows:
+    - cover.garage_door_big
+    - cover.garage_door_small
+  announcements:
+    start_time: "00:00:00"
+    end_time: "23:59:59"
+
+alexa_doorbell:
+  module: alexa_doorbell
+  class: AlexaDoorbell
+  door:
+    motion_sensor: binary_sensor.main_door_motion
+    sensor: binary_sensor.main_door # optional
+    alexa: media_player.entryway_alexa # optional
+    announce_bell: False
+  home:
+    alexa: media_player.kitchen_alexa
+    doorbell: switch.living_room_doorbell # optional
+    announce_bell: True
+  time:
+    start: "07:30:00"
+    end: "22:00:00"
+
 alexa_talking_clock:
   module: alexa_talking_clock
   class: AlexaTalkingClock
   alexas:
     - media_player.kitchen_alexa
-    - media_player.master_bedroom_alexa
     - media_player.upper_big_bedroom_alexa
-    - media_player.upper_small_bedroom_alexa
-    - media_player.upper_guest_bedroom_alexa
-  voice:
+  announcements:
+    bell: true  # for SONOS, set to False
+    start_time: "07:30:00"
+    end_time: "21:30:00"
+    half_hour: true
+    quarter_hour: false
+  voice: # for SONOS, remove this section
     volume_offset: 0 # -40 to 4, default 0
     pitch_offset: 0 # -33 to 50, default 0
     rate: 100 # 20 to 250, default 100
     whisper: false
-  announcements:
-    bell: true
-    start_time: "07:30:00"
-    end_time: "21:30:00"
-    half_hour: true
-    quarter_hour: true
   debug: false
 
-door_window_announce:
-  module: door_window_announce_controller
-  class: DoorWindowAnnounceController
-  alexa: media_player.kitchen_alexa
-  doors_windows:
-    - cover.garage_door_big
-    - cover.garage_door_small
+auto_internet_rebooter:
+  module: auto_internet_rebooter
+  class: AutoInternetRebooter
+  internet:
+    download: sensor.speedtest_download
+    upload: sensor.speedtest_upload
+    ping: sensor.speedtest_ping
+    switch: switch.garage_internet_switch
+  thresholds:
+    download_mbps: 80
+    upload_mbps: 4.5
+    ping_ms: 50
+  schedule:
+    - "04:00:00"
+    - "16:00:00"
+  notify:
+    alexa: media_player.upper_big_bedroom_alexa
+    start_time: "08:00:00"
+    end_time: "21:30:00"
 
-doorbell:
-  module: doorbell_controller
-  class: DoorbellController
-  door: binary_sensor.main_door
-  motion_sensor: binary_sensor.main_door_motion
-  doorbell: switch.living_room_doorbell
-  alexa_kitchen: media_player.kitchen_alexa
-  alexa_entryway: media_player.entryway_alexa
+hvac_living_room:
+  module: alexa_smart_talking_thermostat
+  class: AlexaSmartTalkingThermostat
+  thermostat: climate.thermostat_living_room_mode
+  alexa: media_player.living_room_alexa
+  hvac_limits:
+    cooling_min: 67
+    heating_max: 71
+    daily_shutoff: "08:00:00"
+    enforce_fan_auto_mode: True
+  air_recirculation:
+    hour: true
+    half_hour: true
+    quarter_hour: false
+    minute_offset: 3
+    duration: 1
+  
+hvac_entertainment_room:
+  module: alexa_smart_talking_thermostat
+  class: AlexaSmartTalkingThermostat
+  thermostat: climate.thermostat_entertainment_room_mode
+  alexa: media_player.living_room_alexa
+  hvac_limits:
+    cooling_min: 67
+    heating_max: 72
+    daily_shutoff: "08:00:00"
+    enforce_fan_auto_mode: True
+  air_recirculation:
+    hour: true
+    half_hour: true
+    quarter_hour: false
+    minute_offset: 1
+    duration: 1
+
+hvac_master_bedroom:
+  module: alexa_smart_talking_thermostat
+  class: AlexaSmartTalkingThermostat
+  thermostat: climate.thermostat_master_bedroom_mode
+  alexa: media_player.master_bedroom_alexa
+  hvac_limits:
+    cooling_min: 67
+    heating_max: 72
+    daily_shutoff: "08:00:00"
+    enforce_fan_auto_mode: True
+  air_recirculation:
+    hour: true
+    half_hour: true
+    quarter_hour: false
+    minute_offset: 0
+    duration: 1
+  doors_windows:
+    - binary_sensor.master_bedroom_door
+    - binary_sensor.master_bedroom_window_left
+    - binary_sensor.master_bedroom_window_right
+    - binary_sensor.master_bedroom_window_left_small
+    - binary_sensor.master_bedroom_window_right_small
+    - binary_sensor.master_bathroom_window
+
+hvac_upper_big_bedroom:
+  module: alexa_smart_talking_thermostat
+  class: AlexaSmartTalkingThermostat
+  thermostat: climate.thermostat_upper_big_bedroom_mode
+  alexa: media_player.upper_big_bedroom_alexa
+  hvac_limits:
+    cooling_min: 67
+    heating_max: 72
+    daily_shutoff: "08:00:00"
+    enforce_fan_auto_mode: True
+  air_recirculation:
+    hour: true
+    half_hour: true
+    quarter_hour: false
+    minute_offset: 2
+    duration: 1
+  doors_windows:
+    - binary_sensor.upper_big_bedroom_door
+    - binary_sensor.upper_big_bedroom_window_right
+    - binary_sensor.upper_big_bedroom_window_left
+  
+hvac_upper_small_bedroom:
+  module: alexa_smart_talking_thermostat
+  class: AlexaSmartTalkingThermostat
+  thermostat: climate.thermostat_upper_small_bedroom_mode
+  alexa: media_player.upper_small_bedroom_alexa
+  hvac_limits:
+    cooling_min: 67
+    heating_max: 71
+    daily_shutoff: "08:00:00"
+    enforce_fan_auto_mode: True
+  air_recirculation:
+    hour: true
+    half_hour: true
+    quarter_hour: false
+    minute_offset: 2
+    duration: 1
+  doors_windows:
+    - binary_sensor.upper_small_bedroom_door
+    - binary_sensor.upper_small_bedroom_window
+
+hvac_upper_guest_bedroom:
+  module: alexa_smart_talking_thermostat
+  class: AlexaSmartTalkingThermostat
+  thermostat: climate.thermostat_upper_guest_bedroom_mode
+  alexa: media_player.upper_guest_bedroom_alexa
+  hvac_limits:
+    cooling_min: 67
+    heating_max: 71
+    daily_shutoff: "08:00:00"
+    enforce_fan_auto_mode: True
+  air_recirculation:
+    hour: true
+    half_hour: true
+    quarter_hour: false
+    minute_offset: 2
+    duration: 1
+  doors_windows:
+    - binary_sensor.upper_guest_bedroom_door
 
 energy_meter:
   module: energy_meter_controller
@@ -53,96 +208,6 @@ festival_lights_sentry:
   class: FestivalLightsSentryController
   alexa: media_player.kitchen_alexa
   alarm_time: 15
-
-home:
-  module: home_controller
-  class: HomeController
-  buzz_control: input_boolean.buzz_home
-  internet_control: input_boolean.reset_internet
-  internet_switch: switch.garage_internet_switch
-  alexa_kitchen: media_player.kitchen_alexa
-  alexa_entryway: media_player.entryway_alexa
-  
-
-hvac_living_room:
-  module: hvac_controller
-  class: HVACController
-  min_cool_temp: 67
-  max_heat_temp: 71
-  thermostat: climate.thermostat_living_room_mode
-  doors_windows:
-  alexa: media_player.living_room_alexa
-  air_cycle_minute: 3
-  
-hvac_entertainment_room:
-  module: hvac_controller
-  class: HVACController
-  min_cool_temp: 67
-  max_heat_temp: 72
-  thermostat: climate.thermostat_entertainment_room_mode
-  doors_windows:
-  alexa: media_player.living_room_alexa
-  air_cycle_minute: 1
-
-hvac_master_bedroom:
-  module: hvac_controller
-  class: HVACController
-  min_cool_temp: 67
-  max_heat_temp: 72
-  thermostat: climate.thermostat_master_bedroom_mode
-  doors_windows:
-    - binary_sensor.master_bedroom_door
-    - binary_sensor.master_bedroom_window_left
-    - binary_sensor.master_bedroom_window_right
-    - binary_sensor.master_bedroom_window_left_small
-    - binary_sensor.master_bedroom_window_right_small
-    - binary_sensor.master_bathroom_window
-  alexa: media_player.master_bedroom_alexa
-
-hvac_upper_big_bedroom:
-  module: hvac_controller
-  class: HVACController
-  min_cool_temp: 67
-  max_heat_temp: 72
-  thermostat: climate.thermostat_upper_big_bedroom_mode
-  doors_windows:
-    - binary_sensor.upper_big_bedroom_door
-    - binary_sensor.upper_big_bedroom_window_right
-    - binary_sensor.upper_big_bedroom_window_left
-  alexa: media_player.upper_big_bedroom_alexa
-  air_cycle_minute: 2
-  
-hvac_upper_small_bedroom:
-  module: hvac_controller
-  class: HVACController
-  min_cool_temp: 67
-  max_heat_temp: 71
-  thermostat: climate.thermostat_upper_small_bedroom_mode
-  doors_windows:
-    - binary_sensor.upper_small_bedroom_door
-    - binary_sensor.upper_small_bedroom_window
-  alexa: media_player.upper_small_bedroom_alexa
-  air_cycle_minute: 2
-
-hvac_upper_guest_bedroom:
-  module: hvac_controller
-  class: HVACController
-  min_cool_temp: 67
-  max_heat_temp: 71
-  thermostat: climate.thermostat_upper_guest_bedroom_mode
-  doors_windows:
-    - binary_sensor.upper_guest_bedroom_door
-  alexa: media_player.upper_guest_bedroom_alexa
-  air_cycle_minute: 2
-
-internet_health_monitor:
-  module: internet_health_controller
-  class: InternetHealthController
-  internet_switch: switch.garage_internet_switch
-  download: sensor.speedtest_download
-  upload: sensor.speedtest_upload
-  ping: sensor.speedtest_ping
-  alexa: media_player.kitchen_alexa
 
 ios_ha_companion:
   module: ios_ha_companion_controller

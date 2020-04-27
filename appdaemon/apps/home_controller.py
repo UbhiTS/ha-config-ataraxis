@@ -60,3 +60,12 @@ class HomeController(hass.Hass):
   def turn_on_switch(self, kwargs):
     self.log("INTERNET_RESET:TURN_ON")
     self.call_service("switch/turn_on", entity_id = self.internet_switch)
+    
+#  def set_guest_volume_high(self, kwargs):
+#    self.call_service("media_player/volume_set", entity_id = self.door_alexa, volume_level = .99)
+#    self.log("GUEST VOLUME HIGH")
+
+
+#  def set_guest_volume_low(self, kwargs):
+#    self.call_service("media_player/volume_set", entity_id = self.door_alexa, volume_level = .40)
+#    self.log("GUEST VOLUME LOW")

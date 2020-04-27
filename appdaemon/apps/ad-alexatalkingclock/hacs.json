@@ -1,5 +1,5 @@
 {
-    "name": "Alexa Talking Clock 🐔",
+    "name": "Alexa (& Sonos) Talking Clock 🐔",
     "content_in_root" : "false",
     "render_readme": "true",
     "domains": ["media_player"]

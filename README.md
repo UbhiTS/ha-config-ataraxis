@@ -17,7 +17,7 @@ Also, if you want to see a walkthrough of my Home Assistant configuration, I hav
 - [Home Automation on 'STEROIDS' : Video Walkthrough](https://youtu.be/qqktLE9_45A)
 - [![Home Automation on 'STEROIDS' : Video Walkthrough](http://img.youtube.com/vi/qqktLE9_45A/0.jpg)](https://www.youtube.com/watch?v=qqktLE9_45A "Home Automation on 'STEROIDS' : Video Walkthrough")
 
-## Dashboard Screenshots
+## Dashboard Screenshots :alien:
 
 <img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash1.png" alt="Home Assistant dashboard" />
 <img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash2.png" alt="Home Assistant dashboard" />

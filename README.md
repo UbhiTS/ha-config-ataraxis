@@ -1,4 +1,4 @@
-# :house_with_garden: Home Assistant :boom:STEROIDS:boom: Configuration :anger:
+# :house_with_garden: Home Assistant :boom:STEROIDS:boom: Configuration :anger: <img src="https://poa5qzspd7.execute-api.us-east-1.amazonaws.com/live/hypercounterimage/f88292d40e6c44e9bb69e74ebd01d1be/counter.png" />
 
 Here's my [Home Assistant](https://home-assistant.io/) configuration. I have installed HA on a [Raspberry Pi 3B+](https://www.amazon.com/dp/B07BDR5PDW) with a [Transcend High Endurance 32GB MicroSD Card](https://www.amazon.com/dp/B01BDKTQY6) using the [HassIO](https://www.home-assistant.io/hassio/) option. I figured that I honestly dont need to invest too much in hardware as the RPi is powerfull enough for my needs right now. Once my CPU spikes and load starts to increase, I'll probably upgrade to an Intel NUC or similar. Specially when I automate using facial recognition etc.
 
@@ -17,7 +17,7 @@ Also, if you want to see a walkthrough of my Home Assistant configuration, I hav
 - [Home Automation on 'STEROIDS' : Video Walkthrough](https://youtu.be/qqktLE9_45A)
 - [![Home Automation on 'STEROIDS' : Video Walkthrough](http://img.youtube.com/vi/qqktLE9_45A/0.jpg)](https://www.youtube.com/watch?v=qqktLE9_45A "Home Automation on 'STEROIDS' : Video Walkthrough")
 
-## Dashboard Screenshots :alien: <img src="https://poa5qzspd7.execute-api.us-east-1.amazonaws.com/live/hypercounterimage/f88292d40e6c44e9bb69e74ebd01d1be/counter.png" />
+## Dashboard Screenshots :alien:
 
 <img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash1.png" alt="Home Assistant dashboard" />
 <img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash2.png" alt="Home Assistant dashboard" />

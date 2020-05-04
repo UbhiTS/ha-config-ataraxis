@@ -1,26 +1,27 @@
-# Alexa (& Sonos) Talking Clock : AppDaemon (HASS) :chicken:
+# Alexa (& Friends) Talking Clock :chicken:
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
-## New in v2.0.0: Multiple Alexas, Whisper Mode, Pitch, Volume, Rate, Bell & SONOS
-### SONOS: Set Bell:False and remove the voice effects section (kudos to @5and0) 
-NOTE: * **Please update your apps.yaml with the new configuration structure** *
+## New in v2.0.0: Multiple Speakers, Whisper, Pitch, Volume, Rate and Bell Controls
+#### Sonos: Set bell:false and remove the voice effects section (kudos to @5and0)
+#### Google Home: same as above (can someone please confirm?)
+NOTE: :boom:**Please update your apps.yaml with the new configuration structure**:boom:
 
-Amazon Alexa will keep on reminding you of the time from morning till night and also courteously greet with a good morning, good afternoon, and a good night & sweet dreams all without you having to lift a finger (or speak a word). Sweet!
+Amazon Alexa (or other smart speakers) will keep on reminding you of the time from morning till night and also courteously greet with a good morning, good afternoon, and a good night & sweet dreams all without you having to lift a finger (or speak a word). Sweet!
 
 Please ⭐ this repo if you like my work and also check out my other repos like
 - [Home Assistant 'STEROIDS' Configuration](https://github.com/UbhiTS/ha-config-ataraxis)
-- [Alexa (& Sonos) Talking Clock](https://github.com/UbhiTS/ad-alexatalkingclock)
-- [Alexa (& Sonos) Doorbell](https://github.com/UbhiTS/ad-alexadoorbell)
-- [Alexa (& Sonos) Door/Window Announce](https://github.com/UbhiTS/ad-alexadoorwindowannounce)
-- [Alexa (& Sonos) Smart Talking Thermostat](https://github.com/UbhiTS/ad-alexasmarttalkingthermostat)
+- [Alexa (& Friends) Talking Clock](https://github.com/UbhiTS/ad-alexatalkingclock)
+- [Alexa (& Friends) Doorbell](https://github.com/UbhiTS/ad-alexadoorbell)
+- [Alexa (& Friends) Door/Window Announce](https://github.com/UbhiTS/ad-alexadoorwindowannounce)
+- [Alexa (& Friends) Smart Talking Thermostat](https://github.com/UbhiTS/ad-alexasmarttalkingthermostat)
 - [Auto 'Crappy Internet' Rebooter](https://github.com/UbhiTS/ad-autointernetrebooter)
 
 Also, if you want to see a walkthrough of my Home Assistant configuration, I have my video walkthrough on youtube below
 - [Home Automation on 'STEROIDS' : Video Walkthrough](https://youtu.be/qqktLE9_45A)
 
 ## Installation
-**NEEDS THE [Alexa Media Player](https://github.com/custom-components/alexa_media_player) HACS Integration from Keaton Taylor and Alan Tse**
+**Needs the [Alexa Media Player](https://github.com/custom-components/alexa_media_player) or other TTS integration**
 
 Use [HACS](https://github.com/custom-components/hacs) or [download](https://github.com/UbhiTS/HASS-AlexaTalkingClock/tree/master/apps/alexa_talking_clock) the `alexa_talking_clock.py` from inside the `apps` directory to your local `apps` directory, and add the following configuration to enable the app.
 
@@ -51,8 +52,8 @@ key | optional | type | default | description
 -- | -- | -- | -- | --
 `module` | False | string | alexa_talking_clock | The module name of the app.
 `class` | False | string | AlexaTalkingClock | The name of the Class.
-`alexas` | False | list | # alexa_media_players # | The Alexa device(s) to target for the time reminder speech. You need the Alexa Media Player integration alive and kickin before you install this app.
-`announcements\|bell` | True | bool | True | Enable or disable the Alexa announcement bell before the time speech. For SONOS, set to False
+`alexas` | False | list | # alexa_media_players # | The Alexa or other Smart Speakers to target for the time reminder speech.
+`announcements\|bell` | True | bool | True | Enable or disable the Alexa announcement bell before the time speech. For Sonos or Google Home, set to False
 `announcements\|start_time` | True | time | 07:30 | The time to start announcements. This is in 24h format.
 `announcements\|end_time` | True | time | 21:30 | The time to end announcements. This is in 24h format.
 `announcements\|half_hour` | True | bool | True | Announce every half hour (It's 8 AM, It's 8:30 AM, It's 9 AM)
@@ -63,10 +64,12 @@ key | optional | type | default | description
 `voice\|whisper` | True | bool | False | Whisper Mode. Set "Bell" to False and "Rate" to 50 for a creepy time announcement 
 `debug` | True | bool | False | Announces time instantly when you save the apps.yaml. Also, when set, will not honor start and end times and speak throughout the day and night
 
-## Thank you for your time! (get it ;)
+## Thank you for your time! (get it ;) :raised_hands:
 This app was a result of my amazing wife's request (who is a mother of 2 beautiful princesses BTW) to help her manage her time wisely ;). So this is dedicated to my wife Reena, without whom this world would not be worth my time :) 
 
-This also wouldn't be possible without the amazing work done by the developers and community at **[Home Assistant](https://www.home-assistant.io/)**, and of Keaton Taylor and Alan Tse on their **Alexa Media Player integration** for Home Assistant. *https://github.com/custom-components/alexa_media_player*
+This also wouldn't be possible without the amazing work done by the developers and community at **[Home Assistant](https://www.home-assistant.io/)**
+
+A very special thanks to **Keaton Taylor** and **Alan Tse** whose work on **[Alexa Media Player](https://github.com/custom-components/alexa_media_player)** was the basis of my inspiration and my work to code all the above listed apps!
 
 Ever since we've set this up in our home, it has become an indispensable part of our lives. It's amazing to see how a simple reminder of the current time in the day can make people more efficient :), I hope this app helps others as it has helped us. 
 

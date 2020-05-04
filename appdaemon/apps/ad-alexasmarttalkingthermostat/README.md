@@ -1,6 +1,6 @@
-# Alexa (& Sonos) Smart Talking Thermostat :chicken:
+# Alexa (& Friends) Smart Talking Thermostat :chicken:
 
-Alexa becomes the voice for your thermostat. Take control of your thermostat like never before. Extremely "Street Smart"!
+Alexa (or other Smart Speakers) become the voice for your thermostat. Take control of your thermostat like never before. Extremely "Street Smart"!
 - **Your Thermostat Speaks What It's Doing**: **Alexa & HA together are :gem:Awesome!:gem:**
 - **Enforce Temp Limits**: your guests just can't crank up the heat :hotsprings: or cold :snowflake:, saving you :dollar::dollar::dollar: 
 - **Daily Shut Off**: no more forgetting to turn off the thermostat and let it run whole day while you are away 
@@ -12,17 +12,17 @@ Ever since we've set this up in our home, we cannot imaging our home without it.
 
 Please ⭐ this repo if you like my work and also check out my other repos like
 - [Home Assistant 'STEROIDS' Configuration](https://github.com/UbhiTS/ha-config-ataraxis)
-- [Alexa (& Sonos) Talking Clock](https://github.com/UbhiTS/ad-alexatalkingclock)
-- [Alexa (& Sonos) Doorbell](https://github.com/UbhiTS/ad-alexadoorbell)
-- [Alexa (& Sonos) Door/Window Announce](https://github.com/UbhiTS/ad-alexadoorwindowannounce)
-- [Alexa (& Sonos) Smart Talking Thermostat](https://github.com/UbhiTS/ad-alexasmarttalkingthermostat)
+- [Alexa (& Friends) Talking Clock](https://github.com/UbhiTS/ad-alexatalkingclock)
+- [Alexa (& Friends) Doorbell](https://github.com/UbhiTS/ad-alexadoorbell)
+- [Alexa (& Friends) Door/Window Announce](https://github.com/UbhiTS/ad-alexadoorwindowannounce)
+- [Alexa (& Friends) Smart Talking Thermostat](https://github.com/UbhiTS/ad-alexasmarttalkingthermostat)
 - [Auto 'Crappy Internet' Rebooter](https://github.com/UbhiTS/ad-autointernetrebooter)
 
 Also, if you want to see a walkthrough of my Home Assistant configuration, I have my video walkthrough on youtube below
 - [Home Automation on 'STEROIDS' : Video Walkthrough](https://youtu.be/qqktLE9_45A)
 
 ## Installation
-**NEEDS THE [Alexa Media Player](https://github.com/custom-components/alexa_media_player) HACS Integration from Keaton Taylor and Alan Tse**
+Needs the **[Alexa Media Player](https://github.com/custom-components/alexa_media_player)** or other TTS Integration
 
 Use [HACS](https://github.com/custom-components/hacs) or [download](https://github.com/UbhiTS/ad-alexasmarttalkingthermostat) the `alexa_smart_talking_thermostat.py` from inside the `apps` directory to your local `apps` directory, and add the following configuration to enable the app.
 

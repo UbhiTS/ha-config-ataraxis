@@ -68,7 +68,6 @@ auto_internet_rebooter:
     ping_ms: 50
   schedule:
     - "04:00:00"
-    - "16:00:00"
   notify:
     alexa: media_player.upper_big_bedroom_alexa
     start_time: "08:00:00"

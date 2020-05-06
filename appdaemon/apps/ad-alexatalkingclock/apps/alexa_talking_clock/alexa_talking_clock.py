@@ -45,20 +45,20 @@ class AlexaTalkingClock(hass.Hass):
     self.announce_quarter_hour = False
     self.debug = False
     
-    if self.args["voice"]:
+    if "voice" in self.args:
       self.volume_offset = int(self.args["voice"]["volume_offset"]) if "volume_offset" in self.args["voice"] else self.volume_offset
       self.pitch_offset = int(self.args["voice"]["pitch_offset"]) if "pitch_offset" in self.args["voice"] else self.pitch_offset
       self.rate = int(self.args["voice"]["rate"]) if "rate" in self.args["voice"] else self.rate
       self.whisper = bool(self.args["voice"]["whisper"]) if "whisper" in self.args["voice"] else self.whisper
 
-    if self.args["announcements"]:
+    if "announcements" in self.args:
       self.announce_bell = bool(self.args["announcements"]["bell"]) if "bell" in self.args["announcements"] else self.announce_bell
       self.start_hour = int(self.args["announcements"]["start_time"].split(':')[0]) if "start_time" in self.args["announcements"] else self.start_hour
       self.start_minute = int(self.args["announcements"]["start_time"].split(':')[1]) if "start_time" in self.args["announcements"] else self.start_minute
       self.end_hour = int(self.args["announcements"]["end_time"].split(':')[0]) if "end_time" in self.args["announcements"] else self.end_hour
       self.end_minute = int(self.args["announcements"]["end_time"].split(':')[1]) if "end_time" in self.args["announcements"] else self.end_minute
-      self.announce_half_hour = bool(self.args["announcements"]["announce_half_hour"]) if "announce_half_hour" in self.args["announcements"] else self.announce_half_hour
-      self.announce_quarter_hour = bool(self.args["announcements"]["announce_quarter_hour"]) if "announce_quarter_hour" in self.args["announcements"] else self.announce_quarter_hour
+      self.announce_half_hour = bool(self.args["announcements"]["half_hour"]) if "half_hour" in self.args["announcements"] else self.announce_half_hour
+      self.announce_quarter_hour = bool(self.args["announcements"]["quarter_hour"]) if "quarter_hour" in self.args["announcements"] else self.announce_quarter_hour
 
     self.debug = bool(self.args["debug"]) if "debug" in self.args else self.debug
     
@@ -135,21 +135,40 @@ class AlexaTalkingClock(hass.Hass):
 
   def time_announce(self, kwargs):
     now = datetime.datetime.now()
-    time_speech = self.time_to_text(now.hour, now.minute)
+    time_speech = self.get_time_speech(now.hour, now.minute)
     
     if time_speech is not None:
-      msg = self.set_speech_parameters(time_speech)
+      effects_speech = self.set_effects(time_speech)
       seconds = 0
       for alexa in self.alexas:
+        self.run_in(self.announce_time, seconds, alexa = alexa, time_speech = time_speech, effects_speech = effects_speech)
         seconds = seconds + 5
-        self.run_in(self.announce_time, seconds, alexa = alexa, time_speech = time_speech, msg = msg)
 
   def announce_time(self, kwargs):
-    self.log(f"TIME_ANNOUNCE {kwargs['time_speech']}: {kwargs['alexa']}")
-    self.call_service("notify/alexa_media", data = {"type": "announce" if self.announce_bell else "tts", "method": "all"}, target = kwargs["alexa"], message = kwargs["msg"])
+    alexa = kwargs['alexa']
+    announce = "announce"
+    method = "all"
+    time_speech = kwargs['time_speech']
+    effects_speech = kwargs['effects_speech']
+    
+    title = "Home Assistant: Alexa Talking Clock"
+    message = time_speech
+    
+    if self.announce_bell == False:
+      # no change in home screen
+      announce = "tts"
+      method = "all"
+    
+    if self.whisper or self.volume_offset != 0 or self.pitch_offset != 0 or self.rate != 100:
+      # goes to a blank announcement screen and back
+      method = "speak"
+      message = effects_speech
+      
+    self.call_service("notify/alexa_media", data = {"type": announce, "method": method}, target = alexa, title = title, message = message)
+    self.log(f"TIME_ANNOUNCE {time_speech}: {alexa.split('.')[1]}")
+    
 
-
-  def set_speech_parameters(self, time_speech):
+  def set_effects(self, time_speech):
     prefix = "<speak>"
     postfix = "</speak>"
     
@@ -167,7 +186,7 @@ class AlexaTalkingClock(hass.Hass):
     return prefix + time_speech + postfix
 
 
-  def time_to_text(self, hour, minute):
+  def get_time_speech(self, hour, minute):
     
     prefix = ""
     postfix = ""

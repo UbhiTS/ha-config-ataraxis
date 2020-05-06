@@ -1,0 +1,6 @@
+{
+    "name": "Alexa (& Friends) Doorbell 🐔",
+    "content_in_root" : "false",
+    "render_readme": "true",
+    "domains": ["media_player", "binary_sensor", "switch"]
+}

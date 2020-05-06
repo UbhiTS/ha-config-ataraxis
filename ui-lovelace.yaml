@@ -9,6 +9,8 @@ resources:
     type: js
   - url: /hacsfiles/calendar-card/calendar-card.js
     type: js
+  - url: /hacsfiles/config-template-card/config-template-card.js
+    type: module
   - url: /hacsfiles/custom-header/custom-header.js
     type: module
   - url: /hacsfiles/lovelace-layout-card/layout-card.js
@@ -93,59 +95,68 @@ views:
             cards:
               - type: horizontal-stack
                 cards:
-                  # HOUSE ENERGY PROFILE BARS
-                  - type: custom:bar-card
-                    columns: 4
-                    height: 178px
-                    title_position: bottom
-                    direction: up
-                    indicator: off
-                    positions:
-                      icon: inside
-                      name: outside
-                      indicator: 'off'
+                  - type: "custom:config-template-card"
                     entities:
-                      - entity: sensor.solar_power
-                        name: "solar"
-                        target: sensor.solar_power
-                        min: 0
-                        max: 8
-                        icon: mdi:weather-sunset
-                        severity:
-                          - color: 'yellow'
-                            from: 0
-                            to: 10
-                      - entity: sensor.grid_power
-                        name: "grid"
-                        target: sensor.grid_bar_target
-                        min: 0
-                        max: 8
-                        icon: mdi:transmission-tower
-                        severity:
-                          - color: 'orange'
-                            from: 0
-                            to: 10
-                      - entity: sensor.powerwall_power
-                        name: "batt"
-                        target: sensor.powerwall_bar_target
-                        min: 0
-                        max: 8
-                        icon: mdi:car-battery
-                        severity:
-                          - color: 'green'
-                            from: 0
-                            to: 10
-                      - entity: sensor.house_load
-                        name: "load"
-                        target: sensor.house_load
-                        min: 0
-                        max: 8
-                        icon: mdi:home
-                        severity:
-                          - color: 'red'
-                            from: 0
-                            to: 10
-                  # HOUSE ENERGY PROFILE BARS
+                      - sensor.solar_power
+                      - sensor.grid_power
+                      - sensor.grid_bar_target
+                      - sensor.powerwall_power
+                      - sensor.powerwall_bar_target
+                      - sensor.house_load
+                    card:
+                      # HOUSE ENERGY PROFILE BARS
+                      type: custom:bar-card
+                      columns: 4
+                      height: 178px
+                      title_position: bottom
+                      direction: up
+                      indicator: off
+                      positions:
+                        icon: inside
+                        name: outside
+                        indicator: 'off'
+                      entities:
+                        - entity: sensor.solar_power
+                          name: "solar"
+                          target: "${states['sensor.solar_power'].state}"
+                          min: 0
+                          max: 8
+                          icon: mdi:weather-sunset
+                          severity:
+                            - color: 'yellow'
+                              from: 0
+                              to: 10
+                        - entity: sensor.grid_power
+                          name: "grid"
+                          target: "${states['sensor.grid_bar_target'].state}"
+                          min: 0
+                          max: 8
+                          icon: mdi:transmission-tower
+                          severity:
+                            - color: 'orange'
+                              from: -10
+                              to: 10
+                        - entity: sensor.powerwall_power
+                          name: "batt"
+                          target: "${states['sensor.powerwall_bar_target'].state}"
+                          min: 0
+                          max: 8
+                          icon: mdi:car-battery
+                          severity:
+                            - color: 'green'
+                              from: -10
+                              to: 10
+                        - entity: sensor.house_load
+                          name: "load"
+                          target: "${states['sensor.house_load'].state}"
+                          min: 0
+                          max: 8
+                          icon: mdi:home
+                          severity:
+                            - color: 'red'
+                              from: 0
+                              to: 10
+                      # HOUSE ENERGY PROFILE BARS
                   - type: custom:mini-graph-card
                     entities:
                      - sensor.hem_energy

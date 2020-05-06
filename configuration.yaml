@@ -48,15 +48,12 @@ updater:
 
 frontend: !include frontend.yaml
 sensor: !include cfg_sensor.yaml
+#binary_sensor: !include cfg_binary_sensor.yaml
 camera: !include cfg_camera.yaml
 group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml
 
-binary_sensor:
-  - platform: mqtt
-    state_topic: dummy/floorplan/sensor
-    name: floorplan
 
 emulated_hue:
   host_ip: !secret emulated_hue_host_ip
@@ -124,7 +121,7 @@ light:
 #  include: !include entity_tracking.yaml
 
 logger:
-  default: warning
+  default: info
   logs:
     homeassistant.components.camera: warning
     homeassistant.components.zwave: info

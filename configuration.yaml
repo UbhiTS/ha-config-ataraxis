@@ -127,6 +127,8 @@ logger:
   default: warning
   logs:
     homeassistant.components.camera: warning
+    homeassistant.components.zwave: info
+    homeassistant.components.appdaemon: info
 
 media_player:
 
@@ -146,10 +148,6 @@ recorder:
   include: !include entity_tracking.yaml
 
 speedtestdotnet:
-#  scan_interval:
-#    days: 0
-#    hours: 0
-#    minutes: 0
   manual: true
   monitored_conditions:
     - ping

@@ -1,6 +1,10 @@
+<<<<<<< HEAD
 # Auto 'Crappy Internet' Rebooter :rocket: <img src="https://poa5qzspd7.execute-api.us-east-1.amazonaws.com/live/hypercounterimage/f7e1b92607a64f5fb2de4cf4ada55099/counter.png" />
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
+=======
+# Auto 'Crappy Internet' Rebooter :rocket:
+>>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
 
 Automatically reboot your internet :globe_with_meridians: if you use a **[ZWave](https://www.amazon.com/Aeotec-Wireless-Control-Security-Automation/dp/B07PJNL5DB/ref=sr_1_7?dchild=1&keywords=zwave+socket&qid=1587936800&sr=8-7), [Zigbee](https://www.amazon.com/Compatible-SmartThings-switches-Appliances-accessories/dp/B07SSWD5MH/ref=sr_1_3?dchild=1&keywords=zigbee+socket&qid=1587936858&sr=8-3), or Bluetooth switch/socket** for your internet modem.
 **This app :small_red_triangle:WILL NOT WORK:small_red_triangle: with WiFi switches/sockets**
@@ -30,7 +34,11 @@ speedtestdotnet:
     - upload
 ```
 
+<<<<<<< HEAD
 **if you enable speech notifications, you will also need the [Alexa Media Player, Sonos](https://github.com/custom-components/alexa_media_player) or Google Home integration with HA**
+=======
+**if you enable speech notifications, you will also need the [Alexa Media Player, or Sonos Integration with HA](https://github.com/custom-components/alexa_media_player)**
+>>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
 
 ## Installation
 Use [HACS](https://github.com/custom-components/hacs) or [download](https://github.com/UbhiTS/ad-autointernetrebooter) the `auto_internet_rebooter.py` from inside the `apps` directory to your local `apps` directory, and add the following configuration to enable the app.

@@ -1,5 +1,9 @@
 import appdaemon.plugins.hass.hassapi as hass
+<<<<<<< HEAD
 from datetime import datetime, time, timedelta
+=======
+from datetime import datetime, time
+>>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
 
 #
 # Alexa Door Window Announce App
@@ -17,22 +21,36 @@ from datetime import datetime, time, timedelta
 #    - binary_sensor.main_door
 #    - binary_sensor.side_door
 #  announcements:
+<<<<<<< HEAD
 #    delay: "00:00:00"
 #    close: True
 #    start_time: "00:00:00"
 #    end_time: "23:59:59"
 
 
+=======
+#    start_time: "00:00:00"
+#    end_time: "23:59:59"
+
+>>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
 class AlexaDoorWindowAnnounce(hass.Hass):
 
   def initialize(self):
 
+<<<<<<< HEAD
     self.delay = timedelta() # default 0
     self.announce_close = True
+=======
+    if "doors_windows" in self.args:
+      for door_window_sensor in self.args["doors_windows"]:
+        self.listen_state(self.door_window_state_changed, door_window_sensor, attribute = "state")
+
+>>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
     self.time_start = datetime.strptime("00:00:00", '%H:%M:%S').time()
     self.time_end = datetime.strptime("23:59:59", '%H:%M:%S').time()
 
     if "announcements" in self.args:
+<<<<<<< HEAD
       delay = datetime.strptime(self.args["announcements"]["delay"], '%H:%M:%S').time() if "delay" in self.args["announcements"] else datetime.strptime("00:00:00", '%H:%M:%S').time()
       
       self.delay = timedelta(hours = delay.hour, minutes = delay.minute, seconds = delay.second)
@@ -61,12 +79,29 @@ class AlexaDoorWindowAnnounce(hass.Hass):
     
     if new == states[1] and self.announce_close: # door is open, and announce_closed is True
       self.listen_state(self.door_window_state_changed, entity, old = states[1], new = states[0], oneshot = True)
+=======
+      self.time_start = datetime.strptime(self.args["announcements"]["start_time"], '%H:%M:%S').time() if "start_time" in self.args["announcements"] else self.time_start
+      self.time_end = datetime.strptime(self.args["announcements"]["end_time"], '%H:%M:%S').time() if "end_time" in self.args["announcements"] else self.time_end
+
+    self.log(f"INITIALIZED : From {self.time_start}, To {self.time_end}")
+
+  def door_window_state_changed(self, entity, attribute, old, new, kwargs):
+    
+    # if the HA has just rebooted, old state would be unavailable.
+    # in this case, do not announce!
+    if old == "unavailable": return
+>>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
     
     friendly_name = self.get_state(entity, attribute = "friendly_name")
     
     state = "changed"
+<<<<<<< HEAD
     if new == states[0]: state = "closed"
     if new == states[1]: state = "opened"
+=======
+    if new in ["open", "on"]: state = "opened"
+    if new in ["closed", "off"]: state = "closed"
+>>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
     
     if datetime.now().time() < self.time_start or self.time_end < datetime.now().time():
       self.log(f"DOOR/WINDOW TIME LOG ONLY: {entity.split('.')[1]}|{state}")
@@ -90,6 +125,7 @@ class AlexaDoorWindowAnnounce(hass.Hass):
       self.call_service("notify/alexa_media", data = {"type":"tts", "method":"all"}, target = alexa, title = "Home Assistant: Door/Window Announce", message = f"Your attention please. The {friendly_name} has been {state}.")
     finally:
       self.log(f"DOOR/WINDOW ANNOUNCE: {sensor_name.split('.')[1]}|{state}|{alexa.split('.')[1]}")
+<<<<<<< HEAD
 
 
   def get_state_values(self, entity):
@@ -102,3 +138,5 @@ class AlexaDoorWindowAnnounce(hass.Hass):
       return [ "off", "on" ]
     else:
       return [ "off", "on" ]
+=======
+>>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627

@@ -16,8 +16,11 @@ alexa_door_window_announce:
     - cover.garage_door_big
     - cover.garage_door_small
   announcements:
+<<<<<<< HEAD
     delay: "00:00:00"
     close: True
+=======
+>>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
     start_time: "00:00:00"
     end_time: "23:59:59"
 
@@ -70,7 +73,10 @@ auto_internet_rebooter:
     ping_ms: 50
   schedule:
     - "04:00:00"
+<<<<<<< HEAD
     - "16:00:00"
+=======
+>>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
   notify:
     alexa: media_player.upper_big_bedroom_alexa
     start_time: "08:00:00"

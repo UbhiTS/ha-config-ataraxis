@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Alexa (& Friends) Doorbell :chicken: <img src="https://poa5qzspd7.execute-api.us-east-1.amazonaws.com/live/hypercounterimage/e504a75b4c784b799031c4d8e1d8b6a5/counter.png" />
+=======
+# Alexa (& Friends) Doorbell :chicken:
+>>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
@@ -24,7 +28,11 @@ Also, if you want to see a walkthrough of my Home Assistant configuration, I hav
 - [Home Automation on 'STEROIDS' : Video Walkthrough](https://youtu.be/qqktLE9_45A)
 
 ## Installation
+<<<<<<< HEAD
 **Needs the [Alexa Media Player, Sonos](https://github.com/custom-components/alexa_media_player), Google Home or other smart speaker integration**
+=======
+**Needs the [Alexa Media Player](https://github.com/custom-components/alexa_media_player) or other TTS integration**
+>>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
 
 Use [HACS](https://github.com/custom-components/hacs) or [download](https://github.com/UbhiTS/ad-alexadoorbell) the `alexa_doorbell.py` from inside the `apps` directory to your local `apps` directory, and add the configuration to enable the app.
 

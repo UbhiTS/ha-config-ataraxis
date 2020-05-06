@@ -1,12 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 # Alexa (& Friends) Talking Clock :chicken: <img src="https://poa5qzspd7.execute-api.us-east-1.amazonaws.com/live/hypercounterimage/68f7d9511bb4405d9dd2b34615a45ae1/counter.png" />
-=======
-# Alexa (& Friends) Talking Clock :chicken:
->>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
-=======
-# Alexa (& Friends) Talking Clock :chicken:
->>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
@@ -29,15 +21,7 @@ Also, if you want to see a walkthrough of my Home Assistant configuration, I hav
 - [Home Automation on 'STEROIDS' : Video Walkthrough](https://youtu.be/qqktLE9_45A)
 
 ## Installation
-<<<<<<< HEAD
-<<<<<<< HEAD
 **Needs the [Alexa Media Player, Sonos](https://github.com/custom-components/alexa_media_player), Google Home or other smart speaker integration**
-=======
-**Needs the [Alexa Media Player](https://github.com/custom-components/alexa_media_player) or other TTS integration**
->>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
-=======
-**Needs the [Alexa Media Player](https://github.com/custom-components/alexa_media_player) or other TTS integration**
->>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
 
 Use [HACS](https://github.com/custom-components/hacs) or [download](https://github.com/UbhiTS/HASS-AlexaTalkingClock/tree/master/apps/alexa_talking_clock) the `alexa_talking_clock.py` from inside the `apps` directory to your local `apps` directory, and add the following configuration to enable the app.
 

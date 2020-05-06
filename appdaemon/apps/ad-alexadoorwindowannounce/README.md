@@ -1,25 +1,8 @@
-<<<<<<< HEAD
 # Alexa (& Friends) Door/Window Announce :chicken: <img src="https://poa5qzspd7.execute-api.us-east-1.amazonaws.com/live/hypercounterimage/7d054a64bdc14763b3e85eedc56773a4/counter.png" />
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
 ## New in v1.0.6: Door/Window Open Delay, and Close Announcement Control
-
-# Alexa (& Friends) Door/Window Announce :chicken:
-
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
-
-<<<<<<< HEAD
-# Alexa (& Friends) Door/Window Announce :chicken: <img src="https://poa5qzspd7.execute-api.us-east-1.amazonaws.com/live/hypercounterimage/7d054a64bdc14763b3e85eedc56773a4/counter.png" />
-
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
-
-## New in v1.0.6: Door/Window Open Delay, and Close Announcement Control
-
-# Alexa (& Friends) Door/Window Announce :chicken:
-
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
-
 
 Alexa and other smart speakers (media_player) announce your doors/windows opening and closing. Comes in handy specially for garage doors or side/main exits for homes and shops where you need to stay informed of any changes. Trust me, it's a secured feeling to know the status of your garage, main/side exits. 
 

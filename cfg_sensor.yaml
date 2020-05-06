@@ -1,4 +1,4 @@
-# Weather prediction
+
   - platform: yr
 
   - platform: systemmonitor

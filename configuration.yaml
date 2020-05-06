@@ -134,8 +134,8 @@ media_player:
 
 mobile_app:
 
-mqtt:
-  password: !secret mqtt_password
+#mqtt:
+#  password: !secret mqtt_password
 
 nest:
   client_id: !secret nest_client_id

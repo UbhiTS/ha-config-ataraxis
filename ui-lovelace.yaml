@@ -1,23 +1,23 @@
 resources:
-  - url: /community_plugin/atomic_calendar/atomic_calendar.js
+  - url: /hacsfiles/atomic_calendar/atomic_calendar.js
     type: module
-  - url: /community_plugin/lovelace-auto-entities/auto-entities.js
+  - url: /hacsfiles/lovelace-auto-entities/auto-entities.js
     type: module
-  - url: /community_plugin/bar-card/bar-card.js
+  - url: /hacsfiles/bar-card/bar-card.js
+    type: module
+  - url: /hacsfiles/bignumber-card/bignumber-card.js
     type: js
-  - url: /community_plugin/bignumber-card/bignumber-card.js
+  - url: /hacsfiles/calendar-card/calendar-card.js
     type: js
-  - url: /community_plugin/calendar-card/calendar-card.js
-    type: js
-  - url: /community_plugin/custom-header/custom-header.js
+  - url: /hacsfiles/custom-header/custom-header.js
     type: module
-  - url: /community_plugin/lovelace-layout-card/layout-card.js
+  - url: /hacsfiles/lovelace-layout-card/layout-card.js
     type: module
-  - url: /community_plugin/mini-graph-card/mini-graph-card-bundle.js
+  - url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js
     type: module
-  - url: /community_plugin/simple-thermostat/simple-thermostat.js
+  - url: /hacsfiles/simple-thermostat/simple-thermostat.js
     type: module
-  - url: /community_plugin/weather-card/weather-card.js
+  - url: /hacsfiles/weather-card/weather-card.js
     type: module
   - url: /local/floorplan/floorplan-card.js?v=1.1.14
     type: module
@@ -93,54 +93,58 @@ views:
             cards:
               - type: horizontal-stack
                 cards:
-                                    # HOUSE ENERGY PROFILE BARS
+                  # HOUSE ENERGY PROFILE BARS
                   - type: custom:bar-card
                     columns: 4
                     height: 178px
                     title_position: bottom
                     direction: up
                     indicator: off
+                    positions:
+                      icon: inside
+                      name: outside
+                      indicator: 'off'
                     entities:
                       - entity: sensor.solar_power
-                        title: "solar"
+                        name: "solar"
                         target: sensor.solar_power
                         min: 0
                         max: 8
                         icon: mdi:weather-sunset
-                        icon_position: inside
                         severity:
-                        - value: 10
-                          color: 'yellow'
+                          - color: 'yellow'
+                            from: 0
+                            to: 10
                       - entity: sensor.grid_power
-                        title: "grid"
+                        name: "grid"
                         target: sensor.grid_bar_target
                         min: 0
                         max: 8
                         icon: mdi:transmission-tower
-                        icon_position: inside
                         severity:
-                        - value: 10
-                          color: 'orange'
+                          - color: 'orange'
+                            from: 0
+                            to: 10
                       - entity: sensor.powerwall_power
-                        title: "pwall"
+                        name: "batt"
                         target: sensor.powerwall_bar_target
                         min: 0
                         max: 8
                         icon: mdi:car-battery
-                        icon_position: inside
                         severity:
-                        - value: 10
-                          color: 'green'
+                          - color: 'green'
+                            from: 0
+                            to: 10
                       - entity: sensor.house_load
-                        title: "load"
+                        name: "load"
                         target: sensor.house_load
                         min: 0
                         max: 8
                         icon: mdi:home
-                        icon_position: inside
                         severity:
-                        - value: 10
-                          color: 'red'
+                          - color: 'red'
+                            from: 0
+                            to: 10
                   # HOUSE ENERGY PROFILE BARS
                   - type: custom:mini-graph-card
                     entities:
@@ -218,72 +222,96 @@ views:
               - type: horizontal-stack
                 cards:
                   - type: custom:bar-card
-                    title_position: left
                     height: 25px
+                    positions:
+                      icon: 'off'
+                      name: outside
+                      indicator: 'off'
                     entities:
                       - entity: sensor.speedtest_download
-                        title: "D/L"
+                        name: "D/L"
                         min: 0
                         max: 125
                         severity:
-                        - value: 40
-                          color: '#bf4040'
-                        - value: 75
-                          color: '#bf9540'
-                        - value: 125
-                          color: '#40bf40'
+                        - color: '#bf4040'
+                          from: 0
+                          to: 40
+                        - color: '#bf9540' 
+                          from: 40
+                          to: 75
+                        - color: '#40bf40'
+                          from: 75
+                          to: 125
                       - entity: sensor.speedtest_upload
-                        title: "U/L"
+                        name: "U/L"
                         min: 0
-                        max: 5
+                        max: 10
                         severity:
-                        - value: 3
-                          color: '#bf4040'
-                        - value: 4
-                          color: '#bf9540'
-                        - value: 10
-                          color: '#40bf40'
+                        - color: '#bf4040'
+                          from: 0
+                          to: 3
+                        - color: '#bf9540' 
+                          from: 3
+                          to: 5
+                        - color: '#40bf40'
+                          from: 5
+                          to: 10
                   - type: custom:bar-card
-                    title_position: left
                     height: 25px
+                    positions:
+                      icon: 'off'
+                      name: outside
+                      indicator: 'off'
                     entities:
                       - entity: sensor.speedtest_ping
-                        title: "PING"
+                        name: "PING"
                         min: 0
                         max: 100
                         severity:
-                        - value: 40
-                          color: '#40bf40'
-                        - value: 60
-                          color: '#bf9540'
-                        - value: 500
-                          color: '#bf4040'
+                        - color: '#40bf40'
+                          from: 0
+                          to: 40
+                        - color: '#bf9540' 
+                          from: 40
+                          to: 75
+                        - color: '#bf4040'
+                          from: 75
+                          to: 100
                       - entity: sensor.google_wifi_uptime
-                        title: "DAYS"
+                        name: "DAYS"
                         min: 0
-                        max: 14
+                        max: 15
                         severity:
-                        - value: 7
-                          color: '#40bf40'
-                        - value: 10
-                          color: '#bf9540'
-                        - value: 100
-                          color: '#bf4040'
+                        - color: '#40bf40'
+                          from: 0
+                          to: 5
+                        - color: '#bf9540' 
+                          from: 5
+                          to: 10
+                        - color: '#bf4040'
+                          from: 10
+                          to: 15
               # INTERNET SPEED
               - type: horizontal-stack
                 cards:
                 - type: custom:bar-card
-                  title_position: left
-                  height: 64px
+                  height: 20px
+                  positions:
+                      icon: 'off'
+                      name: outside
+                      indicator: 'off'
                   entities:
                     - entity: sensor.ubhinas_smart_status_drive_0_1
-                      title: 'HDD1'
+                      name: 'HDD01'
                 - type: custom:bar-card
-                  title_position: left
-                  height: 64px
+                  height: 20px
+                  positions:
+                      icon: 'off'
+                      name: outside
+                      indicator: 'off'
                   entities:
                     - entity: sensor.ubhinas_smart_status_drive_0_2
-                      title: 'HDD2'
+                      name: 'HDD02'
 
   - title: Thermostats
     icon: mdi:radiator

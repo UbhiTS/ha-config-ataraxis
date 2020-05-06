@@ -1,7 +1,11 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Auto 'Crappy Internet' Rebooter :rocket: <img src="https://poa5qzspd7.execute-api.us-east-1.amazonaws.com/live/hypercounterimage/f7e1b92607a64f5fb2de4cf4ada55099/counter.png" />
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
+=======
+# Auto 'Crappy Internet' Rebooter :rocket:
+>>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
 =======
 # Auto 'Crappy Internet' Rebooter :rocket:
 >>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
@@ -35,7 +39,11 @@ speedtestdotnet:
 ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 **if you enable speech notifications, you will also need the [Alexa Media Player, Sonos](https://github.com/custom-components/alexa_media_player) or Google Home integration with HA**
+=======
+**if you enable speech notifications, you will also need the [Alexa Media Player, or Sonos Integration with HA](https://github.com/custom-components/alexa_media_player)**
+>>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
 =======
 **if you enable speech notifications, you will also need the [Alexa Media Player, or Sonos Integration with HA](https://github.com/custom-components/alexa_media_player)**
 >>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627

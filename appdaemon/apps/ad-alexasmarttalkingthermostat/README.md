@@ -1,7 +1,11 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Alexa (& Friends) Smart Talking Thermostat :chicken: <img src="https://poa5qzspd7.execute-api.us-east-1.amazonaws.com/live/hypercounterimage/dbdaff78525947ce9e52c1047b695968/counter.png">
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
+=======
+# Alexa (& Friends) Smart Talking Thermostat :chicken:
+>>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
 =======
 # Alexa (& Friends) Smart Talking Thermostat :chicken:
 >>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
@@ -12,7 +16,11 @@ Alexa (or other Smart Speakers) become the voice for your thermostat. Take contr
 - **Daily Shut Off**: no more forgetting to turn off the thermostat and let it run whole day while you are away 
 - **Enforce Fan Mode Auto**: Does not allow your fan to aimlessly be on, this can be used with the Air Cycle Feature to get the best of both worlds, save :dollar::dollar::dollar: and cycle air 
 <<<<<<< HEAD
+<<<<<<< HEAD
 - **Air Cycle Feature**: Cycles air at the defined interval between the rooms in your house. If you have temp difference in rooms in your house, or a room has stagnant air, and just smells funny :trollface:, this will solve it!
+=======
+- **Air Cycle Feature**: Cycles are at defined interval between your house and the rooms. If you have temp difference in rooms in your house, this will solve it!
+>>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
 =======
 - **Air Cycle Feature**: Cycles are at defined interval between your house and the rooms. If you have temp difference in rooms in your house, this will solve it!
 >>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
@@ -33,7 +41,11 @@ Also, if you want to see a walkthrough of my Home Assistant configuration, I hav
 
 ## Installation
 <<<<<<< HEAD
+<<<<<<< HEAD
 **Needs the [Alexa Media Player, Sonos](https://github.com/custom-components/alexa_media_player), Google Home or other smart speaker integration**
+=======
+Needs the **[Alexa Media Player](https://github.com/custom-components/alexa_media_player)** or other TTS Integration
+>>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
 =======
 Needs the **[Alexa Media Player](https://github.com/custom-components/alexa_media_player)** or other TTS Integration
 >>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627

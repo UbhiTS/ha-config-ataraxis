@@ -5,12 +5,22 @@
 
 ## New in v1.0.6: Door/Window Open Delay, and Close Announcement Control
 
-=======
 # Alexa (& Friends) Door/Window Announce :chicken:
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
->>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
+<<<<<<< HEAD
+# Alexa (& Friends) Door/Window Announce :chicken: <img src="https://poa5qzspd7.execute-api.us-east-1.amazonaws.com/live/hypercounterimage/7d054a64bdc14763b3e85eedc56773a4/counter.png" />
+
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
+
+## New in v1.0.6: Door/Window Open Delay, and Close Announcement Control
+
+# Alexa (& Friends) Door/Window Announce :chicken:
+
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
+
+
 Alexa and other smart speakers (media_player) announce your doors/windows opening and closing. Comes in handy specially for garage doors or side/main exits for homes and shops where you need to stay informed of any changes. Trust me, it's a secured feeling to know the status of your garage, main/side exits. 
 
 Ever since we've set this up in our home, we don't think we can do without it now. Your home suddenly gets a voice, something like Jarvis ... Awesome! 
@@ -27,11 +37,7 @@ Also, if you want to see a walkthrough of my Home Assistant configuration, I hav
 - [Home Automation on 'STEROIDS' : Video Walkthrough](https://youtu.be/qqktLE9_45A)
 
 ## Installation
-<<<<<<< HEAD
 **Needs the [Alexa Media Player](https://github.com/custom-components/alexa_media_player) or Google Home, Sonos or other smart speaker integration**
-=======
-**Needs the [Alexa Media Player](https://github.com/custom-components/alexa_media_player) or other TTS integration**
->>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
 
 Use [HACS](https://github.com/custom-components/hacs) or [download](https://github.com/UbhiTS/ad-alexadoorwindowannounce) the `alexa_door_window_announce.py` from inside the `apps` directory to your local `apps` directory, and add the following configuration to enable the app.
 
@@ -49,11 +55,8 @@ alexa_door_window_announce:
     - binary_sensor.main_door
     - binary_sensor.side_door
   announcements:
-<<<<<<< HEAD
     delay: "00:00:00"
     close: True
-=======
->>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
     start_time: "00:00:00"
     end_time: "23:59:59"
 ```
@@ -64,11 +67,8 @@ key | optional | type | default | description
 `class` | **False** | string |  | The name of the Class.
 `alexas` | **False** | list |  | Your smart speaker device(s) to target for the door/window announcements.
 `door_windows` | **False** | cover, binary_sensor |  | The doors/windows to monitor.
-<<<<<<< HEAD
 `announcements\|delay` | True | time | 00:00:00 | The time duration to wait before announcing a door open (24h format). Useful to notify if a door has been open for a long time.
 `announcements\|close` | True | bool | True | Announce the closing of the door. Set to False if you just want opening announcements.
-=======
->>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
 `announcements\|start_time` | True | time | 00:00:00 | The time to enable the service. (24h format)
 `announcements\|end_time` | True | time | 23:59:59 | The time to disable the service. (24h format)
 

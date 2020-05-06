@@ -1,5 +1,9 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Alexa (& Friends) Talking Clock :chicken: <img src="https://poa5qzspd7.execute-api.us-east-1.amazonaws.com/live/hypercounterimage/68f7d9511bb4405d9dd2b34615a45ae1/counter.png" />
+=======
+# Alexa (& Friends) Talking Clock :chicken:
+>>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
 =======
 # Alexa (& Friends) Talking Clock :chicken:
 >>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
@@ -26,7 +30,11 @@ Also, if you want to see a walkthrough of my Home Assistant configuration, I hav
 
 ## Installation
 <<<<<<< HEAD
+<<<<<<< HEAD
 **Needs the [Alexa Media Player, Sonos](https://github.com/custom-components/alexa_media_player), Google Home or other smart speaker integration**
+=======
+**Needs the [Alexa Media Player](https://github.com/custom-components/alexa_media_player) or other TTS integration**
+>>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627
 =======
 **Needs the [Alexa Media Player](https://github.com/custom-components/alexa_media_player) or other TTS integration**
 >>>>>>> fb229d8e3b20e071040bd477770710c31c4e7627

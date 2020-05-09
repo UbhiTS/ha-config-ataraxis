@@ -54,7 +54,6 @@ group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml
 
-
 emulated_hue:
   host_ip: !secret emulated_hue_host_ip
   listen_port: !secret emulated_hue_listen_port
@@ -123,7 +122,7 @@ light:
 logger:
   default: info
   logs:
-    homeassistant.components.camera: warning
+    homeassistant.components.camera: info
     homeassistant.components.zwave: info
     homeassistant.components.appdaemon: info
 
@@ -131,14 +130,14 @@ media_player:
 
 mobile_app:
 
-#mqtt:
-#  password: !secret mqtt_password
-
 nest:
   client_id: !secret nest_client_id
   client_secret: !secret nest_client_secret
 
 notify:
+
+powerwall:
+  ip_address: 192.168.86.22
 
 recorder:
   purge_keep_days: 7
@@ -157,6 +156,10 @@ system_health:
 
 tts:
   - platform: google_translate
+
+upnp:
+  port_mapping: false
+  sensors: false
 
 vacuum:
   - platform: roomba

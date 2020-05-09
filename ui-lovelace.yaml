@@ -107,14 +107,16 @@ views:
                       # HOUSE ENERGY PROFILE BARS
                       type: custom:bar-card
                       columns: 4
-                      height: 178px
                       title_position: bottom
                       direction: up
-                      indicator: off
                       positions:
                         icon: inside
                         name: outside
+                        value: outside
                         indicator: 'off'
+                      animation:
+                        state: 'on'
+                        speed: 5
                       entities:
                         - entity: sensor.solar_power
                           name: "solar"
@@ -125,7 +127,7 @@ views:
                           severity:
                             - color: 'yellow'
                               from: 0
-                              to: 10
+                              to: 8
                         - entity: sensor.grid_power
                           name: "grid"
                           target: "${states['sensor.grid_bar_target'].state}"
@@ -134,8 +136,8 @@ views:
                           icon: mdi:transmission-tower
                           severity:
                             - color: 'orange'
-                              from: -10
-                              to: 10
+                              from: -8
+                              to: 8
                         - entity: sensor.powerwall_power
                           name: "batt"
                           target: "${states['sensor.powerwall_bar_target'].state}"
@@ -144,8 +146,8 @@ views:
                           icon: mdi:car-battery
                           severity:
                             - color: 'green'
-                              from: -10
-                              to: 10
+                              from: -8
+                              to: 8
                         - entity: sensor.house_load
                           name: "load"
                           target: "${states['sensor.house_load'].state}"
@@ -155,7 +157,7 @@ views:
                           severity:
                             - color: 'red'
                               from: 0
-                              to: 10
+                              to: 8
                       # HOUSE ENERGY PROFILE BARS
                   - type: custom:mini-graph-card
                     entities:
@@ -306,7 +308,7 @@ views:
               - type: horizontal-stack
                 cards:
                 - type: custom:bar-card
-                  height: 20px
+                  height: 25px
                   positions:
                       icon: 'off'
                       name: outside
@@ -315,7 +317,7 @@ views:
                     - entity: sensor.ubhinas_smart_status_drive_0_1
                       name: 'HDD01'
                 - type: custom:bar-card
-                  height: 20px
+                  height: 25px
                   positions:
                       icon: 'off'
                       name: outside

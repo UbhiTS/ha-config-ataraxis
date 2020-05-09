@@ -46,9 +46,9 @@ alexa_talking_clock:
   announcements:
     bell: true  # for SONOS, set to False
     start_time: "07:30:00"
-    end_time: "21:30:00"
+    end_time: "19:30:00"
     half_hour: true
-    quarter_hour: false
+    quarter_hour: true
   voice: # for SONOS, remove this section
     volume_offset: 0 # -40 to 4, default 0
     pitch_offset: 0 # -33 to 50, default 0

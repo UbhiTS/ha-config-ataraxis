@@ -1,5 +1,5 @@
 import appdaemon.plugins.hass.hassapi as hass
-import datetime
+from datetime import datetime, time, timedelta
  
 #
 # Alexa Talking Clock AppDeamon App for Home Assistant
@@ -36,10 +36,8 @@ class AlexaTalkingClock(hass.Hass):
     self.whisper = False
     
     self.announce_bell = True
-    self.start_hour = 7
-    self.start_minute = 30
-    self.end_hour = 21
-    self.end_minute = 30
+    self.time_start = datetime.strptime("07:30:00", '%H:%M:%S').time()
+    self.time_end = datetime.strptime("21:30:00", '%H:%M:%S').time()
     self.announce_hour = True
     self.announce_half_hour = True
     self.announce_quarter_hour = False
@@ -53,10 +51,8 @@ class AlexaTalkingClock(hass.Hass):
 
     if "announcements" in self.args:
       self.announce_bell = bool(self.args["announcements"]["bell"]) if "bell" in self.args["announcements"] else self.announce_bell
-      self.start_hour = int(self.args["announcements"]["start_time"].split(':')[0]) if "start_time" in self.args["announcements"] else self.start_hour
-      self.start_minute = int(self.args["announcements"]["start_time"].split(':')[1]) if "start_time" in self.args["announcements"] else self.start_minute
-      self.end_hour = int(self.args["announcements"]["end_time"].split(':')[0]) if "end_time" in self.args["announcements"] else self.end_hour
-      self.end_minute = int(self.args["announcements"]["end_time"].split(':')[1]) if "end_time" in self.args["announcements"] else self.end_minute
+      self.time_start = datetime.strptime(self.args["announcements"]["start_time"], '%H:%M:%S').time() if "start_time" in self.args["announcements"] else self.time_start
+      self.time_end = datetime.strptime(self.args["announcements"]["end_time"], '%H:%M:%S').time() if "end_time" in self.args["announcements"] else self.time_end
       self.announce_half_hour = bool(self.args["announcements"]["half_hour"]) if "half_hour" in self.args["announcements"] else self.announce_half_hour
       self.announce_quarter_hour = bool(self.args["announcements"]["quarter_hour"]) if "quarter_hour" in self.args["announcements"] else self.announce_quarter_hour
 
@@ -79,10 +75,10 @@ class AlexaTalkingClock(hass.Hass):
     
     self.run_every(self.time_announce, self.next_start, (60 * self.frequency.interval))
     
-    log_message = f"INITIALIZED: " + \
-      f"Start [{str(self.start_hour).zfill(2)}:{str(self.start_minute).zfill(2)}], " + \
-      f"End [{str(self.end_hour).zfill(2)}:{str(self.end_minute).zfill(2)}], " + \
-      f"Next [{str(self.next_start.strftime('%H:%M'))}], " + \
+    log_message = f"INIT " + \
+      f"Start {self.time_start.strftime('%H:%M')}, " + \
+      f"End {self.time_end.strftime('%H:%M')}, " + \
+      f"Next {str(self.next_start.strftime('%H:%M'))}, " + \
       f"Freq {str(self.frequency.announce_times)}"
     self.log(log_message)
 
@@ -108,6 +104,7 @@ class AlexaTalkingClock(hass.Hass):
       frequency.announce_times.append(15)
       frequency.announce_times.append(30)
       frequency.announce_times.append(45)
+
     
     frequency.announce_times = set(frequency.announce_times)
     frequency.announce_times = sorted(frequency.announce_times)
@@ -117,7 +114,7 @@ class AlexaTalkingClock(hass.Hass):
 
   def get_next_start(self):
     
-    now = datetime.datetime.now()
+    now = datetime.now()
     next_start_min = None
     
     for min in self.frequency.announce_times:
@@ -126,7 +123,7 @@ class AlexaTalkingClock(hass.Hass):
         break
     
     if next_start_min is None:
-      next = now.replace(minute = 0, second = 0) + datetime.timedelta(hours=1)
+      next = now.replace(minute = 0, second = 0) + timedelta(hours=1)
     else:
       next = now.replace(minute = next_start_min, second = 0)
     
@@ -134,17 +131,22 @@ class AlexaTalkingClock(hass.Hass):
 
 
   def time_announce(self, kwargs):
-    now = datetime.datetime.now()
-    time_speech = self.get_time_speech(now.hour, now.minute)
+    now = datetime.now().replace(microsecond=0)
     
-    if time_speech is not None:
-      effects_speech = self.set_effects(time_speech)
-      seconds = 0
-      for alexa in self.alexas:
-        self.run_in(self.announce_time, seconds, alexa = alexa, time_speech = time_speech, effects_speech = effects_speech)
-        seconds = seconds + 5
+    if not self.debug and self.time_outside_range(now.time(), self.time_start, self.time_end): return
+    
+    hour = now.hour
+    minute = now.minute
+    
+    time_speech = self.get_time_speech(hour, minute)
+    effects_speech = self.set_effects(time_speech)
+    delay = 0
+    for alexa in self.alexas:
+      self.run_in(self.time_announce_alexa, delay, alexa = alexa, time_speech = time_speech, effects_speech = effects_speech)
+      delay = delay + 5
 
-  def announce_time(self, kwargs):
+
+  def time_announce_alexa(self, kwargs):
     alexa = kwargs['alexa']
     announce = "announce"
     method = "all"
@@ -191,24 +193,16 @@ class AlexaTalkingClock(hass.Hass):
     prefix = ""
     postfix = ""
     time_speech = ""
-    
-    if not self.debug:
-      if hour < self.start_hour or hour > self.end_hour:
-        return
-      if hour == self.start_hour and minute < self.start_minute:
-        return
-      if hour == self.end_hour and minute > self.end_minute:
-        return
 
     ampm_str = "AM" if hour <= 11 else "PM"
     
-    if hour == self.start_hour and minute == self.start_minute and hour <= 11:
+    if hour == self.time_start.hour and minute == self.time_start.minute and hour <= 11:
       prefix = "Good morning."
     elif hour == 12 and minute == 0:
       prefix = "Good afternoon."
     elif hour == 17 and minute == 0:
       prefix = "Good evening."
-    elif hour == self.end_hour and minute == self.end_minute and hour >= 20:
+    elif hour == self.time_end.hour and minute == self.time_end.minute and hour >= 20:
       postfix = "Good night. And sweet dreams."
       
     hour = hour - 12 if hour > 12 else hour
@@ -219,6 +213,17 @@ class AlexaTalkingClock(hass.Hass):
       time_speech = f"It's {hour}:{minute:02d} {ampm_str}."
     
     return prefix + " " + time_speech + " " + postfix
+
+
+  # https://stackoverflow.com/questions/20518122/python-working-out-if-time-now-is-between-two-times
+  def time_outside_range(self, now, start, end):
+    
+    result = True
+    
+    if start <= end: result = start <= now <= end
+    else: result = start <= now or now <= end # over midnight e.g., 23:30-04:15
+    
+    return not result
 
 
 class Frequency:

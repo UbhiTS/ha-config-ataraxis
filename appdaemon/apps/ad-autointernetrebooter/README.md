@@ -30,7 +30,7 @@ speedtestdotnet:
     - upload
 ```
 
-**if you enable speech notifications, you will also need the [Alexa Media Player, Sonos](https://github.com/custom-components/alexa_media_player) or Google Home integration with HA**
+**if you enable speech notifications, you will also need the [Alexa Media Player or Sonos](https://github.com/custom-components/alexa_media_player) integration**
 
 ## Installation
 Use [HACS](https://github.com/custom-components/hacs) or [download](https://github.com/UbhiTS/ad-autointernetrebooter) the `auto_internet_rebooter.py` from inside the `apps` directory to your local `apps` directory, and add the following configuration to enable the app.

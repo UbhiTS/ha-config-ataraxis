@@ -3,7 +3,6 @@
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
 ### For Sonos, set announce_bell:false (thanks to @5and0)
-### For Google Home, set announce_bell:false (can someone please confirm?)
 
 Alexa and other smart speakers will notify you like a doorbell, (thus the name, so creative isn't it!) based on a motion sensor placed on your doorway. Ever since we've set this up in our home, we always get praises and surprised looks from our guests when they come. Your home suddenly gets a voice, something like Jarvis ... Awesome! 
 
@@ -24,7 +23,7 @@ Also, if you want to see a walkthrough of my Home Assistant configuration, I hav
 - [Home Automation on 'STEROIDS' : Video Walkthrough](https://youtu.be/qqktLE9_45A)
 
 ## Installation
-**Needs the [Alexa Media Player, Sonos](https://github.com/custom-components/alexa_media_player), Google Home or other smart speaker integration**
+**Needs the [Alexa Media Player or Sonos](https://github.com/custom-components/alexa_media_player) integration**
 
 Use [HACS](https://github.com/custom-components/hacs) or [download](https://github.com/UbhiTS/ad-alexadoorbell) the `alexa_doorbell.py` from inside the `apps` directory to your local `apps` directory, and add the configuration to enable the app.
 

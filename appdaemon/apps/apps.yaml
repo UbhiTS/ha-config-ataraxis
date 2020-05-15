@@ -20,7 +20,7 @@ alexa_door_window_announce:
     close: True
     start_time: "00:00:00"
     end_time: "23:59:59"
-
+    
 alexa_doorbell:
   module: alexa_doorbell
   class: AlexaDoorbell
@@ -29,6 +29,7 @@ alexa_doorbell:
     sensor: binary_sensor.main_door # optional
     alexa: media_player.entryway_alexa # optional
     announce_bell: False
+    #bell_switch: switch.kitchen_light
   home:
     alexa: media_player.kitchen_alexa
     doorbell: switch.living_room_doorbell # optional
@@ -46,7 +47,7 @@ alexa_talking_clock:
   announcements:
     bell: true  # for SONOS, set to False
     start_time: "07:30:00"
-    end_time: "19:30:00"
+    end_time: "14:30:00"
     half_hour: true
     quarter_hour: true
   voice: # for SONOS, remove this section

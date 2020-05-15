@@ -24,7 +24,7 @@ Also, if you want to see a walkthrough of my Home Assistant configuration, I hav
 - [Home Automation on 'STEROIDS' : Video Walkthrough](https://youtu.be/qqktLE9_45A)
 
 ## Installation
-**Needs the [Alexa Media Player, Sonos](https://github.com/custom-components/alexa_media_player), Google Home or other smart speaker integration**
+**Needs the [Alexa Media Player or Sonos](https://github.com/custom-components/alexa_media_player) integration**
 
 Use [HACS](https://github.com/custom-components/hacs) or [download](https://github.com/UbhiTS/ad-alexasmarttalkingthermostat) the `alexa_smart_talking_thermostat.py` from inside the `apps` directory to your local `apps` directory, and add the following configuration to enable the app.
 

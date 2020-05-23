@@ -5,7 +5,9 @@ homeassistant:
   elevation: !secret home_elevation
   time_zone: !secret home_timezone
   unit_system: !secret home_unitsystem
-
+  external_url: !secret home_external_url
+  internal_url: !secret home_internal_url
+  
   customize: !include customize.yaml
   customize_glob:
     "binary_sensor.*door*":
@@ -76,12 +78,14 @@ hacs:
   sidepanel_title: Community
   sidepanel_icon: mdi:alpha-c-box
   appdaemon: true
+  netdaemon: true
+  release_limit: 5
+  experimental: true
 
 history:
   include: !include entity_tracking.yaml
 
 http:
-  base_url: !secret http_base_url
   ssl_certificate: !secret http_ssl_certificate
   ssl_key: !secret http_ssl_key
 
@@ -130,6 +134,20 @@ media_player:
 
 mobile_app:
 
+mqtt:
+  broker: 192.168.86.5
+  port: 1883
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  discovery: true
+  discovery_prefix: 'zwave'
+  birth_message:
+    topic: 'hass/status'
+    payload: 'online'
+  will_message:
+    topic: 'hass/status'
+    payload: 'offline'
+
 nest:
   client_id: !secret nest_client_id
   client_secret: !secret nest_client_secret
@@ -157,9 +175,9 @@ system_health:
 tts:
   - platform: google_translate
 
-upnp:
-  port_mapping: false
-  sensors: false
+#upnp:
+#  port_mapping: false
+#  sensors: false
 
 vacuum:
   - platform: roomba

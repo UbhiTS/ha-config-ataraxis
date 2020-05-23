@@ -43,8 +43,11 @@ class AlexaDoorWindowAnnounce(hass.Hass):
     if "doors_windows" in self.args:
       for door_window_sensor in self.args["doors_windows"]:
         states = self.get_state_values(door_window_sensor)
-        self.listen_state(self.door_window_state_changed, door_window_sensor, old = states[0], new = states[1], duration = self.delay.total_seconds())
-
+        if states[0] in ["cover", "sensor"]:
+          self.listen_state(self.door_window_state_changed, door_window_sensor, old = states[3], new = states[4], duration = self.delay.total_seconds())
+        else:
+          self.log("UNSUPPORTED DOMAIN: " + door_window_sensor)
+        
     init_log = [f"START {self.time_start}, END {self.time_end}"]
 
     if self.delay.total_seconds() > 0:
@@ -56,17 +59,16 @@ class AlexaDoorWindowAnnounce(hass.Hass):
 
 
   def door_window_state_changed(self, entity, attribute, old, new, kwargs):
-  
     states = self.get_state_values(entity)
     
-    if new == states[1] and self.announce_close: # door is open, and announce_closed is True
-      self.listen_state(self.door_window_state_changed, entity, old = states[1], new = states[0], oneshot = True)
+    if new == states[4] and self.announce_close: # door is open, and announce_closed is True
+      self.listen_state(self.door_window_state_changed, entity, old = states[1], new = states[2], oneshot = True)
     
     friendly_name = self.get_state(entity, attribute = "friendly_name")
     
     state = "changed"
-    if new == states[0]: state = "closed"
-    if new == states[1]: state = "opened"
+    if new == states[2]: state = "closed"
+    if new == states[4]: state = "opened"
     
     if datetime.now().time() < self.time_start or self.time_end < datetime.now().time():
       self.log(f"DOOR/WINDOW TIME LOG ONLY: {entity.split('.')[1]}|{state}")
@@ -97,8 +99,8 @@ class AlexaDoorWindowAnnounce(hass.Hass):
     domain = entity.split(".")[0].lower()
     
     if domain == "cover":
-      return [ "closed", "open" ]
+      return [ "cover", "closing", "closed", "opening", "open" ]
     elif domain == "binary_sensor":
-      return [ "off", "on" ]
+      return [ "sensor", "on", "off", "off", "on" ]
     else:
-      return [ "off", "on" ]
+      return [ "other" ]

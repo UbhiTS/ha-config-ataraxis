@@ -2,6 +2,8 @@
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
+## New in v1.0.9 : Master Doorbell Switch Override :)
+
 ### For Sonos, set announce_bell:false (thanks to @5and0)
 
 Alexa and other smart speakers will notify you like a doorbell, (thus the name, so creative isn't it!) based on a motion sensor placed on your doorway. Ever since we've set this up in our home, we always get praises and surprised looks from our guests when they come. Your home suddenly gets a voice, something like Jarvis ... Awesome! 
@@ -37,6 +39,9 @@ alexa_doorbell:
   home:
     alexa: media_player.kitchen_alexa
     announce_bell: True # optional, set to False for SONOS
+  time:
+    start: "07:00:00"
+    end: "22:00:00"
 ```
 
 ### Advanced Config
@@ -46,13 +51,14 @@ alexa_doorbell:
   class: AlexaDoorbell
   door:
     motion_sensor: binary_sensor.main_door_motion
-    sensor: binary_sensor.main_door # optional
-    alexa: media_player.entryway_alexa # optional
-    announce_bell: False # optional, set to False for SONOS
+    sensor: binary_sensor.main_door          # optional
+    alexa: media_player.entryway_alexa       # optional
+    announce_bell: False                     # optional
+    bell_switch: switch.doorbell_switch      # optional
   home:
     alexa: media_player.kitchen_alexa
-    doorbell: switch.living_room_doorbell # optional
-    announce_bell: True # optional, set to False for SONOS
+    doorbell: switch.living_room_doorbell    # optional
+    announce_bell: False                     # optional
   time:
     start: "07:00:00"
     end: "22:00:00"
@@ -66,6 +72,7 @@ key | optional | type | default | description
 `door\|sensor` | True | binary_sensor |  | Set to trigger based on door status
 `door\|alexa` | True | media_player |  | Set your Alexa (or other Smart Speaker) to greet your guest with a pleasant greeting
 `door\|announce_bell` | True | bool | False | Prefix bell sound before announcement. Set to false for SONOS
+`door\|bell_switch` | True | switch |  | Set to a switch to override all checks and ring the doorbell when it's pressed
 `home\|alexa` | **False** | media_player |  | The Alexa (or other smart speaker) to notify inside the house
 `home\|announce_bell` | True | bool | False | Prefix bell sound before announcement. Set to false for SONOS
 `home\|doorbell` | True | switch |  | Set to ring this doorbell (or switch on a light) 

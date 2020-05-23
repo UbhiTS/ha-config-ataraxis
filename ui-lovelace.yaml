@@ -205,8 +205,9 @@ views:
                   - binary_sensor.main_door
                   - cover.garage_door_big
                   - cover.garage_door_small
+                  - binary_sensor.entertainment_room_window_left
+                  - binary_sensor.entertainment_room_window_right
                   - binary_sensor.kitchen_door
-                  - binary_sensor.garage_side_door
                   - binary_sensor.kitchen_window_left
                   - binary_sensor.kitchen_window_right
                   - binary_sensor.living_room_window_left
@@ -417,8 +418,9 @@ views:
               - binary_sensor.main_door
               - cover.garage_door_big
               - cover.garage_door_small
+              - binary_sensor.garage_laundry_door
+              - binary_sensor.welcome_laundry_door
               - binary_sensor.kitchen_door
-              - binary_sensor.garage_side_door
               - binary_sensor.kitchen_window_left
               - binary_sensor.kitchen_window_right
               - binary_sensor.living_room_window_left
@@ -432,8 +434,9 @@ views:
               - binary_sensor.upper_small_bedroom_door
               - binary_sensor.upper_guest_bedroom_door
               - binary_sensor.upper_guest_bedroom_window
-              - binary_sensor.garage_laundry_door
-              - binary_sensor.welcome_laundry_door
+              - binary_sensor.entertainment_room_window_left
+              - binary_sensor.entertainment_room_window_right
+
           - type: entities
             entities:
               - binary_sensor.master_bedroom_door

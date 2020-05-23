@@ -135,8 +135,8 @@ media_player:
 mobile_app:
 
 mqtt:
-  broker: 192.168.86.5
-  port: 1883
+  broker: !secret mqtt_broker
+  port: !secret mqtt_port
   username: !secret mqtt_username
   password: !secret mqtt_password
   discovery: true
@@ -155,7 +155,7 @@ nest:
 notify:
 
 powerwall:
-  ip_address: 192.168.86.22
+  ip_address: !secret powerwall_ipaddress
 
 recorder:
   purge_keep_days: 7

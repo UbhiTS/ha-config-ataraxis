@@ -425,6 +425,7 @@ views:
               - binary_sensor.kitchen_window_right
               - binary_sensor.living_room_window_left
               - binary_sensor.living_room_window_right
+              - binary_sensor.lower_common_bathroom_door
           - type: entities
             entities:
               - binary_sensor.upper_big_bedroom_window_left
@@ -434,6 +435,7 @@ views:
               - binary_sensor.upper_small_bedroom_door
               - binary_sensor.upper_guest_bedroom_door
               - binary_sensor.upper_guest_bedroom_window
+              - binary_sensor.upper_common_bathroom_door
               - binary_sensor.entertainment_room_window_left
               - binary_sensor.entertainment_room_window_right
 

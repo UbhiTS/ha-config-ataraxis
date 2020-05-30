@@ -57,6 +57,22 @@ alexa_talking_clock:
     whisper: false
   debug: false
 
+auto_fan_speed_master_bedroom:
+  module: auto_fan_speed
+  class: AutoFanSpeed
+  temp_sensor: sensor.thermostat_master_bedroom_temperature
+  fan: fan.master_bedroom_fan
+  sun: sun.sun
+  speeds:
+    low: 67
+    medium: 69
+    high: 73
+    sun_offset: -2
+  time:
+    start: "21:00:00"
+    end: "09:30:00"
+    turn_off_at_end_time: True
+
 auto_internet_rebooter:
   module: auto_internet_rebooter
   class: AutoInternetRebooter
@@ -82,11 +98,11 @@ hvac_living_room:
   thermostat: climate.thermostat_living_room_mode
   alexa: media_player.living_room_alexa
   hvac_limits:
-    cooling_min: 67
+    cooling_min: 70
     heating_max: 71
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
-  air_recirculation:
+  home_air_recirculation:
     hour: true
     half_hour: true
     quarter_hour: false
@@ -99,11 +115,11 @@ hvac_entertainment_room:
   thermostat: climate.thermostat_entertainment_room_mode
   alexa: media_player.living_room_alexa
   hvac_limits:
-    cooling_min: 67
+    cooling_min: 70
     heating_max: 72
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
-  air_recirculation:
+  home_air_recirculation:
     hour: true
     half_hour: true
     quarter_hour: false
@@ -116,16 +132,10 @@ hvac_master_bedroom:
   thermostat: climate.thermostat_master_bedroom_mode
   alexa: media_player.master_bedroom_alexa
   hvac_limits:
-    cooling_min: 67
+    cooling_min: 69
     heating_max: 72
-    daily_shutoff: "08:00:00"
+    daily_shutoff: "09:00:00"
     enforce_fan_auto_mode: True
-  air_recirculation:
-    hour: true
-    half_hour: true
-    quarter_hour: false
-    minute_offset: 0
-    duration: 1
   doors_windows:
     - binary_sensor.master_bedroom_door
     - binary_sensor.master_bedroom_window_left
@@ -133,18 +143,24 @@ hvac_master_bedroom:
     - binary_sensor.master_bedroom_window_left_small
     - binary_sensor.master_bedroom_window_right_small
     - binary_sensor.master_bathroom_window
-
+  home_air_recirculation:
+    hour: true
+    half_hour: true
+    quarter_hour: false
+    minute_offset: 0
+    duration: 1
+    
 hvac_upper_big_bedroom:
   module: alexa_smart_talking_thermostat
   class: AlexaSmartTalkingThermostat
   thermostat: climate.thermostat_upper_big_bedroom_mode
   alexa: media_player.upper_big_bedroom_alexa
   hvac_limits:
-    cooling_min: 67
+    cooling_min: 72
     heating_max: 72
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
-  air_recirculation:
+  home_air_recirculation:
     hour: true
     half_hour: true
     quarter_hour: false
@@ -161,11 +177,11 @@ hvac_upper_small_bedroom:
   thermostat: climate.thermostat_upper_small_bedroom_mode
   alexa: media_player.upper_small_bedroom_alexa
   hvac_limits:
-    cooling_min: 67
+    cooling_min: 71
     heating_max: 71
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
-  air_recirculation:
+  home_air_recirculation:
     hour: true
     half_hour: true
     quarter_hour: false
@@ -181,11 +197,11 @@ hvac_upper_guest_bedroom:
   thermostat: climate.thermostat_upper_guest_bedroom_mode
   alexa: media_player.upper_guest_bedroom_alexa
   hvac_limits:
-    cooling_min: 67
+    cooling_min: 71
     heating_max: 71
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
-  air_recirculation:
+  home_air_recirculation:
     hour: true
     half_hour: true
     quarter_hour: false
@@ -198,12 +214,6 @@ energy_meter:
   module: energy_meter_controller
   class: EnergyMeterController
   energy_meter: sensor.hem_energy
-
-fan_speed_controller_master_bedroom:
-  module: fan_speed_controller
-  class: FanSpeedController
-  fan: fan.master_bedroom_fan
-  thermostat: sensor.thermostat_master_bedroom_temperature
 
 festival_lights_sentry:
   module: festival_lights_sentry_controller

@@ -69,12 +69,12 @@ class AlexaSmartTalkingThermostat(hass.Hass):
           self.listen_state(self.enforce_fan_auto_mode, self.thermostat, attribute = "fan_mode")
           init_log += [f"  ENFORC FAN AUTO {self.enforce_fan_auto}\n"]
 
-    if "air_recirculation" in self.args:
-      self.recirc_hour = bool(self.args["air_recirculation"]["hour"]) if "hour" in self.args["air_recirculation"] else self.recirc_hour
-      self.recirc_half_hour = bool(self.args["air_recirculation"]["half_hour"]) if "half_hour" in self.args["air_recirculation"] else self.recirc_half_hour
-      self.recirc_quarter_hour = bool(self.args["air_recirculation"]["quarter_hour"]) if "quarter_hour" in self.args["air_recirculation"] else self.recirc_quarter_hour
-      self.recirc_minute_offset = int(self.args["air_recirculation"]["minute_offset"]) if "minute_offset" in self.args["air_recirculation"] else self.recirc_minute_offset
-      self.recirc_duration = int(self.args["air_recirculation"]["duration"]) if "duration" in self.args["air_recirculation"] else self.recirc_duration
+    if "home_air_recirculation" in self.args:
+      self.recirc_hour = bool(self.args["home_air_recirculation"]["hour"]) if "hour" in self.args["home_air_recirculation"] else self.recirc_hour
+      self.recirc_half_hour = bool(self.args["home_air_recirculation"]["half_hour"]) if "half_hour" in self.args["home_air_recirculation"] else self.recirc_half_hour
+      self.recirc_quarter_hour = bool(self.args["home_air_recirculation"]["quarter_hour"]) if "quarter_hour" in self.args["home_air_recirculation"] else self.recirc_quarter_hour
+      self.recirc_minute_offset = int(self.args["home_air_recirculation"]["minute_offset"]) if "minute_offset" in self.args["home_air_recirculation"] else self.recirc_minute_offset
+      self.recirc_duration = int(self.args["home_air_recirculation"]["duration"]) if "duration" in self.args["home_air_recirculation"] else self.recirc_duration
       
       if self.recirc_hour or self.recirc_half_hour or self.recirc_quarter_hour:
         self.recirc_frequency = self.get_frequency()
@@ -88,6 +88,10 @@ class AlexaSmartTalkingThermostat(hass.Hass):
         self.listen_state(self.open_door_window_hvac_shut_off, door_window_sensor, old = "off", new = "on", duration = 60)
         doors_windows = doors_windows + 1
       init_log += [f"  DOORS/WINDOWS {doors_windows}\n"]
+    
+    #self.fan = self.args["fan"]
+
+    #self.listen_state(self.temperature_change, self.thermostat)
     
     #self.run_daily(self.decrease_heating_temp_after_midnight, datetime.time(2, 0, 0))
     #self.run_daily(self.decrease_heating_temp_after_midnight, datetime.time(3, 0, 0))
@@ -161,6 +165,32 @@ class AlexaSmartTalkingThermostat(hass.Hass):
     self.call_service("climate/set_fan_mode", entity_id = self.thermostat, fan_mode = 'Auto Low')
     self.recirc_in_progress = False
     #self.debug_log("AIR RECIRCULATE OFF")
+
+
+  def temperature_change(self, entity, attribute, old, new, kwargs):
+      
+    # if it's night time and room temp changes, then change fan speed
+    current_time = datetime.now().time()
+    is_fan_speed_on_auto_control_mode = (time(21) <= current_time and current_time <= time(23,59,59)) or (time(0) <= current_time and current_time <= time(9))
+    
+    if is_fan_speed_on_auto_control_mode:
+      room_temperature = float(new)
+      fan_speed = self.get_target_fan_speed(room_temperature)
+      self.call_service("fan/set_speed", entity_id = self.fan, speed = fan_speed)
+      self.log("ROOM_TEMP:" + str(room_temperature) + " FAN_SPEED:" + fan_speed)
+
+
+  def get_target_fan_speed(self, room_temperature):
+    if room_temperature == 0:
+      return "low"
+    elif room_temperature >= 45 and room_temperature <= 67.0:
+      return "off"
+    elif room_temperature >= 67.5 and room_temperature <= 69:
+      return "low"
+    elif room_temperature >= 69.5 and room_temperature <= 73:
+      return "medium"
+    elif room_temperature >= 73.5:
+      return "high"
 
 
 #  def decrease_heating_temp_after_midnight(self, kwargs):

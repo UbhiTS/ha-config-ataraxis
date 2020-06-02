@@ -106,7 +106,7 @@ hvac_living_room:
     heating_max: 71
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
-  air_recirculation:
+  home_air_recirculation:
     hour: true
     half_hour: true
     quarter_hour: false
@@ -124,7 +124,7 @@ hvac_entertainment_room:
     heating_max: 72
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
-  air_recirculation:
+  home_air_recirculation:
     hour: true
     half_hour: true
     quarter_hour: false
@@ -167,7 +167,7 @@ hvac_upper_big_bedroom:
     heating_max: 72
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
-  air_recirculation:
+  home_air_recirculation:
     hour: true
     half_hour: true
     quarter_hour: false
@@ -189,7 +189,7 @@ hvac_upper_small_bedroom:
     heating_max: 71
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
-  air_recirculation:
+  home_air_recirculation:
     hour: true
     half_hour: true
     quarter_hour: false
@@ -210,7 +210,7 @@ hvac_upper_guest_bedroom:
     heating_max: 71
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
-  air_recirculation:
+  home_air_recirculation:
     hour: true
     half_hour: true
     quarter_hour: false

@@ -10,7 +10,7 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    style="font-size:12px;overflow:visible;color-interpolation-filters:sRGB;fill:none;fill-rule:evenodd;stroke-linecap:square;stroke-miterlimit:3"
-   inkscape:version="1.0beta2 (2b71d25, 2019-12-03)"
+   inkscape:version="1.0 (4035a4f, 2020-05-01)"
    sodipodi:docname="floorplan.svg"
    id="svg4233"
    version="1.1"
@@ -25,13 +25,13 @@
    inkscape:pagecheckerboard="true"
    inkscape:document-rotation="0"
    inkscape:showpageshadow="false"
-   inkscape:current-layer="svg4233"
+   inkscape:current-layer="g4231"
    inkscape:window-maximized="0"
    inkscape:window-y="23"
    inkscape:window-x="0"
-   inkscape:cy="744"
-   inkscape:cx="1176"
-   inkscape:zoom="0.38265306"
+   inkscape:cy="479.81076"
+   inkscape:cx="959.05273"
+   inkscape:zoom="0.76530612"
    showgrid="false"
    id="namedview4235"
    inkscape:window-height="804"
@@ -17046,11 +17046,12 @@
    v:nameU="WallFill" />
 				</v:userDefs>
 				<path
+   sodipodi:nodetypes="ccccc"
    style="fill:#7e7e7e"
    inkscape:connector-curvature="0"
    id="path769"
    class="st3"
-   d="m 6.05,1122.68 h 235.1 l -6.04,6 H 6 Z" />
+   d="m 79.084796,1122.6716 162.065204,0.01 -6.04,6 -156.025204,-0.01 z" />
 			</g>
 			<g
    transform="rotate(-89.5112,2.9988803,1125.6543)"
@@ -17123,17 +17124,19 @@
    v:nameU="WallCompGeom1" />
 				</v:userDefs>
 				<path
+   sodipodi:nodetypes="cc"
    style="stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
    inkscape:connector-curvature="0"
    id="path787"
    class="st5"
-   d="m 6.05,1122.68 h 235.1" />
+   d="M 79.084796,1122.6716 241.15,1122.68" />
 				<path
+   sodipodi:nodetypes="cc"
    style="stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
    inkscape:connector-curvature="0"
    id="path789"
    class="st5"
-   d="M 6,1128.68 H 235.11" />
+   d="M 79.084796,1128.6716 235.11,1128.68" />
 			</g>
 			<g
    transform="translate(78.4357,-6)"
@@ -36676,11 +36679,12 @@
    v:nameU="WallCompGeom1" />
 				</v:userDefs>
 				<path
+   sodipodi:nodetypes="cc"
    style="stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
    inkscape:connector-curvature="0"
    id="path1784"
    class="st5"
-   d="M 0,1122.68 H 141" />
+   d="M 0,1122.68 H 132.85766" />
 				<path
    style="stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
    inkscape:connector-curvature="0"
@@ -41349,11 +41353,12 @@
    v:nameU="WallFill" />
 				</v:userDefs>
 				<path
+   sodipodi:nodetypes="ccccc"
    style="fill:#7e7e7e"
    inkscape:connector-curvature="0"
    id="path2676"
    class="st3"
-   d="m 9.03,1119.68 h 540 l -0.03,9 H 9 Z" />
+   d="M 5.3919517,1119.6682 549.03,1119.68 l -0.03,9 -543.6380483,-0.012 z" />
 			</g>
 			<g
    transform="rotate(-89.8148,4.5011902,1124.1625)"
@@ -41368,14 +41373,7 @@
    v:prompt="Shape Identifier"
    v:nameU="WallCap" />
 				</v:userDefs>
-				<rect
-   style="fill:#7e7e7e;stroke:none;stroke-width:1.25;stroke-linecap:butt"
-   id="rect2681"
-   class="st6"
-   height="0.89999998"
-   width="9.0000496"
-   y="1127.78"
-   x="0" />
+				
 			</g>
 			<g
    transform="rotate(90.1852,278.99757,1397.8079)"
@@ -41426,17 +41424,19 @@
    v:nameU="WallCompGeom1" />
 				</v:userDefs>
 				<path
+   sodipodi:nodetypes="cc"
    style="stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
    inkscape:connector-curvature="0"
    id="path2694"
    class="st5"
-   d="m 9.03,1119.68 h 540" />
+   d="M 6.0849133,1119.6705 549.03,1119.68" />
 				<path
+   sodipodi:nodetypes="cc"
    style="stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
    inkscape:connector-curvature="0"
    id="path2696"
    class="st5"
-   d="M 9,1128.68 H 549" />
+   d="M 8.4369687,1128.6782 549,1128.68" />
 			</g>
 			<g
    transform="translate(249.444,-9)"
@@ -41903,7 +41903,7 @@
    d="m 423.2543,521.78355 h 4.9612 v 2.3303 h -4.9612 z m 0,4.6606 h 4.9612 v 2.3304 h -4.9612 z m 0,4.6607 h 4.9612 v 2.3303 h -4.03096 l -0.93024,-1.0195 z m 4.9612,4.6606 v 2.3301 h -2.4806 c 0,-0.7766 -0.10327,-1.6019 -0.36174,-2.3301 z m -4.9612,2.3301 c 0,3.2528 -2.73898,5.8258 -6.20148,5.8258 -3.41083,0 -6.20151,-2.573 -6.20151,-5.8258 0,-1.8932 0.98192,-3.5925 2.4806,-4.6604 v -9.3213 c 0,-1.942 1.65374,-3.4955 3.72091,-3.4955 2.06717,0 3.72089,1.5535 3.72089,3.4955 v 9.3213 c 1.4987,1.0679 2.48059,2.7672 2.48059,4.6604 z m -7.44179,-10.4862 v 7.185 c -1.44701,0.4856 -2.4806,1.7964 -2.4806,3.3012 0,1.942 1.65374,3.4955 3.72091,3.4955 2.06717,0 3.72089,-1.5535 3.72089,-3.4955 0,-1.5048 -1.03359,-2.8156 -2.4806,-3.3012 v -7.185 z m -4.9612,-5.8258 v 2.3303 h -4.96119 v -2.3303 z m 0,4.6606 v 2.3304 h -4.96119 v -2.3304 z m 0,4.6607 v 1.3108 l -0.93021,1.0195 h -4.03098 v -2.3303 z m -4.96119,4.6606 h 2.84236 c -0.2068,0.7282 -0.36177,1.5535 -0.36177,2.3301 h -2.48059 z"
    id="climate.thermostat_living_room_mode" /><path
    inkscape:connector-curvature="0"
-   style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.1134"
+   style="fill:#818181;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.1134"
    d="m 303.03151,461.01908 4.83948,-6.7307 c -1.35053,-1.05355 -3.03873,-1.69756 -4.83948,-1.69756 -1.80076,0 -3.48894,0.64401 -4.83949,1.69756 z m 0,-25.28448 c -5.45852,0 -10.52309,1.87293 -14.57477,5.03344 l 2.41973,3.39482 c 3.37641,-2.63381 7.59689,-4.21406 12.15504,-4.21406 4.55816,0 8.77864,1.58025 12.15504,4.21406 l 2.41974,-3.39482 c -4.05167,-3.16051 -9.11627,-5.03344 -14.57478,-5.03344 z m 0,8.42826 c -3.65777,0 -7.03416,1.22906 -9.73529,3.33616 l 2.41976,3.39454 c 2.02586,-1.58026 4.55813,-2.51665 7.31553,-2.51665 2.75741,0 5.28967,0.93639 7.31552,2.51665 l 2.41976,-3.39454 c -2.70111,-2.1071 -6.07752,-3.33616 -9.73528,-3.33616 z"
    id="path6281" /><path
    inkscape:label="climate.thermostat_master_bedroom_mode"
@@ -41915,20 +41915,22 @@
    v:groupContext="group"
    v:mID="1403"
    transform="translate(763.26828,-960.03881)"
-   id="group1403-1396">
+   id="fan.master_bedroom_fan"
+   style="opacity:1;fill:#000000;fill-opacity:1">
 			<title
-   id="title2769">Sheet.1403</title>
+   id="title2769">Master Bedroom Fan</title>
 			<g
+   style="fill:#000000;fill-opacity:1"
    v:groupContext="shape"
    v:mID="1404"
    id="shape1404-1397">
 				<title
    id="title2771">Sheet.1404</title>
 				<path
-   style="fill:#000000;stroke:none;stroke-width:0.75;stroke-linecap:butt"
+   style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.75;stroke-linecap:butt"
    inkscape:connector-curvature="0"
-   inkscape:label="fan.master_bedroom_fan"
-   id="fan.master_bedroom_fan"
+   inkscape:label="fan.master_bedroom_fan_path"
+   id="fan.master_bedroom_fan_path"
    class="st24"
    d="m 12.79,1114.61 c -0.7,0 -1.28,0.57 -1.28,1.28 0,0.7 0.58,1.28 1.28,1.28 0.7,0 1.28,-0.58 1.28,-1.28 0,-0.71 -0.58,-1.28 -1.28,-1.28 z m 0.64,-11.51 c 5.75,0 5.9,4.56 2.88,6.07 -1.27,0.63 -1.83,1.97 -2.07,3.16 0.61,0.26 1.15,0.65 1.56,1.17 4.73,-2.56 9.82,-1.55 9.82,3.03 0,5.75 -4.57,5.88 -6.08,2.85 -0.64,-1.27 -1.99,-1.83 -3.18,-2.07 -0.26,0.61 -0.65,1.14 -1.17,1.57 2.55,4.72 1.54,9.8 -3.04,9.8 -5.76,0 -5.87,-4.58 -2.85,-6.09 1.25,-0.63 1.81,-1.96 2.07,-3.13 -0.63,-0.26 -1.18,-0.67 -1.59,-1.18 -4.72,2.53 -9.78,1.53 -9.78,-3.03 0,-5.76 4.55,-5.9 6.06,-2.87 0.64,1.27 1.98,1.82 3.17,2.06 0.25,-0.61 0.66,-1.15 1.18,-1.56 -2.54,-4.72 -1.53,-9.78 3.02,-9.78 z" />
 			</g>
@@ -41937,9 +41939,9 @@
    v:groupContext="group"
    v:mID="1405"
    transform="translate(798.51828,-960.03881)"
-   id="group1405-1399">
+   id="switch.master_bedroom_fan_light">
 			<title
-   id="title2777">Sheet.1405</title>
+   id="title2777">Master Bedroom Fan Light</title>
 			<g
    v:groupContext="shape"
    v:mID="1406"
@@ -42209,10 +42211,10 @@
 		</g><g
    v:groupContext="group"
    v:mID="1409"
-   transform="translate(205.80374,-559.70527)"
-   id="group1409-1405">
+   transform="translate(205.80374,-486.20521)"
+   id="switch.welcome_room_light">
 			<title
-   id="title2793">Sheet.1409</title>
+   id="title2793">Welcome Room Light</title>
 			<g
    v:groupContext="shape"
    v:mID="1410"
@@ -42220,10 +42222,10 @@
 				<title
    id="title2795">Sheet.1410</title>
 				<path
-   style="fill:#000000;stroke:none;stroke-width:0.75;stroke-linecap:butt"
+   style="opacity:0.76;fill:#000000;stroke:none;stroke-width:0.75;stroke-linecap:butt"
    inkscape:connector-curvature="0"
-   inkscape:label="switch.welcome_room_light"
-   id="switch.welcome_room_light"
+   inkscape:label="switch.welcome_room_light_path"
+   id="switch.welcome_room_light_path"
    class="st24"
    d="m 15.75,1104.34 c 4.74,0 8.59,3.85 8.59,8.59 0,3.18 -1.73,5.95 -4.29,7.44 v 2.58 c 0,0.79 -0.65,1.43 -1.44,1.43 h -5.72 c -0.79,0 -1.44,-0.64 -1.44,-1.43 v -2.58 c -2.56,-1.49 -4.29,-4.26 -4.29,-7.44 0,-4.74 3.85,-8.59 8.59,-8.59 z m 2.86,21.47 v 1.44 c 0,0.78 -0.64,1.43 -1.43,1.43 h -2.86 c -0.79,0 -1.43,-0.65 -1.43,-1.43 v -1.44 z m 8.59,-14.31 h 4.3 v 2.86 h -4.3 z m -27.2,0 h 4.3 v 2.86 H 0 Z m 17.18,-14.32 v 4.29 h -2.86 v -4.29 z m -11.57,3.58 3.05,3.06 -2.03,2.02 -3.05,-3.03 z m 17.23,3.05 3.03,-3.05 2.05,2.05 -3.05,3.03 z" />
 			</g>
@@ -42256,7 +42258,7 @@
    transform="translate(188.75474,-800.27527)"
    id="group1413-1411">
 			<title
-   id="title2809">Sheet.1413</title>
+   id="title2809">Kitchen Light</title>
 			<g
    v:groupContext="shape"
    v:mID="1414"
@@ -43456,12 +43458,7 @@
    v:prompt=""
    v:nameU="Overhang" />
 				</v:userDefs>
-				<path
-   style="fill:#ffffff;stroke:#ffffff;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path2939"
-   class="st25"
-   d="m -3,1129.43 h 91.5 v -10.5 H -3 Z" />
+				
 			</g>
 			<g
    transform="translate(-6,3)"
@@ -43513,12 +43510,7 @@
    v:val="VT0(1):27"
    v:nameU="DropOnPageScale" />
 				</v:userDefs>
-				<path
-   style="fill:#7e7e7e;stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path2953"
-   class="st26"
-   d="m 91.5,1128.68 v -9 h -3 v 9 z m -91.5,0 v -9 h 3 v 9 z" />
+				
 			</g>
 			<rect
    inkscape:label="binary_sensor.kitchen_door"
@@ -43547,18 +43539,8 @@
    v:prompt=""
    v:nameU="SubVisDoorFrameDepth" />
 				</v:userDefs>
-				<path
-   style="stroke:#696969;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path2958"
-   class="st27"
-   d="m 91.5,1128.68 v -9" />
-				<path
-   style="stroke:#696969;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path2960"
-   class="st27"
-   d="m 0,1128.68 v -9" />
+				
+				
 			</g>
 			
 			
@@ -44890,35 +44872,7 @@
 			</v:userDefs>
 			<title
    id="title3133">Door.526</title>
-			<g
-   v:layerMember="0;2"
-   v:groupContext="shape"
-   v:mID="527"
-   id="shape527-1576">
-				<title
-   id="title3135">Sheet.527</title>
-				<v:userDefs>
-					<v:ud
-   v:val="VT0(0.192):26"
-   v:nameU="Overhang" />
-					<v:ud
-   v:val="VT0(2):0"
-   v:nameU="SubVisDoorFrameWidth" />
-					<v:ud
-   v:val="VT0(1):26"
-   v:nameU="visBESnapObject" />
-					<v:ud
-   v:val="VT0(0.5):26"
-   v:prompt=""
-   v:nameU="Overhang" />
-				</v:userDefs>
-				<path
-   style="fill:#ffffff;stroke:#ffffff;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3137"
-   class="st25"
-   d="m -3,1129.43 h 51 v -7.5 H -3 Z" />
-			</g>
+			
 			<g
    transform="translate(-6,3)"
    v:layerMember="0;2"
@@ -44969,18 +44923,8 @@
    v:val="VT0(1):27"
    v:nameU="DropOnPageScale" />
 				</v:userDefs>
-				<path
-   style="fill:#7e7e7e"
-   inkscape:connector-curvature="0"
-   id="path3151"
-   class="st3"
-   d="m 51,1128.68 v -6 h -3 v 2.25 2.25 1.5 z m -51,0 v -6 h 3 v 2.25 2.25 1.5 z" />
-				<path
-   style="stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3153"
-   class="st5"
-   d="m 51,1128.68 v -6 h -3 v 2.25 m 0,2.25 v 1.5 h 3 m -51,0 v -6 h 3 v 2.25 m 0,2.25 v 1.5 H 0" />
+				
+				
 			</g>
 			<g
    transform="translate(0,-1.5)"
@@ -44998,18 +44942,8 @@
    v:val="VT0(1):27"
    v:nameU="DropOnPageScale" />
 				</v:userDefs>
-				<path
-   style="fill:#7e7e7e"
-   inkscape:connector-curvature="0"
-   id="path3158"
-   class="st3"
-   d="m 45,1126.43 h -0.75 v 2.25 H 45 Z m -45,0 h 0.75 v 2.25 H 0 Z" />
-				<path
-   style="stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3160"
-   class="st5"
-   d="m 45,1126.43 h -0.75 v 2.25 H 45 m -45,-2.25 h 0.75 v 2.25 H 0" />
+				
+				
 			</g>
 			<g
    transform="translate(-3)"
@@ -45031,18 +44965,8 @@
    v:prompt=""
    v:nameU="SubVisDoorFrameDepth" />
 				</v:userDefs>
-				<path
-   style="stroke:#696969;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3165"
-   class="st27"
-   d="m 51,1128.68 v -6" />
-				<path
-   style="stroke:#696969;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3167"
-   class="st27"
-   d="m 0,1128.68 v -6" />
+				
+				
 			</g>
 			<g
    transform="translate(0,-6)"
@@ -46477,18 +46401,8 @@
    v:val="VT0(1):27"
    v:nameU="DropOnPageScale" />
 				</v:userDefs>
-				<path
-   style="fill:#7e7e7e"
-   inkscape:connector-curvature="0"
-   id="path3306"
-   class="st3"
-   d="m 48,1128.68 v -6 h -3 v 2.25 2.25 1.5 z m -48,0 v -6 h 3 v 2.25 2.25 1.5 z" />
-				<path
-   style="stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3308"
-   class="st5"
-   d="m 48,1128.68 v -6 h -3 v 2.25 m 0,2.25 v 1.5 h 3 m -48,0 v -6 h 3 v 2.25 m 0,2.25 v 1.5 H 0" />
+				
+				
 			</g>
 			<g
    transform="translate(0,-1.5)"
@@ -46512,12 +46426,7 @@
    id="path3313"
    class="st3"
    d="m 42,1126.43 h -0.75 v 2.25 H 42 Z m -42,0 h 0.75 v 2.25 H 0 Z" />
-				<path
-   style="stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3315"
-   class="st5"
-   d="m 42,1126.43 h -0.75 v 2.25 H 42 m -42,-2.25 h 0.75 v 2.25 H 0" />
+				
 			</g>
 			<g
    transform="translate(-3)"
@@ -46539,18 +46448,8 @@
    v:prompt=""
    v:nameU="SubVisDoorFrameDepth" />
 				</v:userDefs>
-				<path
-   style="stroke:#696969;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3320"
-   class="st27"
-   d="m 48,1128.68 v -6" />
-				<path
-   style="stroke:#696969;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3322"
-   class="st27"
-   d="m 0,1128.68 v -6" />
+				
+				
 			</g>
 			<g
    transform="translate(0,-6)"
@@ -46812,7 +46711,30 @@
    id="path3292"
    class="st25"
    d="m -3,1129.43 h 48 v -7.5 H -3 Z" />
-			</g></g>
+			</g><g
+   style="font-size:12px;overflow:visible;opacity:1;color-interpolation-filters:sRGB;fill:#000000;fill-rule:evenodd;stroke:#000000;stroke-width:0;stroke-linecap:square;stroke-miterlimit:3;stroke-dasharray:none;stroke-opacity:1"
+   inkscape:label="binary_sensor.master_bedroom_door"
+   transform="matrix(0.86826395,1.355493e-4,4.0061094e-4,0.95619256,-31.849373,-52.542952)"
+   id="binary_sensor.master_bedroom_door-8"
+   v:mID="748"
+   v:groupContext="shape"
+   v:layerMember="0;2"><v:userDefs><v:ud
+       v:nameU="Overhang"
+       v:val="VT0(0.192):26" /><v:ud
+       v:nameU="SubVisDoorFrameWidth"
+       v:val="VT0(2):0" /><v:ud
+       v:nameU="visBESnapObject"
+       v:val="VT0(1):26" /><v:ud
+       v:nameU="Overhang"
+       v:prompt=""
+       v:val="VT0(0.5):26" /></v:userDefs><path
+     d="m -3,1129.43 h 48 v -7.5 H -3 Z"
+     class="st25"
+     id="binary_sensor.lower_common_bathroom_door"
+     inkscape:connector-curvature="0"
+     style="fill:#000000;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-miterlimit:3;stroke-dasharray:none;stroke-opacity:1"
+     inkscape:label="binary_sensor.lower_common_bathroom_door"><title
+       id="title9137">Lower Common Bathroom Door</title></path></g></g>
 		<g
    v:layerMember="0;2"
    v:groupContext="group"
@@ -47335,12 +47257,7 @@
    v:prompt=""
    v:nameU="Overhang" />
 				</v:userDefs>
-				<path
-   style="fill:#ffffff;stroke:#ffffff;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3351"
-   class="st25"
-   d="m -3,1129.43 h 48 v -7.5 H -3 Z" />
+				
 			</g>
 			<g
    transform="translate(-6,3)"
@@ -47392,18 +47309,8 @@
    v:val="VT0(1):27"
    v:nameU="DropOnPageScale" />
 				</v:userDefs>
-				<path
-   style="fill:#7e7e7e"
-   inkscape:connector-curvature="0"
-   id="path3365"
-   class="st3"
-   d="m 48,1128.68 v -6 h -3 v 2.25 2.25 1.5 z m -48,0 v -6 h 3 v 2.25 2.25 1.5 z" />
-				<path
-   style="stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3367"
-   class="st5"
-   d="m 48,1128.68 v -6 h -3 v 2.25 m 0,2.25 v 1.5 h 3 m -48,0 v -6 h 3 v 2.25 m 0,2.25 v 1.5 H 0" />
+				
+				
 			</g>
 			<g
    transform="translate(0,-1.5)"
@@ -47421,18 +47328,8 @@
    v:val="VT0(1):27"
    v:nameU="DropOnPageScale" />
 				</v:userDefs>
-				<path
-   style="fill:#7e7e7e"
-   inkscape:connector-curvature="0"
-   id="path3372"
-   class="st3"
-   d="m 42,1126.43 h -0.75 v 2.25 H 42 Z m -42,0 h 0.75 v 2.25 H 0 Z" />
-				<path
-   style="stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3374"
-   class="st5"
-   d="m 42,1126.43 h -0.75 v 2.25 H 42 m -42,-2.25 h 0.75 v 2.25 H 0" />
+				
+				
 			</g>
 			<g
    transform="translate(-3)"
@@ -47454,18 +47351,8 @@
    v:prompt=""
    v:nameU="SubVisDoorFrameDepth" />
 				</v:userDefs>
-				<path
-   style="stroke:#696969;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3379"
-   class="st27"
-   d="m 48,1128.68 v -6" />
-				<path
-   style="stroke:#696969;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3381"
-   class="st27"
-   d="m 0,1128.68 v -6" />
+				
+				
 			</g>
 			<g
    transform="translate(0,-6)"
@@ -48220,12 +48107,7 @@
    v:prompt=""
    v:nameU="Overhang" />
 				</v:userDefs>
-				<path
-   style="fill:#ffffff;stroke:#ffffff;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3462"
-   class="st25"
-   d="m -3,1129.43 h 51 v -7.5 H -3 Z" />
+				
 			</g>
 			<g
    transform="translate(-6,3)"
@@ -48277,18 +48159,8 @@
    v:val="VT0(1):27"
    v:nameU="DropOnPageScale" />
 				</v:userDefs>
-				<path
-   style="fill:#7e7e7e"
-   inkscape:connector-curvature="0"
-   id="path3476"
-   class="st3"
-   d="m 51,1128.68 v -6 h -3 v 2.25 2.25 1.5 z m -51,0 v -6 h 3 v 2.25 2.25 1.5 z" />
-				<path
-   style="stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3478"
-   class="st5"
-   d="m 51,1128.68 v -6 h -3 v 2.25 m 0,2.25 v 1.5 h 3 m -51,0 v -6 h 3 v 2.25 m 0,2.25 v 1.5 H 0" />
+				
+				
 			</g>
 			<g
    transform="translate(0,-1.5)"
@@ -48312,12 +48184,7 @@
    id="path3483"
    class="st3"
    d="m 45,1126.43 h -0.75 v 2.25 H 45 Z m -45,0 h 0.75 v 2.25 H 0 Z" />
-				<path
-   style="stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3485"
-   class="st5"
-   d="m 45,1126.43 h -0.75 v 2.25 H 45 m -45,-2.25 h 0.75 v 2.25 H 0" />
+				
 			</g>
 			<g
    transform="translate(-3)"
@@ -48339,18 +48206,8 @@
    v:prompt=""
    v:nameU="SubVisDoorFrameDepth" />
 				</v:userDefs>
-				<path
-   style="stroke:#696969;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3490"
-   class="st27"
-   d="m 51,1128.68 v -6" />
-				<path
-   style="stroke:#696969;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3492"
-   class="st27"
-   d="m 0,1128.68 v -6" />
+				
+				
 			</g>
 			<g
    transform="translate(0,-6)"
@@ -49089,12 +48946,7 @@
    v:prompt=""
    v:nameU="Overhang" />
 				</v:userDefs>
-				<path
-   style="fill:#ffffff;stroke:#ffffff;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3521"
-   class="st25"
-   d="m -3,1129.43 h 51 v -7.5 H -3 Z" />
+				
 			</g>
 			<g
    transform="translate(-6,3)"
@@ -49146,18 +48998,8 @@
    v:val="VT0(1):27"
    v:nameU="DropOnPageScale" />
 				</v:userDefs>
-				<path
-   style="fill:#7e7e7e"
-   inkscape:connector-curvature="0"
-   id="path3535"
-   class="st3"
-   d="m 51,1128.68 v -6 h -3 v 2.25 2.25 1.5 z m -51,0 v -6 h 3 v 2.25 2.25 1.5 z" />
-				<path
-   style="stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3537"
-   class="st5"
-   d="m 51,1128.68 v -6 h -3 v 2.25 m 0,2.25 v 1.5 h 3 m -51,0 v -6 h 3 v 2.25 m 0,2.25 v 1.5 H 0" />
+				
+				
 			</g>
 			<g
    transform="translate(0,-1.5)"
@@ -49208,18 +49050,8 @@
    v:prompt=""
    v:nameU="SubVisDoorFrameDepth" />
 				</v:userDefs>
-				<path
-   style="stroke:#696969;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3549"
-   class="st27"
-   d="m 51,1128.68 v -6" />
-				<path
-   style="stroke:#696969;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3551"
-   class="st27"
-   d="m 0,1128.68 v -6" />
+				
+				
 			</g>
 			<g
    transform="translate(0,-6)"
@@ -49962,12 +49794,7 @@
    v:prompt=""
    v:nameU="Overhang" />
 				</v:userDefs>
-				<path
-   style="fill:#ffffff;stroke:#ffffff;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3740"
-   class="st25"
-   d="m -3,1129.43 h 51 v -10.5 H -3 Z" />
+				
 			</g>
 			<g
    transform="translate(-6,3)"
@@ -50019,18 +49846,8 @@
    v:val="VT0(1):27"
    v:nameU="DropOnPageScale" />
 				</v:userDefs>
-				<path
-   style="fill:#7e7e7e"
-   inkscape:connector-curvature="0"
-   id="path3754"
-   class="st3"
-   d="m 51,1128.68 v -9 h -3 v 2.25 2.25 4.5 z m -51,0 v -9 h 3 v 2.25 2.25 4.5 z" />
-				<path
-   style="stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3756"
-   class="st5"
-   d="m 51,1128.68 v -9 h -3 v 2.25 m 0,2.25 v 4.5 h 3 m -51,0 v -9 h 3 v 2.25 m 0,2.25 v 4.5 H 0" />
+				
+				
 			</g>
 			<g
    transform="translate(0,-4.5)"
@@ -50081,18 +49898,8 @@
    v:prompt=""
    v:nameU="SubVisDoorFrameDepth" />
 				</v:userDefs>
-				<path
-   style="stroke:#696969;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3768"
-   class="st27"
-   d="m 51,1128.68 v -9" />
-				<path
-   style="stroke:#696969;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3770"
-   class="st27"
-   d="m 0,1128.68 v -9" />
+				
+				
 			</g>
 			<g
    transform="translate(0,-9)"
@@ -50830,12 +50637,7 @@
    v:prompt=""
    v:nameU="Overhang" />
 				</v:userDefs>
-				<path
-   style="fill:#ffffff;stroke:#ffffff;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3799"
-   class="st25"
-   d="m -3,1129.43 h 60 v -10.5 H -3 Z" />
+				
 			</g>
 			<g
    transform="translate(-6,3)"
@@ -50887,18 +50689,8 @@
    v:val="VT0(1):27"
    v:nameU="DropOnPageScale" />
 				</v:userDefs>
-				<path
-   style="fill:#7e7e7e"
-   inkscape:connector-curvature="0"
-   id="path3813"
-   class="st3"
-   d="m 60,1128.68 v -9 h -3 v 2.25 2.25 4.5 z m -60,0 v -9 h 3 v 2.25 2.25 4.5 z" />
-				<path
-   style="stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3815"
-   class="st5"
-   d="m 60,1128.68 v -9 h -3 v 2.25 m 0,2.25 v 4.5 h 3 m -60,0 v -9 h 3 v 2.25 m 0,2.25 v 4.5 H 0" />
+				
+				
 			</g>
 			<g
    transform="translate(0,-4.5)"
@@ -50922,12 +50714,7 @@
    id="path3820"
    class="st3"
    d="m 54,1126.43 h -0.75 v 2.25 H 54 Z m -54,0 h 0.75 v 2.25 H 0 Z" />
-				<path
-   style="stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3822"
-   class="st5"
-   d="m 54,1126.43 h -0.75 v 2.25 H 54 m -54,-2.25 h 0.75 v 2.25 H 0" />
+				
 			</g>
 			<g
    transform="translate(-3)"
@@ -50949,18 +50736,8 @@
    v:prompt=""
    v:nameU="SubVisDoorFrameDepth" />
 				</v:userDefs>
-				<path
-   style="stroke:#696969;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3827"
-   class="st27"
-   d="m 60,1128.68 v -9" />
-				<path
-   style="stroke:#696969;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3829"
-   class="st27"
-   d="m 0,1128.68 v -9" />
+				
+				
 			</g>
 			<g
    transform="translate(0,-9)"
@@ -51719,12 +51496,7 @@
    v:prompt=""
    v:nameU="Overhang" />
 				</v:userDefs>
-				<path
-   style="fill:#ffffff;stroke:#ffffff;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3858"
-   class="st25"
-   d="m -3,1129.43 h 48 v -7.5 H -3 Z" />
+				
 			</g>
 			<g
    transform="translate(-6,3)"
@@ -51776,18 +51548,8 @@
    v:val="VT0(1):27"
    v:nameU="DropOnPageScale" />
 				</v:userDefs>
-				<path
-   style="fill:#7e7e7e"
-   inkscape:connector-curvature="0"
-   id="path3872"
-   class="st3"
-   d="m 48,1128.68 v -6 h -3 v 2.25 2.25 1.5 z m -48,0 v -6 h 3 v 2.25 2.25 1.5 z" />
-				<path
-   style="stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3874"
-   class="st5"
-   d="m 48,1128.68 v -6 h -3 v 2.25 m 0,2.25 v 1.5 h 3 m -48,0 v -6 h 3 v 2.25 m 0,2.25 v 1.5 H 0" />
+				
+				
 			</g>
 			<g
    transform="translate(0,-1.5)"
@@ -51805,18 +51567,8 @@
    v:val="VT0(1):27"
    v:nameU="DropOnPageScale" />
 				</v:userDefs>
-				<path
-   style="fill:#7e7e7e"
-   inkscape:connector-curvature="0"
-   id="path3879"
-   class="st3"
-   d="m 42,1126.43 h -0.75 v 2.25 H 42 Z m -42,0 h 0.75 v 2.25 H 0 Z" />
-				<path
-   style="stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3881"
-   class="st5"
-   d="m 42,1126.43 h -0.75 v 2.25 H 42 m -42,-2.25 h 0.75 v 2.25 H 0" />
+				
+				
 			</g>
 			<g
    transform="translate(-3)"
@@ -51838,18 +51590,8 @@
    v:prompt=""
    v:nameU="SubVisDoorFrameDepth" />
 				</v:userDefs>
-				<path
-   style="stroke:#696969;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3886"
-   class="st27"
-   d="m 48,1128.68 v -6" />
-				<path
-   style="stroke:#696969;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3888"
-   class="st27"
-   d="m 0,1128.68 v -6" />
+				
+				
 			</g>
 			<g
    transform="translate(0,-6)"
@@ -52604,12 +52346,7 @@
    v:prompt=""
    v:nameU="Overhang" />
 				</v:userDefs>
-				<path
-   style="fill:#ffffff;stroke:#ffffff;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3949"
-   class="st25"
-   d="m -3,1129.43 h 48 v -7.5 H -3 Z" />
+				
 			</g>
 			<g
    transform="translate(-6,3)"
@@ -52661,18 +52398,8 @@
    v:val="VT0(1):27"
    v:nameU="DropOnPageScale" />
 				</v:userDefs>
-				<path
-   style="fill:#7e7e7e"
-   inkscape:connector-curvature="0"
-   id="path3963"
-   class="st3"
-   d="m 48,1128.68 v -6 h -3 v 2.25 2.25 1.5 z m -48,0 v -6 h 3 v 2.25 2.25 1.5 z" />
-				<path
-   style="stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3965"
-   class="st5"
-   d="m 48,1128.68 v -6 h -3 v 2.25 m 0,2.25 v 1.5 h 3 m -48,0 v -6 h 3 v 2.25 m 0,2.25 v 1.5 H 0" />
+				
+				
 			</g>
 			<g
    transform="translate(0,-1.5)"
@@ -52690,18 +52417,8 @@
    v:val="VT0(1):27"
    v:nameU="DropOnPageScale" />
 				</v:userDefs>
-				<path
-   style="fill:#7e7e7e"
-   inkscape:connector-curvature="0"
-   id="path3970"
-   class="st3"
-   d="m 42,1126.43 h -0.75 v 2.25 H 42 Z m -42,0 h 0.75 v 2.25 H 0 Z" />
-				<path
-   style="stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3972"
-   class="st5"
-   d="m 42,1126.43 h -0.75 v 2.25 H 42 m -42,-2.25 h 0.75 v 2.25 H 0" />
+				
+				
 			</g>
 			<g
    transform="translate(-3)"
@@ -52723,18 +52440,8 @@
    v:prompt=""
    v:nameU="SubVisDoorFrameDepth" />
 				</v:userDefs>
-				<path
-   style="stroke:#696969;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3977"
-   class="st27"
-   d="m 48,1128.68 v -6" />
-				<path
-   style="stroke:#696969;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path3979"
-   class="st27"
-   d="m 0,1128.68 v -6" />
+				
+				
 			</g>
 			<g
    transform="translate(0,-6)"
@@ -54066,12 +53773,7 @@
    v:prompt=""
    v:nameU="Overhang" />
 				</v:userDefs>
-				<path
-   style="fill:#ffffff;stroke:#ffffff;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path4060"
-   class="st25"
-   d="m -3,1129.43 h 63 v -7.5 H -3 Z" />
+				
 			</g>
 			<g
    transform="translate(-6,3)"
@@ -54099,12 +53801,7 @@
    id="shape897-2057">
 				<title
    id="title4069">Sheet.897</title>
-				<path
-   style="fill:#7e7e7e;stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path4071"
-   class="st26"
-   d="m 63,1128.68 v -6 h -3 v 6 z m -63,0 v -6 h 3 v 6 z" />
+				
 			</g>
 			<g
    transform="translate(-3)"
@@ -54123,18 +53820,8 @@
    v:prompt=""
    v:nameU="SubVisDoorFrameDepth" />
 				</v:userDefs>
-				<path
-   style="stroke:#696969;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path4076"
-   class="st27"
-   d="m 63,1128.68 v -6" />
-				<path
-   style="stroke:#696969;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path4078"
-   class="st27"
-   d="m 0,1128.68 v -6" />
+				
+				
 			</g>
 			<g
    transform="translate(-3)"
@@ -54833,12 +54520,7 @@
    v:prompt=""
    v:nameU="Overhang" />
 				</v:userDefs>
-				<path
-   style="fill:#ffffff;stroke:#ffffff;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path4124"
-   class="st25"
-   d="m -3,1129.43 h 60 v -10.5 H -3 Z" />
+				
 			</g>
 			<g
    transform="translate(-6,3)"
@@ -54890,18 +54572,8 @@
    v:val="VT0(1):27"
    v:nameU="DropOnPageScale" />
 				</v:userDefs>
-				<path
-   style="fill:#7e7e7e"
-   inkscape:connector-curvature="0"
-   id="path4138"
-   class="st3"
-   d="m 60,1128.68 v -9 h -3 v 2.25 2.25 4.5 z m -60,0 v -9 h 3 v 2.25 2.25 4.5 z" />
-				<path
-   style="stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path4140"
-   class="st5"
-   d="m 60,1128.68 v -9 h -3 v 2.25 m 0,2.25 v 4.5 h 3 m -60,0 v -9 h 3 v 2.25 m 0,2.25 v 4.5 H 0" />
+				
+				
 			</g>
 			<g
    transform="translate(0,-4.5)"
@@ -54925,12 +54597,7 @@
    id="path4145"
    class="st3"
    d="m 54,1126.43 h -0.75 v 2.25 H 54 Z m -54,0 h 0.75 v 2.25 H 0 Z" />
-				<path
-   style="stroke:#686868;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path4147"
-   class="st5"
-   d="m 54,1126.43 h -0.75 v 2.25 H 54 m -54,-2.25 h 0.75 v 2.25 H 0" />
+				
 			</g>
 			<g
    transform="translate(-3)"
@@ -54952,18 +54619,8 @@
    v:prompt=""
    v:nameU="SubVisDoorFrameDepth" />
 				</v:userDefs>
-				<path
-   style="stroke:#696969;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path4152"
-   class="st27"
-   d="m 60,1128.68 v -9" />
-				<path
-   style="stroke:#696969;stroke-width:1.25;stroke-linecap:butt"
-   inkscape:connector-curvature="0"
-   id="path4154"
-   class="st27"
-   d="m 0,1128.68 v -9" />
+				
+				
 			</g>
 			<g
    transform="translate(0,-9)"
@@ -55296,7 +54953,7 @@
      v:mID="1406"
      id="shape1406-1400-7"><title
        id="title2779-0">Sheet.1406</title><path
-       style="fill:#000000;stroke:none;stroke-width:0.75;stroke-linecap:butt"
+       style="opacity:1;fill:#000000;stroke:none;stroke-width:0.75;stroke-linecap:butt"
        inkscape:label="light.master_bedroom_light_left"
        id="light.master_bedroom_light_left"
        class="st24"
@@ -55421,7 +55078,7 @@
 
 <path
    inkscape:connector-curvature="0"
-   style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.1134"
+   style="fill:#7f7f7f;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.1134"
    d="m 960.78639,927.49262 4.8395,-6.7307 c -1.3506,-1.05349 -3.0388,-1.69749 -4.8395,-1.69749 -1.80076,0 -3.48894,0.644 -4.83949,1.69749 z m 0,-25.28439 c -5.45852,0 -10.52309,1.8729 -14.57477,5.0334 l 2.41973,3.3948 c 3.37641,-2.6338 7.59689,-4.214 12.15504,-4.214 4.5582,0 8.7786,1.5802 12.155,4.214 l 2.4198,-3.3948 c -4.0517,-3.1605 -9.1163,-5.0334 -14.5748,-5.0334 z m 0,8.4282 c -3.65777,0 -7.03416,1.2291 -9.73529,3.3362 l 2.41976,3.3945 c 2.02586,-1.5802 4.55813,-2.5166 7.31553,-2.5166 2.7574,0 5.2897,0.9364 7.3155,2.5166 l 2.4198,-3.3945 c -2.7011,-2.1071 -6.0775,-3.3362 -9.7353,-3.3362 z"
    id="path6281-5" /><text
    inkscape:label="sensor.speedtest_upload"
@@ -56421,7 +56078,7 @@
    v:layerMember="11;12"
    v:groupContext="group"
    v:mID="649"
-   transform="rotate(0.06797613,843786.61,341359.95)"
+   transform="rotate(0.06797613,843786.61,341365.27)"
    id="group649-1193-3-0"><v:custProps><v:cp
        v:val="VT4(Asset)"
        v:langID="1033"
@@ -77315,38 +76972,19 @@
    v:mID="3090"
    id="shape3090-4929"
    style="font-size:12px;overflow:visible;color-interpolation-filters:sRGB;fill:none;fill-rule:evenodd;stroke-linecap:square;stroke-miterlimit:3"><title
-     id="title12709">path10326</title><rect
-     style="fill:#ffffff;stroke:none;stroke-width:1.09334"
-     id="rect12711"
-     class="st60"
-     height="48.453999"
-     width="7.12569"
-     y="963.02802"
-     x="0" /></g><g
+     id="title12709">path10326</title></g><g
    transform="translate(1418.805,-488.8084)"
    v:groupContext="shape"
    v:mID="3091"
    id="shape3091-4931"
    style="font-size:12px;overflow:visible;color-interpolation-filters:sRGB;fill:none;fill-rule:evenodd;stroke-linecap:square;stroke-miterlimit:3"><title
-     id="title12714">path10328</title><rect
-     style="fill:none;stroke:#ffffff;stroke-width:1.1876;stroke-linecap:butt"
-     id="rect12716"
-     class="st61"
-     height="48.453999"
-     width="7.12569"
-     y="963.02802"
-     x="0" /></g><g
+     id="title12714">path10328</title></g><g
    transform="translate(1419.515,-488.8084)"
    v:groupContext="shape"
    v:mID="3092"
    id="shape3092-4933"
    style="font-size:12px;overflow:visible;color-interpolation-filters:sRGB;fill:none;fill-rule:evenodd;stroke-linecap:square;stroke-miterlimit:3"><title
-     id="title12719">path10330</title><path
-     style="fill:#7e7e7e;stroke:none;stroke-width:1.09334"
-     inkscape:connector-curvature="0"
-     id="path12721"
-     class="st56"
-     d="m 0,1011.48 h 5.7 v -2.85 H 3.56 1.43 0 Z m 0,-48.45 h 5.7 v 2.85 H 3.56 1.43 0 Z" /></g><g
+     id="title12719">path10330</title></g><g
    transform="translate(1419.515,-488.8084)"
    v:groupContext="shape"
    v:mID="3093"
@@ -77357,12 +76995,7 @@
      inkscape:connector-curvature="0"
      id="path12726"
      class="st3"
-     d="m 0,1011.48 h 5.7 v -2.85 H 3.56 Z m 1.43,-2.85 H 0 v 2.85 z M 0,963.03 h 5.7 v 2.85 H 3.56 Z m 1.43,2.85 H 0 v -2.85 z" /><path
-     style="stroke:#696969;stroke-width:1.1876;stroke-linecap:butt"
-     inkscape:connector-curvature="0"
-     id="path12728"
-     class="st57"
-     d="m 0,1011.48 h 5.7 v -2.85 H 3.56 m -2.13,0 H 0 v 2.85 m 0,-48.45 h 5.7 v 2.85 H 3.56 m -2.13,0 H 0 v -2.85" /></g><g
+     d="m 0,1011.48 h 5.7 v -2.85 H 3.56 Z m 1.43,-2.85 H 0 v 2.85 z M 0,963.03 h 5.7 v 2.85 H 3.56 Z m 1.43,2.85 H 0 v -2.85 z" /></g><g
    transform="translate(1420.945,-491.6594)"
    v:groupContext="shape"
    v:mID="3094"
@@ -77400,12 +77033,7 @@
      inkscape:connector-curvature="0"
      id="path12745"
      class="st3"
-     d="M 0,1011.48 H 5.7 Z M 0,963.03 H 5.7 Z" /><path
-     style="stroke:#696969;stroke-width:1.1876;stroke-linecap:butt"
-     inkscape:connector-curvature="0"
-     id="path12747"
-     class="st57"
-     d="M 0,1011.48 H 5.7 M 0,963.03 h 5.7" /></g><g
+     d="M 0,1011.48 H 5.7 Z M 0,963.03 H 5.7 Z" /></g><g
    transform="translate(1425.215,-491.6594)"
    v:groupContext="shape"
    v:mID="3097"
@@ -77453,38 +77081,19 @@
    v:mID="3100"
    id="shape3100-4953"
    style="font-size:12px;overflow:visible;color-interpolation-filters:sRGB;fill:none;fill-rule:evenodd;stroke-linecap:square;stroke-miterlimit:3"><title
-     id="title12767">path10346</title><rect
-     style="fill:#ffffff;stroke:none;stroke-width:1.09334"
-     id="rect12769"
-     class="st60"
-     height="48.453999"
-     width="7.12569"
-     y="963.02802"
-     x="0" /></g><g
+     id="title12767">path10346</title></g><g
    transform="translate(1418.805,-370.5835)"
    v:groupContext="shape"
    v:mID="3101"
    id="shape3101-4955"
    style="font-size:12px;overflow:visible;color-interpolation-filters:sRGB;fill:none;fill-rule:evenodd;stroke-linecap:square;stroke-miterlimit:3"><title
-     id="title12772">path10348</title><rect
-     style="fill:none;stroke:#ffffff;stroke-width:1.1876;stroke-linecap:butt"
-     id="rect12774"
-     class="st61"
-     height="48.453999"
-     width="7.12569"
-     y="963.02802"
-     x="0" /></g><g
+     id="title12772">path10348</title></g><g
    transform="translate(1419.515,-370.5835)"
    v:groupContext="shape"
    v:mID="3102"
    id="shape3102-4957"
    style="font-size:12px;overflow:visible;color-interpolation-filters:sRGB;fill:none;fill-rule:evenodd;stroke-linecap:square;stroke-miterlimit:3"><title
-     id="title12777">path10350</title><path
-     style="fill:#7e7e7e;stroke:none;stroke-width:1.09334"
-     inkscape:connector-curvature="0"
-     id="path12779"
-     class="st56"
-     d="m 0,1011.48 h 5.7 v -2.85 H 3.56 1.43 0 Z m 0,-48.45 h 5.7 v 2.85 H 3.56 1.43 0 Z" /></g><g
+     id="title12777">path10350</title></g><g
    transform="translate(1419.515,-370.5835)"
    v:groupContext="shape"
    v:mID="3103"
@@ -77495,12 +77104,7 @@
      inkscape:connector-curvature="0"
      id="path12784"
      class="st3"
-     d="m 0,1011.48 h 5.7 v -2.85 H 3.56 Z m 1.43,-2.85 H 0 v 2.85 z M 0,963.03 h 5.7 v 2.85 H 3.56 Z m 1.43,2.85 H 0 v -2.85 z" /><path
-     style="stroke:#696969;stroke-width:1.1876;stroke-linecap:butt"
-     inkscape:connector-curvature="0"
-     id="path12786"
-     class="st57"
-     d="m 0,1011.48 h 5.7 v -2.85 H 3.56 m -2.13,0 H 0 v 2.85 m 0,-48.45 h 5.7 v 2.85 H 3.56 m -2.13,0 H 0 v -2.85" /></g><g
+     d="m 0,1011.48 h 5.7 v -2.85 H 3.56 Z m 1.43,-2.85 H 0 v 2.85 z M 0,963.03 h 5.7 v 2.85 H 3.56 Z m 1.43,2.85 H 0 v -2.85 z" /></g><g
    transform="translate(1420.945,-373.4335)"
    v:groupContext="shape"
    v:mID="3104"
@@ -77538,12 +77142,7 @@
      inkscape:connector-curvature="0"
      id="path12803"
      class="st3"
-     d="M 0,1011.48 H 5.7 Z M 0,963.03 H 5.7 Z" /><path
-     style="stroke:#696969;stroke-width:1.1876;stroke-linecap:butt"
-     inkscape:connector-curvature="0"
-     id="path12805"
-     class="st57"
-     d="M 0,1011.48 H 5.7 M 0,963.03 h 5.7" /></g><g
+     d="M 0,1011.48 H 5.7 Z M 0,963.03 H 5.7 Z" /></g><g
    transform="translate(1425.215,-373.4335)"
    v:groupContext="shape"
    v:mID="3107"
@@ -78794,34 +78393,19 @@
    v:mID="3322"
    id="shape3322-5178"
    style="font-size:12px;overflow:visible;color-interpolation-filters:sRGB;fill:none;fill-rule:evenodd;stroke-linecap:square;stroke-miterlimit:3"><title
-     id="title13421">path10790</title><path
-     style="fill:#ffffff;stroke:none;stroke-width:1.09334"
-     inkscape:connector-curvature="0"
-     id="path13423"
-     class="st60"
-     d="M 34.95,1007.18 5.67,968.58 0,972.89 l 29.27,38.59 z" /></g><g
+     id="title13421">path10790</title></g><g
    transform="translate(1319.1051,-372.5135)"
    v:groupContext="shape"
    v:mID="3323"
    id="shape3323-5180"
    style="font-size:12px;overflow:visible;color-interpolation-filters:sRGB;fill:none;fill-rule:evenodd;stroke-linecap:square;stroke-miterlimit:3"><title
-     id="title13426">path10792</title><path
-     style="fill:none;stroke:#ffffff;stroke-width:1.1876;stroke-linecap:butt"
-     inkscape:connector-curvature="0"
-     id="path13428"
-     class="st61"
-     d="M 34.95,1007.18 5.67,968.58 0,972.89 l 29.27,38.59 z" /></g><g
+     id="title13426">path10792</title></g><g
    transform="translate(1319.6651,-372.9285)"
    v:groupContext="shape"
    v:mID="3324"
    id="shape3324-5182"
    style="font-size:12px;overflow:visible;color-interpolation-filters:sRGB;fill:none;fill-rule:evenodd;stroke-linecap:square;stroke-miterlimit:3"><title
-     id="title13431">path10794</title><path
-     style="fill:#7e7e7e;stroke:none;stroke-width:1.09334"
-     inkscape:connector-curvature="0"
-     id="path13433"
-     class="st56"
-     d="m 4.54,969.44 -4.54,3.45 1.72,2.25 1.69,-1.27 1.73,-1.31 1.12,-0.86 z m 29.28,38.6 -4.55,3.44 -1.72,-2.28 1.72,-1.28 1.7,-1.31 1.12,-0.86 z" /></g><g
+     id="title13431">path10794</title></g><g
    transform="translate(1319.6651,-372.9285)"
    v:groupContext="shape"
    v:mID="3325"
@@ -78832,12 +78416,7 @@
      inkscape:connector-curvature="0"
      id="path13438"
      class="st3"
-     d="m 4.54,969.44 -4.54,3.45 1.72,2.25 1.69,-1.27 z m 0.6,3.12 1.12,-0.86 -1.72,-2.26 z m 28.68,35.48 -4.55,3.44 -1.72,-2.28 1.72,-1.28 z m -2.85,-1.43 1.12,-0.86 1.73,2.29 z" /><path
-     style="stroke:#696969;stroke-width:1.1876;stroke-linecap:butt"
-     inkscape:connector-curvature="0"
-     id="path13440"
-     class="st57"
-     d="m 4.54,969.44 -4.54,3.45 1.72,2.25 1.69,-1.27 m 1.73,-1.31 1.12,-0.86 -1.72,-2.26 m 29.28,38.6 -4.55,3.44 -1.72,-2.28 1.72,-1.28 m 1.7,-1.31 1.12,-0.86 1.73,2.29" /></g><g
+     d="m 4.54,969.44 -4.54,3.45 1.72,2.25 1.69,-1.27 z m 0.6,3.12 1.12,-0.86 -1.72,-2.26 z m 28.68,35.48 -4.55,3.44 -1.72,-2.28 1.72,-1.28 z m -2.85,-1.43 1.12,-0.86 1.73,2.29 z" /></g><g
    transform="translate(1323.0851,-376.49149)"
    v:groupContext="shape"
    v:mID="3326"
@@ -78875,12 +78454,7 @@
      inkscape:connector-curvature="0"
      id="path13457"
      class="st3"
-     d="M 4.54,969.44 0,972.89 Z m 29.28,38.6 -4.55,3.44 z" /><path
-     style="stroke:#696969;stroke-width:1.1876;stroke-linecap:butt"
-     inkscape:connector-curvature="0"
-     id="path13459"
-     class="st57"
-     d="M 4.54,969.44 0,972.89 m 33.82,35.15 -4.55,3.44" /></g><g
+     d="M 4.54,969.44 0,972.89 Z m 29.28,38.6 -4.55,3.44 z" /></g><g
    transform="translate(1287.3351,-360.93451)"
    v:groupContext="shape"
    v:mID="3329"
@@ -79011,12 +78585,7 @@
    v:mID="3340"
    id="shape3340-5219"
    style="font-size:12px;overflow:visible;color-interpolation-filters:sRGB;fill:none;fill-rule:evenodd;stroke-linecap:square;stroke-miterlimit:3"><title
-     id="title13521">path10826</title><path
-     style="fill:#7e7e7e;stroke:none;stroke-width:1.09334"
-     inkscape:connector-curvature="0"
-     id="path13523"
-     class="st56"
-     d="M 8.55,1011.48 H 0 v -2.85 h 2.14 2.14 4.27 z m 0,-48.45 H 0 v 2.85 h 2.14 2.14 4.27 z" /></g><g
+     id="title13521">path10826</title></g><g
    transform="translate(1308.3551,-453.18043)"
    v:groupContext="shape"
    v:mID="3341"
@@ -79027,12 +78596,7 @@
      inkscape:connector-curvature="0"
      id="path13528"
      class="st3"
-     d="M 8.55,1011.48 H 0 v -2.85 h 2.14 z m -4.27,-2.85 h 4.27 v 2.85 z m 4.27,-45.6 H 0 v 2.85 h 2.14 z m -4.27,2.85 h 4.27 v -2.85 z" /><path
-     style="stroke:#696969;stroke-width:1.1876;stroke-linecap:butt"
-     inkscape:connector-curvature="0"
-     id="path13530"
-     class="st57"
-     d="M 8.55,1011.48 H 0 v -2.85 h 2.14 m 2.14,0 h 4.27 v 2.85 m 0,-48.45 H 0 v 2.85 h 2.14 m 2.14,0 h 4.27 v -2.85" /></g><g
+     d="M 8.55,1011.48 H 0 v -2.85 h 2.14 z m -4.27,-2.85 h 4.27 v 2.85 z m 4.27,-45.6 H 0 v 2.85 h 2.14 z m -4.27,2.85 h 4.27 v -2.85 z" /></g><g
    transform="translate(1310.4951,-456.03143)"
    v:groupContext="shape"
    v:mID="3342"
@@ -79070,12 +78634,7 @@
      inkscape:connector-curvature="0"
      id="path13547"
      class="st3"
-     d="M 8.55,1011.48 H 0 Z m 0,-48.45 H 0 Z" /><path
-     style="stroke:#696969;stroke-width:1.1876;stroke-linecap:butt"
-     inkscape:connector-curvature="0"
-     id="path13549"
-     class="st57"
-     d="M 8.55,1011.48 H 0 M 8.55,963.03 H 0" /></g><g
+     d="M 8.55,1011.48 H 0 Z m 0,-48.45 H 0 Z" /></g><g
    transform="translate(1265.6052,-456.03143)"
    v:groupContext="shape"
    v:mID="3345"
@@ -79752,9 +79311,9 @@
    transform="translate(1407.765,-965.06401)"
    v:groupContext="shape"
    v:mID="3399"
-   id="shape3399-5359"
+   id="binary_sensor.entertainment_room_window_left"
    style="font-size:12px;overflow:visible;color-interpolation-filters:sRGB;fill:none;fill-rule:evenodd;stroke-linecap:square;stroke-miterlimit:3"><title
-     id="title13868">rect2647-5-7-9-9</title><rect
+     id="title13868">Entertainment Room Window Left</title><rect
      style="fill:#000000;stroke:none;stroke-width:0.621747"
      id="rect13870"
      class="st66"
@@ -79765,9 +79324,9 @@
    transform="translate(1508.3549,-965.06291)"
    v:groupContext="shape"
    v:mID="3400"
-   id="shape3400-5361"
+   id="binary_sensor.entertainment_room_window_right"
    style="font-size:12px;overflow:visible;color-interpolation-filters:sRGB;fill:none;fill-rule:evenodd;stroke-linecap:square;stroke-miterlimit:3"><title
-     id="title13873">binary_sensor.master_bedroom_~7</title><rect
+     id="title13873">Entertainment Room Window Right</title><rect
      style="fill:#000000;stroke:none;stroke-width:0.621747"
      id="rect13875"
      class="st66"
@@ -81655,12 +81214,13 @@
        x="0" /></g></g><rect
    ry="0"
    style="font-size:12px;overflow:visible;color-interpolation-filters:sRGB;fill:#000000;fill-rule:evenodd;stroke:none;stroke-width:0.716174;stroke-linecap:square;stroke-miterlimit:3"
-   id="rect13759-8"
+   id="binary_sensor.upper_common_bathroom_door"
    class="st65"
    height="43.407986"
    width="9.7415819"
    y="512.6142"
-   x="1307.6719" /><g
+   x="1307.6719"><title
+     id="title17383">Upper Common Bathroom Door</title></rect><g
    transform="matrix(0.99990579,0,0,1.048925,551.47643,-590.90653)"
    v:groupContext="shape"
    v:mID="3071"
@@ -81875,11 +81435,29 @@
    v:groupContext="shape"
    v:mID="3395"
    id="shape3395-5351"
-   style="font-size:12px;overflow:visible;color-interpolation-filters:sRGB;fill:none;fill-rule:evenodd;stroke-linecap:square;stroke-miterlimit:3"><title
+   style="font-size:12px;overflow:visible;opacity:1;color-interpolation-filters:sRGB;fill:#828282;fill-opacity:1;fill-rule:evenodd;stroke-linecap:square;stroke-miterlimit:3"><title
      id="title13848">path6281-0</title><path
-     style="visibility:hidden;fill:#000000;stroke:none;stroke-width:2.1134;stroke-linecap:butt"
+     style="visibility:hidden;fill:#828282;fill-opacity:1;stroke:none;stroke-width:2.1134;stroke-linecap:butt"
      inkscape:connector-curvature="0"
      id="path13850"
      class="st28"
-     d="m 14.57,1011.48 4.84,-6.73 c -1.35,-1.05 -3.03,-1.7 -4.84,-1.7 -1.8,0 -3.48,0.65 -4.83,1.7 z m 0,-25.28 c -5.45,0 -10.52,1.87 -14.57,5.03 l 2.42,3.4 c 3.38,-2.64 7.6,-4.22 12.15,-4.22 4.56,0 8.78,1.58 12.16,4.22 l 2.42,-3.4 C 25.1,988.07 20.03,986.2 14.57,986.2 Z m 0,8.43 c -3.65,0 -7.03,1.23 -9.73,3.33 l 2.42,3.4 c 2.03,-1.58 4.56,-2.52 7.31,-2.52 2.76,0 5.29,0.94 7.32,2.52 l 2.42,-3.4 c -2.7,-2.1 -6.08,-3.33 -9.74,-3.33 z" /></g></g>
+     d="m 14.57,1011.48 4.84,-6.73 c -1.35,-1.05 -3.03,-1.7 -4.84,-1.7 -1.8,0 -3.48,0.65 -4.83,1.7 z m 0,-25.28 c -5.45,0 -10.52,1.87 -14.57,5.03 l 2.42,3.4 c 3.38,-2.64 7.6,-4.22 12.15,-4.22 4.56,0 8.78,1.58 12.16,4.22 l 2.42,-3.4 C 25.1,988.07 20.03,986.2 14.57,986.2 Z m 0,8.43 c -3.65,0 -7.03,1.23 -9.73,3.33 l 2.42,3.4 c 2.03,-1.58 4.56,-2.52 7.31,-2.52 2.76,0 5.29,0.94 7.32,2.52 l 2.42,-3.4 c -2.7,-2.1 -6.08,-3.33 -9.74,-3.33 z" /></g><path
+   d="m 598.30377,380.77904 -3e-5,13.03449"
+   class="st5"
+   id="path787-0"
+   inkscape:connector-curvature="0"
+   style="font-size:12px;overflow:visible;color-interpolation-filters:sRGB;fill:none;fill-rule:evenodd;stroke:#686868;stroke-width:1.25;stroke-linecap:butt;stroke-miterlimit:3"
+   sodipodi:nodetypes="cc" /><path
+   sodipodi:nodetypes="cc"
+   style="font-size:12px;overflow:visible;color-interpolation-filters:sRGB;fill:none;fill-rule:evenodd;stroke:#686868;stroke-width:1.25;stroke-linecap:butt;stroke-miterlimit:3"
+   inkscape:connector-curvature="0"
+   id="path787-0-2"
+   class="st5"
+   d="m 604.30366,380.7417 -3e-5,13.03449" /><path
+   sodipodi:nodetypes="cccccc"
+   d="m 598.30364,393.34709 1.3e-4,-12.56805 5.99989,-0.0373 -3e-5,12.51477 -2.95669,0.0886 z"
+   class="st3"
+   id="path1466-3"
+   inkscape:connector-curvature="0"
+   style="font-size:12px;overflow:visible;color-interpolation-filters:sRGB;fill:#7e7e7e;fill-rule:evenodd;stroke-width:0.602709;stroke-linecap:square;stroke-miterlimit:3" /></g>
 </svg>

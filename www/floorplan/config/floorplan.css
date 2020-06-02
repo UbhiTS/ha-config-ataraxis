@@ -201,6 +201,14 @@ svg, svg * {
   fill: red !important;
 }
 
+.red2 {
+  fill: #ff6666 !important;
+}
+
+.red3 {
+  fill: #ffcccc !important;
+}
+
 .blue {
   fill: blue !important;
 }

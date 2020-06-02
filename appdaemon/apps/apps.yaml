@@ -17,9 +17,10 @@ alexa_door_window_announce:
     - cover.garage_door_small
   announcements:
     delay: "00:00:00"
-    close: True
+    close: true
     start_time: "00:00:00"
     end_time: "23:59:59"
+  debug: false
     
 alexa_doorbell:
   module: alexa_doorbell
@@ -28,15 +29,16 @@ alexa_doorbell:
     motion_sensor: binary_sensor.main_door_motion
     sensor: binary_sensor.main_door # optional
     alexa: media_player.entryway_alexa # optional
-    announce_bell: False
+    announce_bell: false
     #bell_switch: switch.kitchen_light
   home:
     alexa: media_player.kitchen_alexa
     doorbell: switch.living_room_doorbell # optional
-    announce_bell: True
+    announce_bell: true
   time:
     start: "07:30:00"
     end: "22:00:00"
+  debug: false
 
 alexa_talking_clock:
   module: alexa_talking_clock
@@ -57,6 +59,23 @@ alexa_talking_clock:
     whisper: false
   debug: false
 
+auto_fan_speed_master_bedroom:
+  module: auto_fan_speed
+  class: AutoFanSpeed
+  temp_sensor: sensor.thermostat_master_bedroom_temperature
+  fan: fan.master_bedroom_fan
+  sun: sun.sun
+  speeds:
+    low: 67
+    medium: 69
+    high: 72
+    sun_offset: -2
+  time:
+    start: "21:00:00"
+    end: "10:00:00"
+    turn_off_at_end_time: true
+  debug: false
+
 auto_internet_rebooter:
   module: auto_internet_rebooter
   class: AutoInternetRebooter
@@ -75,6 +94,7 @@ auto_internet_rebooter:
     alexa: media_player.upper_big_bedroom_alexa
     start_time: "08:00:00"
     end_time: "21:30:00"
+  debug: false
 
 hvac_living_room:
   module: alexa_smart_talking_thermostat
@@ -82,7 +102,7 @@ hvac_living_room:
   thermostat: climate.thermostat_living_room_mode
   alexa: media_player.living_room_alexa
   hvac_limits:
-    cooling_min: 67
+    cooling_min: 70
     heating_max: 71
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
@@ -92,6 +112,7 @@ hvac_living_room:
     quarter_hour: false
     minute_offset: 3
     duration: 1
+  debug: false
   
 hvac_entertainment_room:
   module: alexa_smart_talking_thermostat
@@ -99,7 +120,7 @@ hvac_entertainment_room:
   thermostat: climate.thermostat_entertainment_room_mode
   alexa: media_player.living_room_alexa
   hvac_limits:
-    cooling_min: 67
+    cooling_min: 70
     heating_max: 72
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
@@ -109,6 +130,7 @@ hvac_entertainment_room:
     quarter_hour: false
     minute_offset: 1
     duration: 1
+  debug: false
 
 hvac_master_bedroom:
   module: alexa_smart_talking_thermostat
@@ -116,16 +138,10 @@ hvac_master_bedroom:
   thermostat: climate.thermostat_master_bedroom_mode
   alexa: media_player.master_bedroom_alexa
   hvac_limits:
-    cooling_min: 67
+    cooling_min: 69
     heating_max: 72
-    daily_shutoff: "08:00:00"
+    daily_shutoff: "09:30:00"
     enforce_fan_auto_mode: True
-  air_recirculation:
-    hour: true
-    half_hour: true
-    quarter_hour: false
-    minute_offset: 0
-    duration: 1
   doors_windows:
     - binary_sensor.master_bedroom_door
     - binary_sensor.master_bedroom_window_left
@@ -133,14 +149,21 @@ hvac_master_bedroom:
     - binary_sensor.master_bedroom_window_left_small
     - binary_sensor.master_bedroom_window_right_small
     - binary_sensor.master_bathroom_window
-
+  air_recirculation:
+    hour: true
+    half_hour: true
+    quarter_hour: false
+    minute_offset: 0
+    duration: 1
+  debug: false
+    
 hvac_upper_big_bedroom:
   module: alexa_smart_talking_thermostat
   class: AlexaSmartTalkingThermostat
   thermostat: climate.thermostat_upper_big_bedroom_mode
   alexa: media_player.upper_big_bedroom_alexa
   hvac_limits:
-    cooling_min: 67
+    cooling_min: 72
     heating_max: 72
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
@@ -154,6 +177,7 @@ hvac_upper_big_bedroom:
     - binary_sensor.upper_big_bedroom_door
     - binary_sensor.upper_big_bedroom_window_right
     - binary_sensor.upper_big_bedroom_window_left
+  debug: false
   
 hvac_upper_small_bedroom:
   module: alexa_smart_talking_thermostat
@@ -161,7 +185,7 @@ hvac_upper_small_bedroom:
   thermostat: climate.thermostat_upper_small_bedroom_mode
   alexa: media_player.upper_small_bedroom_alexa
   hvac_limits:
-    cooling_min: 67
+    cooling_min: 71
     heating_max: 71
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
@@ -174,6 +198,7 @@ hvac_upper_small_bedroom:
   doors_windows:
     - binary_sensor.upper_small_bedroom_door
     - binary_sensor.upper_small_bedroom_window
+  debug: false
 
 hvac_upper_guest_bedroom:
   module: alexa_smart_talking_thermostat
@@ -181,7 +206,7 @@ hvac_upper_guest_bedroom:
   thermostat: climate.thermostat_upper_guest_bedroom_mode
   alexa: media_player.upper_guest_bedroom_alexa
   hvac_limits:
-    cooling_min: 67
+    cooling_min: 71
     heating_max: 71
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
@@ -193,17 +218,12 @@ hvac_upper_guest_bedroom:
     duration: 1
   doors_windows:
     - binary_sensor.upper_guest_bedroom_door
+  debug: false
 
 energy_meter:
   module: energy_meter_controller
   class: EnergyMeterController
   energy_meter: sensor.hem_energy
-
-fan_speed_controller_master_bedroom:
-  module: fan_speed_controller
-  class: FanSpeedController
-  fan: fan.master_bedroom_fan
-  thermostat: sensor.thermostat_master_bedroom_temperature
 
 festival_lights_sentry:
   module: festival_lights_sentry_controller

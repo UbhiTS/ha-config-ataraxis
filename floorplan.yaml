@@ -21,6 +21,15 @@ rules:
     action:
       service: homeassistant.toggle
 
+  - name: Fans
+    entities:
+      - fan.master_bedroom_fan
+    states:
+      - state: 'on'
+        class: 'red'
+      - state: 'off'
+        class: 'light-blue'
+
   - name: Binary Sensors
     entities:
       - binary_sensor.kitchen_door
@@ -40,6 +49,8 @@ rules:
       - binary_sensor.living_room_window_right
       - binary_sensor.welcome_laundry_door
       - binary_sensor.garage_laundry_door
+      - binary_sensor.entertainment_room_window_left
+      - binary_sensor.entertainment_room_window_right
       - binary_sensor.upper_guest_bedroom_door
       - binary_sensor.upper_small_bedroom_door
       - binary_sensor.upper_big_bedroom_door
@@ -47,6 +58,8 @@ rules:
       - binary_sensor.upper_small_bedroom_window
       - binary_sensor.upper_big_bedroom_window_left
       - binary_sensor.upper_big_bedroom_window_right
+      - binary_sensor.upper_common_bathroom_door
+      - binary_sensor.lower_common_bathroom_door
     states:
       - state: 'off'
         class: 'light-blue'

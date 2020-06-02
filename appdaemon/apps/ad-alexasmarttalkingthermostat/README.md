@@ -49,6 +49,7 @@ hvac_master_bedroom:
   doors_windows:
     - binary_sensor.master_bedroom_door
     - binary_sensor.master_bedroom_window
+  debug: false
 ```
 
 key | optional | type | description
@@ -67,6 +68,7 @@ key | optional | type | description
 `air_recirculation\|minute_offset` | True | number | If you want different thermostats in your house to **cycle** at **different times**, set the offset. E.g. MasterBedroom to 1, LivingRoom to 7, Kitchen to 15 etc 
 `air_recirculation\|duration` | True | number | how many minutes to cycle the air.
 `doors_windows` | True | list\|binary_sensor | If you have door/window sensors in the same room, connect them here so the thermostat will **shut off** if they are **open** for more than **60 seconds**
+`debug` | True | bool | if True, outputs messages to the AppDaemon Log
 
 ## Thank you! :raised_hands:
 This app wouldn't be possible without the amazing work done by the developers and community at **[Home Assistant](https://www.home-assistant.io/)**, and of Keaton Taylor and Alan Tse on their **Alexa Media Player integration** for Home Assistant. *https://github.com/custom-components/alexa_media_player*

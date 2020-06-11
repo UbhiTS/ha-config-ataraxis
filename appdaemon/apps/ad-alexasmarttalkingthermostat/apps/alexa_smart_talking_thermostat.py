@@ -88,6 +88,13 @@ class AlexaSmartTalkingThermostat(hass.Hass):
         self.listen_state(self.open_door_window_hvac_shut_off, door_window_sensor, old = "off", new = "on", duration = 60)
         doors_windows = doors_windows + 1
       init_log += [f"  DOORS/WINDOWS {doors_windows}\n"]
+<<<<<<< HEAD
+=======
+    
+    #self.fan = self.args["fan"]
+
+    #self.listen_state(self.temperature_change, self.thermostat)
+>>>>>>> c4685528d91e112f4b12a94b2f40740394f1cc93
     
     #self.run_daily(self.decrease_heating_temp_after_midnight, datetime.time(2, 0, 0))
     #self.run_daily(self.decrease_heating_temp_after_midnight, datetime.time(3, 0, 0))
@@ -161,6 +168,7 @@ class AlexaSmartTalkingThermostat(hass.Hass):
     self.call_service("climate/set_fan_mode", entity_id = self.thermostat, fan_mode = 'Auto Low')
     self.recirc_in_progress = False
     #self.debug_log("AIR RECIRCULATE OFF")
+
 
 
 #  def decrease_heating_temp_after_midnight(self, kwargs):

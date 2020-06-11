@@ -2,6 +2,8 @@
 
 Here's my [Home Assistant](https://home-assistant.io/) configuration. I have installed HA on a [Raspberry Pi 3B+](https://www.amazon.com/dp/B07BDR5PDW) with a [Transcend High Endurance 32GB MicroSD Card](https://www.amazon.com/dp/B01BDKTQY6) using the [HassIO](https://www.home-assistant.io/hassio/) option. I figured that I honestly dont need to invest too much in hardware as the RPi is powerfull enough for my needs right now. Once my CPU spikes and load starts to increase, I'll probably upgrade to an Intel NUC or similar. Specially when I automate using facial recognition etc.
 
+I feel the icing on the cake in my config is [InfluxDB](https://www.influxdata.com/) and [Grafana](https://grafana.com/) for generating deep insights into my home. From the day's energy profile, to yearly solar surplus generation, to room temperatures, and an internet speed history graph. It's amazing how light weight InfluxDB really is. And remember, it's running on a shared $35 Raspberry Pi. Highly recommend it to anyone who wants to capture any IoT sensor data over time. 
+
 I maintain my configuration files almost every other week to keep up with the latest from HA. 
 - Current HA version [here](.HA_VERSION).
 

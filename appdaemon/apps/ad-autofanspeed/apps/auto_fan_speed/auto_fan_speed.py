@@ -20,7 +20,7 @@ from datetime import datetime, time
 #     start: "21:00:00"
 #     end: "09:30:00"
 #     turn_off_at_end_time: True
-
+#  debug: false
 
 class AutoFanSpeed(hass.Hass):
 
@@ -32,6 +32,7 @@ class AutoFanSpeed(hass.Hass):
     self.fan          = self.args["fan"]
     
     # DEFAULTS
+    self.debug        = True;
     self.low          = 67
     self.medium       = 69
     self.high         = 73
@@ -57,7 +58,7 @@ class AutoFanSpeed(hass.Hass):
 
   def configure(self, kwargs):
 
-    init_log = ["\nINIT\n"]
+    init_log = ["\n**** INIT - AUTO FAN SPEED ****\n"]
     
     init_log += [f"FAN           {self.fan}\n"]
     init_log += [f"TEMP SENSOR   {self.temp_sensor}\n"]
@@ -71,19 +72,14 @@ class AutoFanSpeed(hass.Hass):
         self.run_daily(self.hvac_daily_shut_off, self.end)
         init_log += [f"AUTO OFF      {self.end}\n"]
     
-    self.log("  ".join(init_log))
+    self.debug_log("  ".join(init_log))
+    
+    self.debug = bool(self.args["debug"]) if "debug" in self.args else self.debug
 
 
   def temperature_change(self, entity, attribute, old, new, kwargs):
     
-    # if the room temp changes
-    # and if time is between start and end
-    # then calculate and change fan speed
-    
-    current_time = datetime.now().time()
-    time_okay = self.start <= current_time and current_time <= self.end
-    
-    if time_okay:
+    if self.is_time_okay(self.start, self.end):
       room_temperature = float(new)
       fan_speed = self.get_target_fan_speed(room_temperature)
       self.call_service("fan/set_speed", entity_id = self.fan, speed = fan_speed)
@@ -105,13 +101,25 @@ class AutoFanSpeed(hass.Hass):
     elif room_temperature >= self.high + offset:
       fan_speed = "high"
     
-    self.log(f"AUTO FAN SPEED: {str(room_temperature)}/{fan_speed}")
+    self.debug_log(f"AUTO FAN SPEED: {str(room_temperature)}/{fan_speed}")
     
-    if sun_above_horizon: self.log(f" (SUN OFFSET)")
+    if sun_above_horizon: self.debug_log(f" (SUN OFFSET)")
       
     return fan_speed
 
 
   def hvac_daily_shut_off(self, kwargs):
     self.call_service("fan/turn_off", entity_id = self.fan)
-    self.log("FAN AUTO OFF")
+    self.debug_log("FAN AUTO OFF")
+
+
+  def is_time_okay(self, start, end):
+    current_time = datetime.now().time()
+    if (start < end):
+      return start <= current_time and current_time <= end
+    else:
+      return start <= current_time or current_time <= end
+    
+  def debug_log(self, message):
+    if self.debug:
+      self.log(message)

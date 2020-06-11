@@ -17,9 +17,10 @@ alexa_door_window_announce:
     - cover.garage_door_small
   announcements:
     delay: "00:00:00"
-    close: True
+    close: true
     start_time: "00:00:00"
     end_time: "23:59:59"
+  debug: false
     
 alexa_doorbell:
   module: alexa_doorbell
@@ -28,15 +29,16 @@ alexa_doorbell:
     motion_sensor: binary_sensor.main_door_motion
     sensor: binary_sensor.main_door # optional
     alexa: media_player.entryway_alexa # optional
-    announce_bell: False
+    announce_bell: false
     #bell_switch: switch.kitchen_light
   home:
     alexa: media_player.kitchen_alexa
     doorbell: switch.living_room_doorbell # optional
-    announce_bell: True
+    announce_bell: true
   time:
     start: "07:30:00"
     end: "22:00:00"
+  debug: false
 
 alexa_talking_clock:
   module: alexa_talking_clock
@@ -50,11 +52,35 @@ alexa_talking_clock:
     end_time: "21:30:00"
     half_hour: true
     quarter_hour: true
+    default_speech: "It's {time}." # {day} {date} {time} 
   voice: # for SONOS, remove this section
     volume_offset: 0 # -40 to 4, default 0
     pitch_offset: 0 # -33 to 50, default 0
     rate: 100 # 20 to 250, default 100
     whisper: false
+  reminders: 
+    # daily
+    - schedule: "daily, 07:30:00" 
+      reminder: "Good morning. Today is {day}, {date}, and it's {time}."
+    - schedule: "daily, 12:00:00"
+      reminder: "Good afternoon. Today is {day}, {date}, and it's {time}."
+    - schedule: "daily, 17:00:00"
+      reminder: "Good evening. It's {time}."
+    - schedule: "daily, 21:30:00"
+      reminder: "It's {time}. Good night. And sweet dreams."
+    # weekdays
+    - schedule: "weekdays, 09:30:00"
+      reminder: "It's {time}. Quick reminder. Did you go to gym today?"
+    # weekends
+    - schedule: "weekends, 09:30:00"
+      reminder: "It's {time}. Question. Are you planning to go for a run or a hike today?"
+    # mon, tue, wed, thu, fri, sat, sun
+    - schedule: "tue, 21:00:00"
+      reminder: "It's {time}. Quick Reminder. Did you take out the garbage?"
+    - schedule: "wed, 09:30:00"
+      reminder: "It's {time}. What day is it? It's Hump Day! Yaaaay!"
+    - schedule: "fri, 04:30:00"
+      reminder: "The weekend is almost here. Better plan it now, or lose it forever!"
   debug: false
 
 auto_fan_speed_master_bedroom:
@@ -66,12 +92,13 @@ auto_fan_speed_master_bedroom:
   speeds:
     low: 67
     medium: 69
-    high: 73
+    high: 71
     sun_offset: -2
   time:
     start: "21:00:00"
-    end: "09:30:00"
-    turn_off_at_end_time: True
+    end: "10:00:00"
+    turn_off_at_end_time: true
+  debug: false
 
 auto_internet_rebooter:
   module: auto_internet_rebooter
@@ -91,6 +118,7 @@ auto_internet_rebooter:
     alexa: media_player.upper_big_bedroom_alexa
     start_time: "08:00:00"
     end_time: "21:30:00"
+  debug: false
 
 hvac_living_room:
   module: alexa_smart_talking_thermostat
@@ -102,12 +130,13 @@ hvac_living_room:
     heating_max: 71
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
-  home_air_recirculation:
+  air_recirculation:
     hour: true
     half_hour: true
     quarter_hour: false
     minute_offset: 3
     duration: 1
+  debug: false
   
 hvac_entertainment_room:
   module: alexa_smart_talking_thermostat
@@ -119,12 +148,13 @@ hvac_entertainment_room:
     heating_max: 72
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
-  home_air_recirculation:
+  air_recirculation:
     hour: true
     half_hour: true
     quarter_hour: false
     minute_offset: 1
     duration: 1
+  debug: false
 
 hvac_master_bedroom:
   module: alexa_smart_talking_thermostat
@@ -134,7 +164,7 @@ hvac_master_bedroom:
   hvac_limits:
     cooling_min: 69
     heating_max: 72
-    daily_shutoff: "09:00:00"
+    daily_shutoff: "09:30:00"
     enforce_fan_auto_mode: True
   doors_windows:
     - binary_sensor.master_bedroom_door
@@ -143,12 +173,13 @@ hvac_master_bedroom:
     - binary_sensor.master_bedroom_window_left_small
     - binary_sensor.master_bedroom_window_right_small
     - binary_sensor.master_bathroom_window
-  home_air_recirculation:
+  air_recirculation:
     hour: true
     half_hour: true
     quarter_hour: false
     minute_offset: 0
     duration: 1
+  debug: false
     
 hvac_upper_big_bedroom:
   module: alexa_smart_talking_thermostat
@@ -160,7 +191,7 @@ hvac_upper_big_bedroom:
     heating_max: 72
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
-  home_air_recirculation:
+  air_recirculation:
     hour: true
     half_hour: true
     quarter_hour: false
@@ -170,6 +201,7 @@ hvac_upper_big_bedroom:
     - binary_sensor.upper_big_bedroom_door
     - binary_sensor.upper_big_bedroom_window_right
     - binary_sensor.upper_big_bedroom_window_left
+  debug: false
   
 hvac_upper_small_bedroom:
   module: alexa_smart_talking_thermostat
@@ -181,7 +213,7 @@ hvac_upper_small_bedroom:
     heating_max: 71
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
-  home_air_recirculation:
+  air_recirculation:
     hour: true
     half_hour: true
     quarter_hour: false
@@ -190,6 +222,7 @@ hvac_upper_small_bedroom:
   doors_windows:
     - binary_sensor.upper_small_bedroom_door
     - binary_sensor.upper_small_bedroom_window
+  debug: false
 
 hvac_upper_guest_bedroom:
   module: alexa_smart_talking_thermostat
@@ -201,7 +234,7 @@ hvac_upper_guest_bedroom:
     heating_max: 71
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
-  home_air_recirculation:
+  air_recirculation:
     hour: true
     half_hour: true
     quarter_hour: false
@@ -209,6 +242,7 @@ hvac_upper_guest_bedroom:
     duration: 1
   doors_windows:
     - binary_sensor.upper_guest_bedroom_door
+  debug: false
 
 energy_meter:
   module: energy_meter_controller

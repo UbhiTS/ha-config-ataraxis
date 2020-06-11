@@ -386,11 +386,13 @@ views:
             entity: light.master_bedroom_light_left
           - type: light
             entity: light.master_bedroom_light_right
+          - type: entity
+            entity: fan.master_bedroom_fan
+        - type: horizontal-stack
+          cards:
           - type: entity-button
             icon: mdi:lightbulb-on
             entity: switch.welcome_room_light
-        - type: horizontal-stack
-          cards:
           - type: entity-button
             icon: mdi:lightbulb-on
             entity: switch.backyard_light_left

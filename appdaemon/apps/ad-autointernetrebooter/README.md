@@ -52,6 +52,7 @@ internet_health_monitor:
   schedule:
     - "04:00:00"
     - "16:00:00"
+  debug: false
   # OPTIONAL SPEECH NOTIFICATIONS
   notify:
     alexa: media_player.upper_big_bedroom_alexa
@@ -75,6 +76,7 @@ key | optional | type | description
 `notify\|alexa` | True | media_player | Speaker for Speech Notifications (Optional)
 `notify\|start_time` | True | time | Only speak between start and end time. So that you don't get awoken when the test runs at 4 AM :stuck_out_tongue_winking_eye:. This is in 24h format
 `notify\|end_time` | True | time | Every start has an end. This one too :smirk:
+`debug` | True | bool | if True, outputs messages to the AppDaemon Log
     
     
 ## Thank you! :raised_hands:

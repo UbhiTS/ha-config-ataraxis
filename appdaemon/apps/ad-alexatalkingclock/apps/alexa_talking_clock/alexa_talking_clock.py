@@ -1,5 +1,6 @@
 import appdaemon.plugins.hass.hassapi as hass
 from datetime import datetime, time, timedelta
+import calendar
  
 #
 # Alexa Talking Clock AppDeamon App for Home Assistant
@@ -22,6 +23,30 @@ from datetime import datetime, time, timedelta
 #    end_time: "21:30:00"
 #    half_hour: true
 #    quarter_hour: true
+#  reminders: 
+#    # daily
+#    - schedule: "daily, 07:30:00" 
+#      reminder: "Good morning. Today is {day}, {date}, and it's {time}."
+#    - schedule: "daily, 12:00:00"
+#      reminder: "Good afternoon. Today is {day}, {date}, and it's {time}."
+#    - schedule: "daily, 17:00:00"
+#      reminder: "Good evening. It's {time}."
+#    - schedule: "daily, 21:30:00"
+#      reminder: "It's {time}. Good night. And sweet dreams."
+#    
+#    # weekdays
+#    - schedule: "weekdays, 09:30:00"
+#      reminder: "It's {time}. Quick reminder. Did you go to gym today?"
+#      
+#    # weekends
+#    - schedule: "weekends, 09:30:00"
+#      reminder: "It's {time}. Question. Are you planning to go for a run or a hike today?"
+#      
+#    # mon, tue, wed, thu, fri, sat, sun
+#    - schedule: "wed, 09:30:00"
+#      reminder: "It's {time}. What day is it? It's Hump Day! Yaaaay!"
+#    - schedule: "fri, 04:30:00"
+#      reminder: "The weekend is almost here. Better plan it now, or waste it forever!"
 #  debug: false
 
 class AlexaTalkingClock(hass.Hass):
@@ -41,6 +66,8 @@ class AlexaTalkingClock(hass.Hass):
     self.announce_hour = True
     self.announce_half_hour = True
     self.announce_quarter_hour = False
+    self.default_speech = "It's {time}."
+    self.reminders = None
     self.debug = False
     
     if "voice" in self.args:
@@ -55,7 +82,11 @@ class AlexaTalkingClock(hass.Hass):
       self.time_end = datetime.strptime(self.args["announcements"]["end_time"], '%H:%M:%S').time() if "end_time" in self.args["announcements"] else self.time_end
       self.announce_half_hour = bool(self.args["announcements"]["half_hour"]) if "half_hour" in self.args["announcements"] else self.announce_half_hour
       self.announce_quarter_hour = bool(self.args["announcements"]["quarter_hour"]) if "quarter_hour" in self.args["announcements"] else self.announce_quarter_hour
+      self.default_speech = self.args["announcements"]["default_speech"] if "default_speech" in self.args["announcements"] else self.default_speech
 
+    if "reminders" in self.args:
+     self.reminders = self.args["reminders"]
+      
     self.debug = bool(self.args["debug"]) if "debug" in self.args else self.debug
     
     if self.pitch_offset < -33: self.pitch_offset = -33
@@ -65,7 +96,7 @@ class AlexaTalkingClock(hass.Hass):
     if self.rate < 20: self.rate = 20
     if self.rate > 250: self.rate = 250
     
-    self.run_in(self.configure, 5)
+    self.run_in(self.configure, 0)
     
     
   def configure(self, kwargs):
@@ -75,12 +106,12 @@ class AlexaTalkingClock(hass.Hass):
     
     self.run_every(self.time_announce, self.next_start, (60 * self.frequency.interval))
     
-    log_message = f"INIT " + \
-      f"Start {self.time_start.strftime('%H:%M')}, " + \
-      f"End {self.time_end.strftime('%H:%M')}, " + \
-      f"Next {str(self.next_start.strftime('%H:%M'))}, " + \
-      f"Freq {str(self.frequency.announce_times)}"
-    self.log(log_message)
+    log_message = f"\n**** INIT - ALEXA TALKING CLOCK ****\n" + \
+      f"  START     {self.time_start.strftime('%H:%M')}\n" + \
+      f"  END       {self.time_end.strftime('%H:%M')}\n" + \
+      f"  NEXT      {str(self.next_start.strftime('%H:%M'))}\n" + \
+      f"  FREQUENCY {str(self.frequency.announce_times)}\n"
+    self.debug_log(log_message)
 
     if self.debug: self.time_announce(None)
     
@@ -131,14 +162,11 @@ class AlexaTalkingClock(hass.Hass):
 
 
   def time_announce(self, kwargs):
-    now = datetime.now().replace(microsecond=0)
+    now = datetime.now().replace(second = 0, microsecond=0)
     
     if not self.debug and self.time_outside_range(now.time(), self.time_start, self.time_end): return
     
-    hour = now.hour
-    minute = now.minute
-    
-    time_speech = self.get_time_speech(hour, minute)
+    time_speech = self.get_time_speech(now)
     effects_speech = self.set_effects(time_speech)
     delay = 0
     for alexa in self.alexas:
@@ -167,7 +195,7 @@ class AlexaTalkingClock(hass.Hass):
       message = effects_speech
       
     self.call_service("notify/alexa_media", data = {"type": announce, "method": method}, target = alexa, title = title, message = message)
-    self.log(f"TIME_ANNOUNCE {time_speech}: {alexa.split('.')[1]}")
+    self.debug_log(f"TIME_ANNOUNCE {time_speech}: {alexa.split('.')[1]}")
     
 
   def set_effects(self, time_speech):
@@ -188,31 +216,32 @@ class AlexaTalkingClock(hass.Hass):
     return prefix + time_speech + postfix
 
 
-  def get_time_speech(self, hour, minute):
+  def get_time_speech(self, now):
     
-    prefix = ""
-    postfix = ""
-    time_speech = ""
-
+    hour = now.hour;
+    minute = now.minute
+    second = now.second
+    weekday = now.weekday() # monday = 0, sunday = 6
+    day_name = calendar.day_name[weekday].lower()
+    day_abbr = calendar.day_abbr[weekday].lower()
+    
+    schedule_now = ["daily", day_name, day_abbr, "weekdays" if weekday <= 4 else "weekends"] # daily, weekdays, weekends, mon, tue, wed, thu, fri, sat, sun
+    speech = ""
+    for reminder in self.reminders:
+      schedule = [x.strip().lower() for x in reminder["schedule"].split(',')]
+      if schedule[0] in schedule_now:
+        if datetime.strptime(schedule[1], '%H:%M:%S').time() == time(hour, minute, second):
+          speech += " " + reminder["reminder"]
+    
+    date_str = now.strftime("%d %B")
+    
     ampm_str = "AM" if hour <= 11 else "PM"
-    
-    if hour == self.time_start.hour and minute == self.time_start.minute and hour <= 11:
-      prefix = "Good morning."
-    elif hour == 12 and minute == 0:
-      prefix = "Good afternoon."
-    elif hour == 17 and minute == 0:
-      prefix = "Good evening."
-    elif hour == self.time_end.hour and minute == self.time_end.minute and hour >= 20:
-      postfix = "Good night. And sweet dreams."
-      
     hour = hour - 12 if hour > 12 else hour
-  
-    if minute == 0:
-      time_speech = f"It's {hour} {ampm_str}."
-    else:
-      time_speech = f"It's {hour}:{minute:02d} {ampm_str}."
+    time_str = f"{hour} {ampm_str}" if minute == 0 else f"{hour}:{minute:02d} {ampm_str}"
     
-    return prefix + " " + time_speech + " " + postfix
+    speech = self.default_speech if speech == "" else speech
+    
+    return speech.replace("{day}", day_name).replace("{date}", date_str).replace("{time}", time_str)
 
 
   # https://stackoverflow.com/questions/20518122/python-working-out-if-time-now-is-between-two-times
@@ -224,6 +253,11 @@ class AlexaTalkingClock(hass.Hass):
     else: result = start <= now or now <= end # over midnight e.g., 23:30-04:15
     
     return not result
+
+
+  def debug_log(self, message):
+    if self.debug:
+      self.log(message)
 
 
 class Frequency:

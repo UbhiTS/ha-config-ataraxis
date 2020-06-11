@@ -44,6 +44,7 @@ auto_fan_speed_master_bedroom:
     start: "21:00:00"
     end: "09:30:00"
     turn_off_at_end_time: True
+  debug: false
 ```
 
 key | optional | type | description
@@ -60,6 +61,7 @@ key | optional | type | description
 `time\|start` | **False** | time | Only control between start and end times. if you only want to auto control the fan speed at night for example. This is in 24h format
 `time\|end` | **False** | time | Every start has an end. This one too :smirk:
 `time\|turn_off_at_end_time` | **False** | bool | Turn off the fan at the end time, to save energy and ensure that the fan doesnt run all day.
+`debug` | True | bool | if True, outputs messages to the AppDaemon Log
     
     
 ## Thank you! :raised_hands:

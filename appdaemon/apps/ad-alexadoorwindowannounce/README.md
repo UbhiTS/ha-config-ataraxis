@@ -42,6 +42,7 @@ alexa_door_window_announce:
     close: True
     start_time: "00:00:00"
     end_time: "23:59:59"
+  debug: false
 ```
 
 key | optional | type | default | description
@@ -54,6 +55,7 @@ key | optional | type | default | description
 `announcements\|close` | True | bool | True | Announce the closing of the door. Set to False if you just want opening announcements.
 `announcements\|start_time` | True | time | 00:00:00 | The time to enable the service. (24h format)
 `announcements\|end_time` | True | time | 23:59:59 | The time to disable the service. (24h format)
+`debug` | True | bool | False | if True, outputs messages to the AppDaemon Log
 
 ## Thank you! :raised_hands:
 This app wouldn't be possible without the amazing work done by the developers and community at **[Home Assistant](https://www.home-assistant.io/)**

@@ -62,6 +62,7 @@ alexa_doorbell:
   time:
     start: "07:00:00"
     end: "22:00:00"
+  debug: false
 ```
 
 key | optional | type | default | description
@@ -78,6 +79,7 @@ key | optional | type | default | description
 `home\|doorbell` | True | switch |  | Set to ring this doorbell (or switch on a light) 
 `time\|start` | True | time | 07:00:00 | The time to enable the service. (24h format)
 `time\|end` | True | time | 22:00:00 | The time to disable the service. (24h format)
+`debug` | True | bool | False | if True, outputs messages to the AppDaemon Log
 
 ## Thank you! :raised_hands:
 This app wouldn't be possible without the amazing work done by the developers and community at **[Home Assistant](https://www.home-assistant.io/)**

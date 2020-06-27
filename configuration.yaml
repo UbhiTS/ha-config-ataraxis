@@ -34,9 +34,6 @@ hassio:
 # Welcome Card in the Default View (Overview)
 # introduction:
 
-lovelace:
-  mode: yaml
-
 # Enables a map showing the location of tracked devices
 map:
 
@@ -130,6 +127,34 @@ logger:
     homeassistant.components.zwave: info
     homeassistant.components.appdaemon: info
 
+lovelace:
+  mode: yaml
+  resources:
+  - url: /hacsfiles/atomic_calendar/atomic_calendar.js
+    type: module
+  - url: /hacsfiles/lovelace-auto-entities/auto-entities.js
+    type: module
+  - url: /hacsfiles/bar-card/bar-card.js
+    type: module
+  - url: /hacsfiles/bignumber-card/bignumber-card.js
+    type: js
+  - url: /hacsfiles/calendar-card/calendar-card.js
+    type: js
+  - url: /hacsfiles/config-template-card/config-template-card.js
+    type: module
+  - url: /hacsfiles/custom-header/custom-header.js
+    type: module
+  - url: /hacsfiles/lovelace-layout-card/layout-card.js
+    type: module
+  - url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js
+    type: module
+  - url: /hacsfiles/simple-thermostat/simple-thermostat.js
+    type: module
+  - url: /hacsfiles/weather-card/weather-card.js
+    type: module
+  - url: /local/floorplan/floorplan-card.js?v=1.1.14
+    type: module
+
 media_player:
 
 mobile_app:
@@ -179,11 +204,9 @@ tts:
 #  port_mapping: false
 #  sensors: false
 
-vacuum:
-  - platform: roomba
-    name: Jhadoo
-    host: !secret roomba_host
-    username: !secret roomba_username
+roomba:
+  - host: !secret roomba_host
+    blid: !secret roomba_username
     password: !secret roomba_password
 
 wake_on_lan:

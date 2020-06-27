@@ -45,6 +45,7 @@ from . import (
     CONF_PASSWORD,
     CONF_QUEUE_DELAY,
     DATA_ALEXAMEDIA,
+    DEFAULT_QUEUE_DELAY,
     DOMAIN as ALEXA_DOMAIN,
     MIN_TIME_BETWEEN_FORCED_SCANS,
     MIN_TIME_BETWEEN_SCANS,
@@ -217,6 +218,21 @@ class AlexaClient(MediaPlayerDevice):
     async def init(self, device):
         """Initialize."""
         await self.refresh(device)
+
+    def check_login_changes(self):
+        """Update Login object if it has changed."""
+        try:
+            login = self.hass.data[DATA_ALEXAMEDIA]["accounts"][self.email]["login_obj"]
+        except (AttributeError, KeyError):
+            return
+        if self._login != login:
+            from alexapy import AlexaAPI
+
+            _LOGGER.debug("Login object has changed; updating")
+            self._login = login
+            self.alexa_api = AlexaAPI(self, login)
+            self.email = login.email
+            self.account = hide_email(login.email)
 
     async def async_added_to_hass(self):
         """Perform tasks after loading."""
@@ -1139,7 +1155,7 @@ class AlexaClient(MediaPlayerDevice):
                 customer_id=self._customer_id,
                 queue_delay=self.hass.data[DATA_ALEXAMEDIA]["accounts"][self.email][
                     "options"
-                ][CONF_QUEUE_DELAY],
+                ].get(CONF_QUEUE_DELAY, DEFAULT_QUEUE_DELAY),
                 **kwargs,
             )
         elif media_type == "routine":
@@ -1147,7 +1163,7 @@ class AlexaClient(MediaPlayerDevice):
                 media_id,
                 queue_delay=self.hass.data[DATA_ALEXAMEDIA]["accounts"][self.email][
                     "options"
-                ][CONF_QUEUE_DELAY],
+                ].get(CONF_QUEUE_DELAY, DEFAULT_QUEUE_DELAY),
             )
         elif media_type == "sound":
             await self.alexa_api.play_sound(
@@ -1155,7 +1171,7 @@ class AlexaClient(MediaPlayerDevice):
                 customer_id=self._customer_id,
                 queue_delay=self.hass.data[DATA_ALEXAMEDIA]["accounts"][self.email][
                     "options"
-                ][CONF_QUEUE_DELAY],
+                ].get(CONF_QUEUE_DELAY, DEFAULT_QUEUE_DELAY),
                 **kwargs,
             )
         elif media_type == "skill":
@@ -1163,7 +1179,7 @@ class AlexaClient(MediaPlayerDevice):
                 media_id,
                 queue_delay=self.hass.data[DATA_ALEXAMEDIA]["accounts"][self.email][
                     "options"
-                ][CONF_QUEUE_DELAY],
+                ].get(CONF_QUEUE_DELAY, DEFAULT_QUEUE_DELAY),
             )
         else:
             await self.alexa_api.play_music(
@@ -1172,7 +1188,7 @@ class AlexaClient(MediaPlayerDevice):
                 customer_id=self._customer_id,
                 queue_delay=self.hass.data[DATA_ALEXAMEDIA]["accounts"][self.email][
                     "options"
-                ][CONF_QUEUE_DELAY],
+                ].get(CONF_QUEUE_DELAY, DEFAULT_QUEUE_DELAY),
                 **kwargs,
             )
         if not (

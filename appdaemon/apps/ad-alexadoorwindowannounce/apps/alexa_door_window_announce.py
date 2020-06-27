@@ -33,6 +33,8 @@ class AlexaDoorWindowAnnounce(hass.Hass):
     self.time_start = datetime.strptime("00:00:00", '%H:%M:%S').time()
     self.time_end = datetime.strptime("23:59:59", '%H:%M:%S').time()
 
+    self.closing_handles = []
+
     if "announcements" in self.args:
       delay = datetime.strptime(self.args["announcements"]["delay"], '%H:%M:%S').time() if "delay" in self.args["announcements"] else datetime.strptime("00:00:00", '%H:%M:%S').time()
       
@@ -43,9 +45,15 @@ class AlexaDoorWindowAnnounce(hass.Hass):
 
     if "doors_windows" in self.args:
       for door_window_sensor in self.args["doors_windows"]:
-        states = self.get_state_values(door_window_sensor)
-        if states[0] in ["cover", "sensor"]:
-          self.listen_state(self.door_window_state_changed, door_window_sensor, old = states[3], new = states[4], duration = self.delay.total_seconds())
+        
+        domain = door_window_sensor.split(".")[0].lower()
+
+        if domain in ["binary_sensor"]:
+          self.listen_state(self.door_window_state_changed, door_window_sensor, old = "off", new = "on", duration = self.delay.total_seconds())
+          
+        elif domain in ["cover"]:
+          self.listen_state(self.door_window_state_changed, door_window_sensor, old = "closed", new = "open", duration = self.delay.total_seconds())
+          self.listen_state(self.door_window_state_changed, door_window_sensor, old = "opening", new = "open", duration = self.delay.total_seconds())
         else:
           self.debug_log("UNSUPPORTED DOMAIN: " + door_window_sensor)
         
@@ -54,7 +62,7 @@ class AlexaDoorWindowAnnounce(hass.Hass):
     if self.delay.total_seconds() > 0:
       init_log += [f"\n  DELAY {int(self.delay.total_seconds())}"]
     if self.announce_close:
-      init_log += [f"\n  CLOSE"]
+      init_log += [f"\n  CLOSE ANNOUNCE"]
     
     self.debug_log("\n**** INIT - ALEXA DOOR WINDOW ANNOUNCE ****\n" + "".join(init_log))
     
@@ -62,16 +70,48 @@ class AlexaDoorWindowAnnounce(hass.Hass):
 
 
   def door_window_state_changed(self, entity, attribute, old, new, kwargs):
-    states = self.get_state_values(entity)
     
-    if new == states[4] and self.announce_close: # door is open, and announce_closed is True
-      self.listen_state(self.door_window_state_changed, entity, old = states[1], new = states[2], oneshot = True)
+    domain = entity.split(".")[0].lower() # cover, binary_sensor
     
+    if self.announce_close:
+      
+      if new in ["on","open"]:
+        
+        # add closing state listener for this entity
+      
+        if domain == "binary_sensor":
+          self.closing_handles += [
+            self.listen_state(self.door_window_state_changed, entity, old = "on", new = "off", oneshot = True)
+          ]
+        elif domain == "cover":
+          self.closing_handles += [
+            self.listen_state(self.door_window_state_changed, entity, old = "open", new = "closed", oneshot = True),
+            self.listen_state(self.door_window_state_changed, entity, old = "closing", new = "closed", oneshot = True)
+          ]
+      
+      elif new in ["off", "closed"]:
+        
+        # delete closing state listeners for this entity
+        
+        # unregister all closing handles if exists, this is a workaround for the bug in HA
+        # where garage door openers have different open / close states when triggered
+        # from HA > open, closing, closed, opening, open
+        # vs physical button > open > closed > open
+        for i in range(len(self.closing_handles) - 1, -1, -1):
+          closing_handle = self.closing_handles[i]
+          try:
+            info = self.info_listen_state(closing_handle)
+            if info[1] == entity:
+              self.cancel_listen_state(closing_handle)
+              del self.closing_handles[i]
+          except:
+            del self.closing_handles[i]
+      
     friendly_name = self.get_state(entity, attribute = "friendly_name")
     
     state = "changed"
-    if new == states[2]: state = "closed"
-    if new == states[4]: state = "opened"
+    if new in ["off","closed"]: state = "closed"
+    elif new in ["on","open"]: state = "opened"
     
     if not self.is_time_okay(self.time_start, self.time_end):
       self.debug_log(f"DOOR/WINDOW TIME LOG ONLY: {entity.split('.')[1]}|{state}")
@@ -95,18 +135,6 @@ class AlexaDoorWindowAnnounce(hass.Hass):
       self.call_service("notify/alexa_media", data = {"type":"tts", "method":"all"}, target = alexa, title = "Home Assistant: Door/Window Announce", message = f"Your attention please. The {friendly_name} has been {state}.")
     finally:
       self.debug_log(f"DOOR/WINDOW ANNOUNCE: {sensor_name.split('.')[1]}|{state}|{alexa.split('.')[1]}")
-
-
-  def get_state_values(self, entity):
-    
-    domain = entity.split(".")[0].lower()
-    
-    if domain == "cover":
-      return [ "cover", "closing", "closed", "opening", "open" ]
-    elif domain == "binary_sensor":
-      return [ "sensor", "on", "off", "off", "on" ]
-    else:
-      return [ "other" ]
 
 
   def is_time_okay(self, start, end):

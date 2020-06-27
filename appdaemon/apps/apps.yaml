@@ -15,6 +15,7 @@ alexa_door_window_announce:
   doors_windows:
     - cover.garage_door_big
     - cover.garage_door_small
+    - binary_sensor.main_door
   announcements:
     delay: "00:00:00"
     close: true

@@ -1,31 +1,3 @@
-resources:
-  - url: /hacsfiles/atomic_calendar/atomic_calendar.js
-    type: module
-  - url: /hacsfiles/lovelace-auto-entities/auto-entities.js
-    type: module
-  - url: /hacsfiles/bar-card/bar-card.js
-    type: module
-  - url: /hacsfiles/bignumber-card/bignumber-card.js
-    type: js
-  - url: /hacsfiles/calendar-card/calendar-card.js
-    type: js
-  - url: /hacsfiles/config-template-card/config-template-card.js
-    type: module
-  - url: /hacsfiles/custom-header/custom-header.js
-    type: module
-  - url: /hacsfiles/lovelace-layout-card/layout-card.js
-    type: module
-  - url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js
-    type: module
-  - url: /hacsfiles/simple-thermostat/simple-thermostat.js
-    type: module
-  - url: /hacsfiles/weather-card/weather-card.js
-    type: module
-  - url: /local/floorplan/floorplan-card.js?v=1.1.14
-    type: module
-
-    
-
 custom_header:
   compact_mode: true
 

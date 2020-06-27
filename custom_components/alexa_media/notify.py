@@ -24,6 +24,7 @@ from . import (
     CONF_EMAIL,
     CONF_QUEUE_DELAY,
     DATA_ALEXAMEDIA,
+    DEFAULT_QUEUE_DELAY,
     DOMAIN,
     hide_email,
     hide_serial,
@@ -84,7 +85,7 @@ class AlexaNotificationService(BaseNotificationService):
         ----------
         names : list(string)
             A list of names to convert
-        type : string
+        type_ : string
             The type to return entities, entity_ids, serialnumbers, names
         filter_matches : bool
             Whether non-matching items are removed from the returned list.
@@ -197,7 +198,7 @@ class AlexaNotificationService(BaseNotificationService):
                                 message,
                                 queue_delay=self.hass.data[DATA_ALEXAMEDIA]["accounts"][
                                     account
-                                ]["options"][CONF_QUEUE_DELAY],
+                                ]["options"].get(CONF_QUEUE_DELAY, DEFAULT_QUEUE_DELAY),
                             )
                         )
                 elif data["type"] == "announce":
@@ -225,7 +226,7 @@ class AlexaNotificationService(BaseNotificationService):
                                 method=(data["method"] if "method" in data else "all"),
                                 queue_delay=self.hass.data[DATA_ALEXAMEDIA]["accounts"][
                                     account
-                                ]["options"][CONF_QUEUE_DELAY],
+                                ]["options"].get(CONF_QUEUE_DELAY, DEFAULT_QUEUE_DELAY),
                             )
                         )
                         break
@@ -241,7 +242,7 @@ class AlexaNotificationService(BaseNotificationService):
                                 title=title,
                                 queue_delay=self.hass.data[DATA_ALEXAMEDIA]["accounts"][
                                     account
-                                ]["options"][CONF_QUEUE_DELAY],
+                                ]["options"].get(CONF_QUEUE_DELAY, DEFAULT_QUEUE_DELAY),
                             )
                         )
         await asyncio.gather(*tasks)

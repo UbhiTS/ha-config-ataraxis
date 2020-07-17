@@ -15,7 +15,6 @@ alexa_door_window_announce:
   doors_windows:
     - cover.garage_door_big
     - cover.garage_door_small
-    - binary_sensor.main_door
   announcements:
     delay: "00:00:00"
     close: true
@@ -111,10 +110,11 @@ auto_internet_rebooter:
     switch: switch.garage_internet_switch
   thresholds:
     download_mbps: 80
-    upload_mbps: 4.5
+    upload_mbps: 4.0
     ping_ms: 50
   schedule:
-    - "04:00:00"
+    - "05:30:00"
+    - "17:30:00"
   notify:
     alexa: media_player.upper_big_bedroom_alexa
     start_time: "08:00:00"
@@ -125,7 +125,6 @@ hvac_living_room:
   module: alexa_smart_talking_thermostat
   class: AlexaSmartTalkingThermostat
   thermostat: climate.thermostat_living_room_mode
-  alexa: media_player.living_room_alexa
   hvac_limits:
     cooling_min: 70
     heating_max: 71
@@ -137,13 +136,16 @@ hvac_living_room:
     quarter_hour: false
     minute_offset: 3
     duration: 1
+  notifications:
+    speaker: media_player.living_room_alexa
+    start_time: "08:00:00"
+    end_time: "21:30:00"
   debug: false
   
 hvac_entertainment_room:
   module: alexa_smart_talking_thermostat
   class: AlexaSmartTalkingThermostat
   thermostat: climate.thermostat_entertainment_room_mode
-  alexa: media_player.living_room_alexa
   hvac_limits:
     cooling_min: 70
     heating_max: 72
@@ -155,13 +157,16 @@ hvac_entertainment_room:
     quarter_hour: false
     minute_offset: 1
     duration: 1
+  notifications:
+    speaker: media_player.living_room_alexa
+    start_time: "08:00:00"
+    end_time: "21:30:00"
   debug: false
 
 hvac_master_bedroom:
   module: alexa_smart_talking_thermostat
   class: AlexaSmartTalkingThermostat
   thermostat: climate.thermostat_master_bedroom_mode
-  alexa: media_player.master_bedroom_alexa
   hvac_limits:
     cooling_min: 69
     heating_max: 72
@@ -180,15 +185,18 @@ hvac_master_bedroom:
     quarter_hour: false
     minute_offset: 0
     duration: 1
+  notifications:
+    speaker: media_player.master_bedroom_alexa
+    start_time: "08:00:00"
+    end_time: "21:30:00"
   debug: false
     
 hvac_upper_big_bedroom:
   module: alexa_smart_talking_thermostat
   class: AlexaSmartTalkingThermostat
   thermostat: climate.thermostat_upper_big_bedroom_mode
-  alexa: media_player.upper_big_bedroom_alexa
   hvac_limits:
-    cooling_min: 72
+    cooling_min: 71
     heating_max: 72
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
@@ -202,13 +210,16 @@ hvac_upper_big_bedroom:
     - binary_sensor.upper_big_bedroom_door
     - binary_sensor.upper_big_bedroom_window_right
     - binary_sensor.upper_big_bedroom_window_left
+  notifications:
+    speaker: media_player.upper_big_bedroom_alexa
+    start_time: "08:00:00"
+    end_time: "21:30:00"
   debug: false
   
 hvac_upper_small_bedroom:
   module: alexa_smart_talking_thermostat
   class: AlexaSmartTalkingThermostat
   thermostat: climate.thermostat_upper_small_bedroom_mode
-  alexa: media_player.upper_small_bedroom_alexa
   hvac_limits:
     cooling_min: 71
     heating_max: 71
@@ -223,13 +234,16 @@ hvac_upper_small_bedroom:
   doors_windows:
     - binary_sensor.upper_small_bedroom_door
     - binary_sensor.upper_small_bedroom_window
+  notifications:
+    speaker: media_player.upper_small_bedroom_alexa
+    start_time: "08:00:00"
+    end_time: "21:30:00"
   debug: false
 
 hvac_upper_guest_bedroom:
   module: alexa_smart_talking_thermostat
   class: AlexaSmartTalkingThermostat
   thermostat: climate.thermostat_upper_guest_bedroom_mode
-  alexa: media_player.upper_guest_bedroom_alexa
   hvac_limits:
     cooling_min: 71
     heating_max: 71
@@ -243,6 +257,10 @@ hvac_upper_guest_bedroom:
     duration: 1
   doors_windows:
     - binary_sensor.upper_guest_bedroom_door
+  notifications:
+    speaker: media_player.upper_guest_bedroom_alexa
+    start_time: "08:00:00"
+    end_time: "21:30:00"
   debug: false
 
 energy_meter:
@@ -265,12 +283,19 @@ perimeter_lights:
   class: PerimeterLightsController
   alexa: media_player.kitchen_alexa
 
-tv_notifications:
-  module: tv_notifications_controller
-  class: TVNotificationsController
+calendar_tv_notifications:
+  module: calendar_tv_notifications_controller
+  class: CalendarTVNotificationsController
   tv: media_player.tv_living_room
-  calendar: calendar.important_dates
-  notification_service: notify/tv_living_room
+  calendars:
+    - calendar.important_dates
+    - calendar.holidays_in_united_states
+  notifications:
+    service: notify/tv_living_room
+    triggers:
+      - 5
+  debug: false
+
 
 wallmote:
   module: wallmote_controller

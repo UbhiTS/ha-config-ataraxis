@@ -186,19 +186,22 @@ recorder:
   purge_keep_days: 7
   include: !include entity_tracking.yaml
 
-speedtestdotnet:
-  manual: true
-  monitored_conditions:
-    - ping
-    - download
-    - upload
+#speedtestdotnet:
+#  manual: true
+#  scan_interval:
+#    days: 365
+#  monitored_conditions:
+#    - ping
+#    - download
+#    - upload
 
 stream:
 
 system_health:
 
 tts:
-  - platform: google_translate
+  - platform: home_external_url
+    base_url: !secret roomba_password
 
 #upnp:
 #  port_mapping: false

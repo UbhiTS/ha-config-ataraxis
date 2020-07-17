@@ -227,11 +227,13 @@ class AlexaTalkingClock(hass.Hass):
     
     schedule_now = ["daily", day_name, day_abbr, "weekdays" if weekday <= 4 else "weekends"] # daily, weekdays, weekends, mon, tue, wed, thu, fri, sat, sun
     speech = ""
-    for reminder in self.reminders:
-      schedule = [x.strip().lower() for x in reminder["schedule"].split(',')]
-      if schedule[0] in schedule_now:
-        if datetime.strptime(schedule[1], '%H:%M:%S').time() == time(hour, minute, second):
-          speech += " " + reminder["reminder"]
+    
+    if self.reminders:
+      for reminder in self.reminders:
+        schedule = [x.strip().lower() for x in reminder["schedule"].split(',')]
+        if schedule[0] in schedule_now:
+          if datetime.strptime(schedule[1], '%H:%M:%S').time() == time(hour, minute, second):
+            speech += " " + reminder["reminder"]
     
     date_str = now.strftime("%d %B")
     

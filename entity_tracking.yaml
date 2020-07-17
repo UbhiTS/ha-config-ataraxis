@@ -19,6 +19,7 @@
     - switch.kitchen_light
     - switch.side_deck_light
     - switch.welcome_room_light
+    - switch.garage_internet_switch
     
     - climate.thermostat_attic_mode
     - sensor.thermostat_attic_temperature

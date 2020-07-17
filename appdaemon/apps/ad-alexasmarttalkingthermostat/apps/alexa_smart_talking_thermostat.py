@@ -1,5 +1,5 @@
 import appdaemon.plugins.hass.hassapi as hass
-import datetime
+from datetime import datetime, time, timedelta
 #
 # Alexa Smart Talking Thermostat App
 #
@@ -23,6 +23,10 @@ import datetime
 #  doors_windows:
 #    - binary_sensor.master_bedroom_door
 #    - binary_sensor.master_bedroom_window
+#  notifications:
+#    speaker: media_player.master_bedroom_alexa
+#    start_time: "08:00:00"
+#    end_time: "21:30:00"
 #  debug: false
 
 
@@ -32,7 +36,6 @@ class AlexaSmartTalkingThermostat(hass.Hass):
     
     self.debug = True;
     self.thermostat = self.args["thermostat"]
-    self.alexa = self.args["alexa"]
     
     self.cooling_min = 45
     self.heating_max = 95
@@ -47,6 +50,8 @@ class AlexaSmartTalkingThermostat(hass.Hass):
     self.recirc_next_start = None
     self.recirc_in_progress = False
     
+    self.notify = False
+    
     init_log = []
     
     if "hvac_limits" in self.args:
@@ -59,7 +64,7 @@ class AlexaSmartTalkingThermostat(hass.Hass):
       init_log += [f"  TEMP {self.cooling_min}/{self.heating_max}\n"]
       
       if "daily_shutoff" in self.args["hvac_limits"]:
-        daily_shut_off = datetime.datetime.strptime(self.args["hvac_limits"]["daily_shutoff"], '%H:%M:%S').time()
+        daily_shut_off = datetime.strptime(self.args["hvac_limits"]["daily_shutoff"], '%H:%M:%S').time()
         self.run_daily(self.hvac_daily_shut_off, daily_shut_off)
         init_log += [f"  DAILY SHUT OFF {daily_shut_off}\n"]
       
@@ -78,7 +83,7 @@ class AlexaSmartTalkingThermostat(hass.Hass):
       
       if self.recirc_hour or self.recirc_half_hour or self.recirc_quarter_hour:
         self.recirc_frequency = self.get_frequency()
-        self.recirc_next_start = self.get_next_start(self.recirc_frequency) + datetime.timedelta(minutes=self.recirc_minute_offset)
+        self.recirc_next_start = self.get_next_start(self.recirc_frequency) + timedelta(minutes=self.recirc_minute_offset)
         self.run_every(self.air_cycle, self.recirc_next_start, (60 * self.recirc_frequency.interval))
         init_log += [f"  AIR RECIRCULATE {self.recirc_next_start.strftime('%H:%M')} ({self.recirc_frequency.interval} min)\n"]
          
@@ -88,6 +93,12 @@ class AlexaSmartTalkingThermostat(hass.Hass):
         self.listen_state(self.open_door_window_hvac_shut_off, door_window_sensor, old = "off", new = "on", duration = 60)
         doors_windows = doors_windows + 1
       init_log += [f"  DOORS/WINDOWS {doors_windows}\n"]
+    
+    if "notifications" in self.args:
+      self.notify = True
+      self.speaker = self.args["notifications"]["speaker"]
+      self.notify_start_time = datetime.strptime(self.args["notifications"]["start_time"], '%H:%M:%S').time()
+      self.notify_end_time = datetime.strptime(self.args["notifications"]["end_time"], '%H:%M:%S').time()
     
     #self.run_daily(self.decrease_heating_temp_after_midnight, datetime.time(2, 0, 0))
     #self.run_daily(self.decrease_heating_temp_after_midnight, datetime.time(3, 0, 0))
@@ -107,7 +118,7 @@ class AlexaSmartTalkingThermostat(hass.Hass):
   def enforce_fan_auto_mode(self, entity, attribute, old, new, kwargs):
     if new != 'Auto Low' and self.recirc_in_progress == False:
       self.call_service("climate/set_fan_mode", entity_id = self.thermostat, fan_mode = 'Auto Low')
-      self.call_service("notify/alexa_media", data = {"type":"tts", "method":"all"}, target = self.alexa, message = "Your attention please. AC fan mode has been set to auto.")
+      self.notify_speaker("Your attention please. AC fan mode has been set to auto.")
       self.debug_log("ENFORCE FAN MODE AUTO")
 
 
@@ -122,14 +133,14 @@ class AlexaSmartTalkingThermostat(hass.Hass):
       temp = self.get_state(self.thermostat, attribute = "temperature")
       if self.heating_max < temp:
         self.call_service("climate/set_temperature", entity_id = self.thermostat, temperature = self.heating_max)
-        self.call_service("notify/alexa_media", data = {"type":"tts", "method":"all"}, target = self.alexa, message = f"Your attention please, the maximum heating temperature limit in this room is {str(self.heating_max)}")
+        self.notify_speaker(f"Your attention please, the maximum heating temperature limit in this room is {str(self.heating_max)}")
         self.debug_log(f"ENFORCED MAX HEATING TEMP LIMIT {str(self.heating_max)}")
         
     if hvac_mode == 'cool':
       temp = self.get_state(self.thermostat, attribute = "temperature")
       if temp < self.cooling_min:
         self.call_service("climate/set_temperature", entity_id = self.thermostat, temperature = self.cooling_min)
-        self.call_service("notify/alexa_media", data = {"type":"tts", "method":"all"}, target = self.alexa, message = f"Your attention please, the minimum cooling temperature limit in this room is {str(self.cooling_min)}")
+        self.notify_speaker(f"Your attention please, the minimum cooling temperature limit in this room is {str(self.cooling_min)}")
         self.debug_log(f"ENFORCED MIN COOL TEMP LIMIT {str(self.cooling_min)}")
         
     if hvac_mode == 'heat_cool':
@@ -138,7 +149,7 @@ class AlexaSmartTalkingThermostat(hass.Hass):
       
       if target_temp_low < self.cooling_min or self.heating_max < target_temp_high:
         self.call_service("climate/set_temperature", entity_id = self.thermostat, target_temp_low = self.cooling_min, target_temp_high = self.heating_max)
-        self.call_service("notify/alexa_media", data = {"type":"tts", "method":"all"}, target = self.alexa, message = f"Your attention please, the temperature range limit in this room is {str(self.cooling_min)} to {str(self.heating_max)}")
+        self.notify_speaker(f"Your attention please, the temperature range limit in this room is {str(self.cooling_min)} to {str(self.heating_max)}")
         self.debug_log(f"ENFORCED AUTO TEMP LIMIT {str(self.cooling_min)}/{str(self.heating_max)}")
 
 
@@ -146,7 +157,7 @@ class AlexaSmartTalkingThermostat(hass.Hass):
     operation_mode = self.get_state(self.thermostat)
     if operation_mode != 'off':
       self.call_service("climate/turn_off", entity_id = self.thermostat)
-      self.call_service("notify/alexa_media", data = {"type":"tts", "method":"all"}, target = self.alexa, message = f"Your attention please, this room's door or window has been open since the past 60 seconds. I've turned off the air conditioning.")
+      self.notify_speaker(f"Your attention please, this room's door or window has been open since the past 60 seconds. I've turned off the air conditioning.")
       self.debug_log("DOOR WINDOW SHUT OFF")
 
 
@@ -177,6 +188,11 @@ class AlexaSmartTalkingThermostat(hass.Hass):
 #    self.debug_log("AUTO_INCREASE_TEMP")
 
 
+  def notify_speaker(self, message):
+    if self.notify and self.is_time_okay(self.notify_start_time, self.notify_end_time):
+      self.call_service("notify/alexa_media", data = {"type":"tts", "method":"all"}, target = self.speaker, message = message)
+
+
   def get_frequency(self):
     
     frequency = Frequency()
@@ -205,7 +221,7 @@ class AlexaSmartTalkingThermostat(hass.Hass):
 
   def get_next_start(self, frequency):
     
-    now = datetime.datetime.now()
+    now = datetime.now()
     next_start_min = None
     
     for min in frequency.times:
@@ -214,16 +230,27 @@ class AlexaSmartTalkingThermostat(hass.Hass):
         break
     
     if next_start_min is None:
-      next = now.replace(minute = 0, second = 0) + datetime.timedelta(hours=1)
+      next = now.replace(minute = 0, second = 0) + timedelta(hours=1)
     else:
       next = now.replace(minute = next_start_min, second = 0)
     
     return next
 
 
+  def is_time_okay(self, start, end):
+    current_time = datetime.now().time()
+    if (start < end):
+      return start <= current_time and current_time <= end
+    else:
+      return start <= current_time or current_time <= end
+
+
   def debug_log(self, message):
     if self.debug:
       self.log(message)
+
+
+
 
 class Frequency:
   

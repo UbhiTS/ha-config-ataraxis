@@ -47,7 +47,6 @@ updater:
 
 frontend: !include frontend.yaml
 sensor: !include cfg_sensor.yaml
-#binary_sensor: !include cfg_binary_sensor.yaml
 camera: !include cfg_camera.yaml
 group: !include groups.yaml
 automation: !include automations.yaml
@@ -186,22 +185,13 @@ recorder:
   purge_keep_days: 7
   include: !include entity_tracking.yaml
 
-#speedtestdotnet:
-#  manual: true
-#  scan_interval:
-#    days: 365
-#  monitored_conditions:
-#    - ping
-#    - download
-#    - upload
-
 stream:
 
 system_health:
 
 tts:
-  - platform: home_external_url
-    base_url: !secret roomba_password
+  - platform: google_translate
+    base_url: !secret home_external_url
 
 #upnp:
 #  port_mapping: false

@@ -1,0 +1,144 @@
+title: Home
+icon: mdi:home
+cards:
+  - type: entities
+    title: People
+    show_header_toggle: false
+    entities:
+      - device_tracker.iphone_ubhits
+      - device_tracker.iphone_rcsdavis
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      title: Home Energy
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.home_energy
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      title: Living Room
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.living_room
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      title: Kitchen
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.kitchen
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      title: Master Bedroom
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.master_bedroom
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      title: Master Bathroom
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.master_bathroom
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      title: Upper Big Bedroom
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.upper_big_bedroom
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      title: Upper Small Bedroom
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.upper_small_bedroom
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      title: Upper Guest Bedroom
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.upper_guest_bedroom
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      title: Entertainment Room
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.entertainment_room
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      title: Welcome Room
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.welcome_room
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      title: Attic
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.attic
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      title: Entryway
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.entryway
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      title: Garage
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.garage
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      title: Backyard
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.backyard
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      title: Side Deck
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.side_deck

@@ -1,0 +1,38 @@
+title: Thermostats
+icon: mdi:radiator
+cards:
+  - type: thermostat
+    entity: climate.thermostat_master_bedroom_mode
+    name: Master Bedroom
+  - type: thermostat
+    entity: climate.thermostat_living_room_mode
+    name: Living Room  
+  - type: thermostat
+    entity: climate.thermostat_entertainment_room_mode
+    name: Entertainment Room
+  - type: thermostat
+    entity: climate.thermostat_upper_big_bedroom_mode
+    name: Upper Big Bedroom 
+  - type: thermostat
+    entity: climate.thermostat_upper_small_bedroom_mode
+    name: Upper Small Bedroom 
+  - type: thermostat
+    entity: climate.thermostat_upper_guest_bedroom_mode
+    name: Upper Guest Bedroom
+  - type: thermostat
+    entity: climate.thermostat_attic_mode
+    name: Attic
+  - type: entity-filter
+    card:
+      type: entities
+    show_empty: false
+    state_filter:
+    - "On Low"
+    entities:
+      - sensor.fan_mode_master_bedroom
+      - sensor.fan_mode_living_room
+      - sensor.fan_mode_entertainment_room
+      - sensor.fan_mode_upper_big_bedroom
+      - sensor.fan_mode_upper_small_bedroom
+      - sensor.fan_mode_upper_guest_bedroom
+      - sensor.fan_mode_attic

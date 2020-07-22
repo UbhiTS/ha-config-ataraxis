@@ -15,9 +15,6 @@ homeassistant:
     "binary_sensor.*window*":
       device_class: window
 
-# Enables the HASS cloud integration
-# cloud:
-
 # Enables configuration UI
 config:
 
@@ -30,9 +27,6 @@ device_tracker:
 discovery:
 
 hassio:
-
-# Welcome Card in the Default View (Overview)
-# introduction:
 
 # Enables a map showing the location of tracked devices
 map:
@@ -68,15 +62,6 @@ geo_location:
 google:
   client_id: !secret google_client_id
   client_secret: !secret google_client_secret
-
-hacs:
-  token: !secret hacs_token
-  sidepanel_title: Community
-  sidepanel_icon: mdi:alpha-c-box
-  appdaemon: true
-  netdaemon: true
-  release_limit: 5
-  experimental: true
 
 history:
   include: !include entity_tracking.yaml

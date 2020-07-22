@@ -1,0 +1,43 @@
+title: System Monitor
+icon: mdi:monitor-dashboard
+panel: true
+cards:
+  - type: horizontal-stack
+    cards:
+      - type: custom:auto-entities
+        card:
+          type: entities
+          title: UbhiNAS
+          show_header_toggle: false
+        filter:
+          include:
+            - group: group.ubhinas
+          
+      - type: custom:auto-entities
+        card:
+          type: entities
+          title: System Monitor
+          show_header_toggle: false
+        filter:
+          include:
+            - group: group.system_monitor
+          
+      - type: vertical-stack
+        cards:
+          - type: custom:auto-entities
+            card:
+              type: entities
+              title: Internet
+              show_header_toggle: false
+            filter:
+              include:
+                - group: group.internet
+              
+          - type: custom:auto-entities
+            card:
+              type: entities
+              title: Time & Date
+              show_header_toggle: false
+            filter:
+              include:
+                - group: group.time_date

@@ -1,0 +1,42 @@
+title: Lights & Fans
+icon: mdi:lightbulb-on
+panel: true
+cards:
+  - type: vertical-stack
+    cards:
+    - type: horizontal-stack
+      cards:
+      - type: entity-button
+        icon: mdi:lightbulb-on
+        entity: light.living_room_light
+      - type: entity-button
+        icon: mdi:lightbulb-on
+        entity: switch.kitchen_light
+    - type: horizontal-stack
+      cards:
+      - type: light
+        entity: light.master_bedroom_light_left
+      - type: light
+        entity: light.master_bedroom_light_right
+      - type: entity
+        entity: fan.master_bedroom_fan
+    - type: horizontal-stack
+      cards:
+      - type: entity-button
+        icon: mdi:lightbulb-on
+        entity: switch.welcome_room_light
+      - type: entity-button
+        icon: mdi:lightbulb-on
+        entity: switch.backyard_light_left
+      - type: entity-button
+        icon: mdi:lightbulb-on
+        entity: switch.backyard_light_right
+      - type: entity-button
+        icon: mdi:lightbulb-on
+        entity: switch.side_deck_light
+      - type: entity-button
+        icon: mdi:lightbulb-on
+        entity: switch.entryway_light
+      - type: entity-button
+        icon: mdi:lightbulb-on
+        entity: switch.entryway_outlet_switch

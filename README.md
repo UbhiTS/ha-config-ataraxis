@@ -21,15 +21,15 @@ Also, if you want to see a walkthrough of my Home Assistant configuration, I hav
 
 ## Dashboard Screenshots :alien:
 
-<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash1.png" alt="Home Assistant dashboard" />
-<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash2.png" alt="Home Assistant dashboard" />
-<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash3.png" alt="Home Assistant dashboard" />
-<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash4.png" alt="Home Assistant dashboard" />
-<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash5.png" alt="Home Assistant dashboard" />
-<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash6.png" alt="Home Assistant dashboard" />
-<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash7.png" alt="Home Assistant dashboard" />
-<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash8.png" alt="Home Assistant dashboard" />
-<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash9.png" alt="Home Assistant dashboard" />
+<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash01.png" alt="Home Assistant dashboard" />
+<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash02.png" alt="Home Assistant dashboard" />
+<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash03.png" alt="Home Assistant dashboard" />
+<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash04.png" alt="Home Assistant dashboard" />
+<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash05.png" alt="Home Assistant dashboard" />
+<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash06.png" alt="Home Assistant dashboard" />
+<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash07.png" alt="Home Assistant dashboard" />
+<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash08.png" alt="Home Assistant dashboard" />
+<img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash09.png" alt="Home Assistant dashboard" />
 <img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash10.png" alt="Home Assistant dashboard" />
 <img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash11.png" alt="Home Assistant dashboard" />
 <img src="https://ubhits.s3.amazonaws.com/ha_screens/hadash12.png" alt="Home Assistant dashboard" />

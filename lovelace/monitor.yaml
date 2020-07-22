@@ -7,6 +7,7 @@ cards:
       - type: custom:auto-entities
         card:
           type: entities
+          state_color: true
           title: UbhiNAS
           show_header_toggle: false
         filter:
@@ -16,6 +17,7 @@ cards:
       - type: custom:auto-entities
         card:
           type: entities
+          state_color: true
           title: System Monitor
           show_header_toggle: false
         filter:
@@ -27,6 +29,7 @@ cards:
           - type: custom:auto-entities
             card:
               type: entities
+              state_color: true
               title: Internet
               show_header_toggle: false
             filter:
@@ -36,6 +39,7 @@ cards:
           - type: custom:auto-entities
             card:
               type: entities
+              state_color: true
               title: Time & Date
               show_header_toggle: false
             filter:

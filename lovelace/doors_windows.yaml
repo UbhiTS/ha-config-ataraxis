@@ -5,6 +5,7 @@ cards:
   - type: horizontal-stack
     cards:
       - type: entities
+        state_color: true
         entities:
           - binary_sensor.main_door
           - cover.garage_door_big
@@ -18,6 +19,7 @@ cards:
           - binary_sensor.living_room_window_right
           - binary_sensor.lower_common_bathroom_door
       - type: entities
+        state_color: true
         entities:
           - binary_sensor.upper_big_bedroom_window_left
           - binary_sensor.upper_big_bedroom_window_right
@@ -31,6 +33,7 @@ cards:
           - binary_sensor.entertainment_room_window_right
 
       - type: entities
+        state_color: true
         entities:
           - binary_sensor.master_bedroom_door
           - binary_sensor.master_bedroom_window_left

@@ -2,6 +2,7 @@ title: Home
 icon: mdi:home
 cards:
   - type: entities
+    state_color: true
     title: People
     show_header_toggle: false
     entities:
@@ -11,6 +12,7 @@ cards:
   - type: custom:auto-entities
     card:
       type: entities
+      state_color: true
       title: Home Energy
       show_header_toggle: false
     filter:
@@ -20,6 +22,7 @@ cards:
   - type: custom:auto-entities
     card:
       type: entities
+      state_color: true
       title: Living Room
       show_header_toggle: false
     filter:
@@ -29,6 +32,7 @@ cards:
   - type: custom:auto-entities
     card:
       type: entities
+      state_color: true
       title: Kitchen
       show_header_toggle: false
     filter:
@@ -38,6 +42,7 @@ cards:
   - type: custom:auto-entities
     card:
       type: entities
+      state_color: true
       title: Master Bedroom
       show_header_toggle: false
     filter:
@@ -47,6 +52,7 @@ cards:
   - type: custom:auto-entities
     card:
       type: entities
+      state_color: true
       title: Master Bathroom
       show_header_toggle: false
     filter:
@@ -56,6 +62,7 @@ cards:
   - type: custom:auto-entities
     card:
       type: entities
+      state_color: true
       title: Upper Big Bedroom
       show_header_toggle: false
     filter:
@@ -65,6 +72,7 @@ cards:
   - type: custom:auto-entities
     card:
       type: entities
+      state_color: true
       title: Upper Small Bedroom
       show_header_toggle: false
     filter:
@@ -74,6 +82,7 @@ cards:
   - type: custom:auto-entities
     card:
       type: entities
+      state_color: true
       title: Upper Guest Bedroom
       show_header_toggle: false
     filter:
@@ -83,6 +92,7 @@ cards:
   - type: custom:auto-entities
     card:
       type: entities
+      state_color: true
       title: Entertainment Room
       show_header_toggle: false
     filter:
@@ -92,6 +102,7 @@ cards:
   - type: custom:auto-entities
     card:
       type: entities
+      state_color: true
       title: Welcome Room
       show_header_toggle: false
     filter:
@@ -101,6 +112,7 @@ cards:
   - type: custom:auto-entities
     card:
       type: entities
+      state_color: true
       title: Attic
       show_header_toggle: false
     filter:
@@ -110,6 +122,7 @@ cards:
   - type: custom:auto-entities
     card:
       type: entities
+      state_color: true
       title: Entryway
       show_header_toggle: false
     filter:
@@ -119,6 +132,7 @@ cards:
   - type: custom:auto-entities
     card:
       type: entities
+      state_color: true
       title: Garage
       show_header_toggle: false
     filter:
@@ -128,6 +142,7 @@ cards:
   - type: custom:auto-entities
     card:
       type: entities
+      state_color: true
       title: Backyard
       show_header_toggle: false
     filter:
@@ -137,6 +152,7 @@ cards:
   - type: custom:auto-entities
     card:
       type: entities
+      state_color: true
       title: Side Deck
       show_header_toggle: false
     filter:

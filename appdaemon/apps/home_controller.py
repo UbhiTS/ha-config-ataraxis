@@ -19,11 +19,14 @@ class HomeController(hass.Hass):
     self.internet_switch = self.args["internet_switch"]
     self.alexa_kitchen = self.args["alexa_kitchen"]
     self.alexa_entryway = self.args["alexa_entryway"]
+    self.alexa_upper_big_bedroom = self.args["alexa_upper_big_bedroom"]
+    self.jhadoo_battery_level = self.args["jhadoo_battery_level"]
     
     #self.call_service("notify/alexa_media", data = {"type":"announce", "method":"all"}, target = self.alexa_kitchen, message = "Hi, your Home Assistant is ready to rock and roll!")
     
     self.listen_state(self.buzz_kitchen, self.buzz_control)
     self.listen_state(self.reset_internet, self.internet_control)
+    self.listen_state(self.jhadoo_battery_level_alert, self.jhadoo_battery_level)
     
     #self.run_hourly(self.play_music_entryway, time(datetime.now().hour, 0, 0))
 
@@ -60,7 +63,16 @@ class HomeController(hass.Hass):
   def turn_on_switch(self, kwargs):
     self.log("INTERNET_RESET:TURN_ON")
     self.call_service("switch/turn_on", entity_id = self.internet_switch)
-    
+
+
+  def jhadoo_battery_level_alert(self, entity, attribute, old, new, kwargs):
+  
+    if (old, new) in [("90", "100")]:
+      self.call_service("notify/alexa_media", data = {"type":"announce", "method":"all"}, target = self.alexa_kitchen, message = "Jhadoo's battery is fully charged, and it's ready to clean. Please say, 'Alexa, ask Roomba to start cleaning'.")
+    elif (old, new) in [("50", "60"), ("60", "70"), ("70", "80"), ("80", "90")]:
+      self.call_service("notify/alexa_media", data = {"type":"announce", "method":"all"}, target = self.alexa_kitchen, message = "Jhadoo's battery is sufficiently charged. Please say, 'Alexa, ask Roomba to start cleaning'.")
+
+
 #  def set_guest_volume_high(self, kwargs):
 #    self.call_service("media_player/volume_set", entity_id = self.door_alexa, volume_level = .99)
 #    self.log("GUEST VOLUME HIGH")

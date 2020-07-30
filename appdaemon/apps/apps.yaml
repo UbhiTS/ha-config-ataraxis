@@ -5,7 +5,9 @@ home:
   internet_control: input_boolean.reset_internet
   internet_switch: switch.garage_internet_switch
   alexa_kitchen: media_player.kitchen_alexa
+  alexa_upper_big_bedroom: media_player.upper_big_bedroom_alexa
   alexa_entryway: media_player.entryway_alexa
+  jhadoo_battery_level: sensor.jhadoo_battery_level
   
 alexa_door_window_announce:
   module: alexa_door_window_announce

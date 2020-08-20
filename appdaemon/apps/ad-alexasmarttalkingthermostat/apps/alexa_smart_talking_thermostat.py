@@ -27,6 +27,8 @@ from datetime import datetime, time, timedelta
 #    speaker: media_player.master_bedroom_alexa
 #    start_time: "08:00:00"
 #    end_time: "21:30:00"
+#  power_backup_guard:
+#    grid_status_sensor: binary_sensor.grid_status
 #  debug: false
 
 
@@ -51,6 +53,8 @@ class AlexaSmartTalkingThermostat(hass.Hass):
     self.recirc_in_progress = False
     
     self.notify = False
+    
+    self.grid_sensor = None
     
     init_log = []
     
@@ -99,6 +103,12 @@ class AlexaSmartTalkingThermostat(hass.Hass):
       self.speaker = self.args["notifications"]["speaker"]
       self.notify_start_time = datetime.strptime(self.args["notifications"]["start_time"], '%H:%M:%S').time()
       self.notify_end_time = datetime.strptime(self.args["notifications"]["end_time"], '%H:%M:%S').time()
+    
+    if "power_backup_guard" in self.args:
+      if "grid_status_sensor" in self.args["power_backup_guard"]:
+        self.grid_sensor = self.args["power_backup_guard"]["grid_status_sensor"]
+        self.listen_state(self.grid_offline_turn_off, self.grid_sensor, old = "on", new = "off", duration = 5)
+        init_log += [f"  GRID STATUS SENSOR CONFIGURED\n"]
     
     #self.run_daily(self.decrease_heating_temp_after_midnight, datetime.time(2, 0, 0))
     #self.run_daily(self.decrease_heating_temp_after_midnight, datetime.time(3, 0, 0))
@@ -161,6 +171,14 @@ class AlexaSmartTalkingThermostat(hass.Hass):
       self.debug_log("DOOR WINDOW SHUT OFF")
 
 
+  def grid_offline_turn_off(self, entity, attribute, old, new, kwargs):
+    operation_mode = self.get_state(self.thermostat)
+    if operation_mode != 'off':
+      self.call_service("climate/turn_off", entity_id = self.thermostat)
+      self.notify_speaker(f"Your attention please, the mains power grid is offline. I've turned off the air conditioning to conserve energy.")
+      self.debug_log("GRID OFFLINE SHUT OFF")
+      
+
   def air_cycle(self, kwargs):
     self.recirc_in_progress = True
     self.call_service("climate/set_fan_mode", entity_id = self.thermostat, fan_mode = 'On Low')
@@ -171,7 +189,7 @@ class AlexaSmartTalkingThermostat(hass.Hass):
   def air_cycle_off(self, kwargs):
     self.call_service("climate/set_fan_mode", entity_id = self.thermostat, fan_mode = 'Auto Low')
     self.recirc_in_progress = False
-    #self.debug_log("AIR RECIRCULATE OFF")
+    self.debug_log("AIR RECIRCULATE OFF")
 
 
 #  def decrease_heating_temp_after_midnight(self, kwargs):

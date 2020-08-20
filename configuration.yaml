@@ -116,8 +116,6 @@ lovelace:
   resources:
   - url: /hacsfiles/atomic_calendar/atomic_calendar.js
     type: module
-  - url: /hacsfiles/lovelace-auto-entities/auto-entities.js
-    type: module
   - url: /hacsfiles/bar-card/bar-card.js
     type: module
   - url: /hacsfiles/bignumber-card/bignumber-card.js
@@ -128,9 +126,13 @@ lovelace:
     type: module
   - url: /hacsfiles/custom-header/custom-header.js
     type: module
+  - url: /hacsfiles/lovelace-auto-entities/auto-entities.js
+    type: module
   - url: /hacsfiles/lovelace-layout-card/layout-card.js
     type: module
   - url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js
+    type: module
+  - url: /hacsfiles/refreshable-picture-card/refreshable-picture-card.js
     type: module
   - url: /hacsfiles/simple-thermostat/simple-thermostat.js
     type: module
@@ -138,6 +140,7 @@ lovelace:
     type: module
   - url: /local/floorplan/floorplan-card.js?v=1.1.14
     type: module
+
 
 media_player:
 

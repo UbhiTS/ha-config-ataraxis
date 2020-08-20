@@ -21,12 +21,15 @@ class HomeController(hass.Hass):
     self.alexa_entryway = self.args["alexa_entryway"]
     self.alexa_upper_big_bedroom = self.args["alexa_upper_big_bedroom"]
     self.jhadoo_battery_level = self.args["jhadoo_battery_level"]
+    self.energy_meter = self.args["energy_meter"]
     
     #self.call_service("notify/alexa_media", data = {"type":"announce", "method":"all"}, target = self.alexa_kitchen, message = "Hi, your Home Assistant is ready to rock and roll!")
     
     self.listen_state(self.buzz_kitchen, self.buzz_control)
     self.listen_state(self.reset_internet, self.internet_control)
     self.listen_state(self.jhadoo_battery_level_alert, self.jhadoo_battery_level)
+    
+    self.run_daily(self.reset_energy_meter, time(20, 00, 00))
     
     #self.run_hourly(self.play_music_entryway, time(datetime.now().hour, 0, 0))
 
@@ -49,6 +52,14 @@ class HomeController(hass.Hass):
       self.run_in(self.turn_on_switch, 15)
 
 
+  def reset_energy_meter(self, kwargs):
+    
+    date = datetime.now()
+
+    if date.month == 8 and date.day == 20:
+      self.call_service("zwave/reset_node_meters", node_id = 30)
+      self.log("ENERGY SURPLUS PG&E: RESET METER")
+
   def play_music_entryway(self, kwargs):
     #self.log("ENTRYWAY_MUSIC_PLAY")
     #self.call_service("media_player/media_play", entity_id = self.alexa_entryway)
@@ -56,21 +67,21 @@ class HomeController(hass.Hass):
   
 
   def turn_off_switch(self, kwargs):
-    self.log("INTERNET_RESET:TURN_OFF")
+    self.log("INTERNET_RESET: TURN_OFF")
     self.call_service("switch/turn_off", entity_id = self.internet_switch)
 
 
   def turn_on_switch(self, kwargs):
-    self.log("INTERNET_RESET:TURN_ON")
+    self.log("INTERNET_RESET: TURN_ON")
     self.call_service("switch/turn_on", entity_id = self.internet_switch)
 
 
   def jhadoo_battery_level_alert(self, entity, attribute, old, new, kwargs):
   
     if (old, new) in [("90", "100")]:
-      self.call_service("notify/alexa_media", data = {"type":"announce", "method":"all"}, target = self.alexa_kitchen, message = "Jhadoo's battery is fully charged, and it's ready to clean. Please say, 'Alexa, ask Roomba to start cleaning'.")
-    elif (old, new) in [("50", "60"), ("60", "70"), ("70", "80"), ("80", "90")]:
-      self.call_service("notify/alexa_media", data = {"type":"announce", "method":"all"}, target = self.alexa_kitchen, message = "Jhadoo's battery is sufficiently charged. Please say, 'Alexa, ask Roomba to start cleaning'.")
+      self.call_service("notify/alexa_media", data = {"type":"announce", "method":"all"}, target = self.alexa_kitchen, message = f"Jhadoo's battery is fully charged, and it's ready to clean. Please say, 'Ask Roomba to start cleaning'.")
+    elif (old, new) in [("70", "80"), ("80", "90")]:
+      self.call_service("notify/alexa_media", data = {"type":"announce", "method":"all"}, target = self.alexa_kitchen, message = f"Jhadoo's battery is {new}% charged. Please say, 'Ask Roomba to start cleaning'.")
 
 
 #  def set_guest_volume_high(self, kwargs):

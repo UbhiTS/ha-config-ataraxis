@@ -8,6 +8,7 @@ home:
   alexa_upper_big_bedroom: media_player.upper_big_bedroom_alexa
   alexa_entryway: media_player.entryway_alexa
   jhadoo_battery_level: sensor.jhadoo_battery_level
+  energy_meter: sensor.hem_energy
   
 alexa_door_window_announce:
   module: alexa_door_window_announce
@@ -123,6 +124,19 @@ auto_internet_rebooter:
     end_time: "21:30:00"
   debug: false
 
+calendar_tv_reminders:
+  module: calendar_tv_reminders
+  class: CalendarTVReminders
+  tv: media_player.tv_living_room
+  calendars:
+    - calendar.important_dates
+    - calendar.holidays_in_united_states
+  notifications:
+    service: notify/tv_living_room
+    triggers:
+      - 5
+  debug: false
+
 hvac_living_room:
   module: alexa_smart_talking_thermostat
   class: AlexaSmartTalkingThermostat
@@ -142,6 +156,8 @@ hvac_living_room:
     speaker: media_player.living_room_alexa
     start_time: "08:00:00"
     end_time: "21:30:00"
+  power_backup_guard:
+    grid_status_sensor: binary_sensor.grid_status
   debug: false
   
 hvac_entertainment_room:
@@ -163,6 +179,8 @@ hvac_entertainment_room:
     speaker: media_player.living_room_alexa
     start_time: "08:00:00"
     end_time: "21:30:00"
+  power_backup_guard:
+    grid_status_sensor: binary_sensor.grid_status
   debug: false
 
 hvac_master_bedroom:
@@ -191,6 +209,8 @@ hvac_master_bedroom:
     speaker: media_player.master_bedroom_alexa
     start_time: "08:00:00"
     end_time: "21:30:00"
+  power_backup_guard:
+    grid_status_sensor: binary_sensor.grid_status
   debug: false
     
 hvac_upper_big_bedroom:
@@ -216,6 +236,8 @@ hvac_upper_big_bedroom:
     speaker: media_player.upper_big_bedroom_alexa
     start_time: "08:00:00"
     end_time: "21:30:00"
+  power_backup_guard:
+    grid_status_sensor: binary_sensor.grid_status
   debug: false
   
 hvac_upper_small_bedroom:
@@ -240,6 +262,8 @@ hvac_upper_small_bedroom:
     speaker: media_player.upper_small_bedroom_alexa
     start_time: "08:00:00"
     end_time: "21:30:00"
+  power_backup_guard:
+    grid_status_sensor: binary_sensor.grid_status
   debug: false
 
 hvac_upper_guest_bedroom:
@@ -263,12 +287,9 @@ hvac_upper_guest_bedroom:
     speaker: media_player.upper_guest_bedroom_alexa
     start_time: "08:00:00"
     end_time: "21:30:00"
+  power_backup_guard:
+    grid_status_sensor: binary_sensor.grid_status
   debug: false
-
-energy_meter:
-  module: energy_meter_controller
-  class: EnergyMeterController
-  energy_meter: sensor.hem_energy
 
 festival_lights_sentry:
   module: festival_lights_sentry_controller
@@ -284,20 +305,6 @@ perimeter_lights:
   module: perimeter_lights_controller
   class: PerimeterLightsController
   alexa: media_player.kitchen_alexa
-
-calendar_tv_notifications:
-  module: calendar_tv_notifications_controller
-  class: CalendarTVNotificationsController
-  tv: media_player.tv_living_room
-  calendars:
-    - calendar.important_dates
-    - calendar.holidays_in_united_states
-  notifications:
-    service: notify/tv_living_room
-    triggers:
-      - 5
-  debug: false
-
 
 wallmote:
   module: wallmote_controller

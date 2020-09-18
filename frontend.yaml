@@ -1,7 +1,5 @@
   #https://www.home-assistant.io/components/frontend/
   
-  javascript_version: latest
-  
   #################################################################
   #                                                               #
   #                            Themes                             #

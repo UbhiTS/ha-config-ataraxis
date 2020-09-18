@@ -49,11 +49,26 @@ script: !include scripts.yaml
 emulated_hue:
   host_ip: !secret emulated_hue_host_ip
   listen_port: !secret emulated_hue_listen_port
-  expose_by_default: true
-  exposed_domains:
-    - light
-    - fan
-    - switch
+  expose_by_default: false
+  entities:
+    light.living_room_light:
+      hidden: false
+    fan.master_bedroom_fan:
+      hidden: false
+    switch.kitchen_light:
+      hidden: false
+    switch.entryway_light:
+      hidden: false
+    switch.entryway_outlet_switch:
+      hidden: false
+    switch.welcome_room_light:
+      hidden: false
+    switch.backyard_light_left:
+      hidden: false
+    switch.backyard_light_right:
+      hidden: false
+    switch.side_deck_light:
+      hidden: false
 
 geo_location:
   - platform: usgs_earthquakes_feed

@@ -6,8 +6,7 @@ cards:
     cards:
     - type: horizontal-stack
       cards:
-      - type: entity-button
-        icon: mdi:lightbulb-on
+      - type: light
         entity: light.living_room_light
       - type: entity-button
         icon: mdi:lightbulb-on
@@ -38,5 +37,4 @@ cards:
         icon: mdi:lightbulb-on
         entity: switch.entryway_light
       - type: entity-button
-        icon: mdi:lightbulb-on
         entity: switch.entryway_outlet_switch

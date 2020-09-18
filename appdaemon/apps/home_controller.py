@@ -23,7 +23,7 @@ class HomeController(hass.Hass):
     self.jhadoo_battery_level = self.args["jhadoo_battery_level"]
     self.energy_meter = self.args["energy_meter"]
     
-    #self.call_service("notify/alexa_media", data = {"type":"announce", "method":"all"}, target = self.alexa_kitchen, message = "Hi, your Home Assistant is ready to rock and roll!")
+    self.call_service("notify/alexa_media", data = {"type":"announce", "method":"all"}, target = self.alexa_kitchen, message = "Hi, your Home Assistant is ready to rock and roll!")
     
     self.listen_state(self.buzz_kitchen, self.buzz_control)
     self.listen_state(self.reset_internet, self.internet_control)

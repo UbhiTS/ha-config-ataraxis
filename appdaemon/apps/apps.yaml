@@ -39,8 +39,8 @@ alexa_doorbell:
     doorbell: switch.living_room_doorbell # optional
     announce_bell: true
   time:
-    start: "07:30:00"
-    end: "22:00:00"
+    start: "09:00:00"
+    end: "21:00:00"
   debug: false
 
 alexa_talking_clock:
@@ -147,8 +147,8 @@ hvac_living_room:
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
   air_recirculation:
-    hour: true
-    half_hour: true
+    hour: false
+    half_hour: false
     quarter_hour: false
     minute_offset: 3
     duration: 1
@@ -170,8 +170,8 @@ hvac_entertainment_room:
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
   air_recirculation:
-    hour: true
-    half_hour: true
+    hour: false
+    half_hour: false
     quarter_hour: false
     minute_offset: 1
     duration: 1
@@ -200,8 +200,8 @@ hvac_master_bedroom:
     - binary_sensor.master_bedroom_window_right_small
     - binary_sensor.master_bathroom_window
   air_recirculation:
-    hour: true
-    half_hour: true
+    hour: false
+    half_hour: false
     quarter_hour: false
     minute_offset: 0
     duration: 1
@@ -223,8 +223,8 @@ hvac_upper_big_bedroom:
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
   air_recirculation:
-    hour: true
-    half_hour: true
+    hour: false
+    half_hour: false
     quarter_hour: false
     minute_offset: 2
     duration: 1
@@ -250,8 +250,8 @@ hvac_upper_small_bedroom:
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
   air_recirculation:
-    hour: true
-    half_hour: true
+    hour: false
+    half_hour: false
     quarter_hour: false
     minute_offset: 2
     duration: 1
@@ -276,8 +276,8 @@ hvac_upper_guest_bedroom:
     daily_shutoff: "08:00:00"
     enforce_fan_auto_mode: True
   air_recirculation:
-    hour: true
-    half_hour: true
+    hour: false
+    half_hour: false
     quarter_hour: false
     minute_offset: 2
     duration: 1

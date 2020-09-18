@@ -23,14 +23,16 @@ class ResfeshablePictureCard extends HTMLElement {
     
     let picture = config.static_picture;
     let title = config.title || ""
-    let br = "<br>"
-    if(title){
-      br = ""
+    
+    let html = ""
+    if(!title){
+      html = "<br>"
+    }else{
+      html = `<p class="center txt">${title}</p><br>`
     }
     try{
         
-        const html = `
-        <p class="center txt">${title}</p>${br}
+        html += `
         <img id="thePic" class="center thePic" src="${picture}" ></img>
         <br>
         `;
@@ -38,6 +40,7 @@ class ResfeshablePictureCard extends HTMLElement {
           .center{
             display: block;
             margin-top: auto;
+            margin-bottom: auto;
             margin-left: auto;
             margin-right: auto;
             width: 90%;

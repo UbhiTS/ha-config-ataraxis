@@ -2,8 +2,10 @@ title: Lights & Fans
 icon: mdi:lightbulb-on
 panel: true
 cards:
+
   - type: vertical-stack
     cards:
+    
     - type: horizontal-stack
       cards:
       - type: light
@@ -11,19 +13,33 @@ cards:
       - type: entity-button
         icon: mdi:lightbulb-on
         entity: switch.kitchen_light
+      - type: entity-button
+        icon: mdi:lightbulb-on
+        entity: switch.welcome_room_light                
+        
     - type: horizontal-stack
       cards:
       - type: light
         entity: light.master_bedroom_light_left
       - type: light
         entity: light.master_bedroom_light_right
-      - type: entity
+      - type: entity-button
+        icon: mdi:fan
+        tap_action:
+          action: more-info
+        hold_action:
+          action: toggle
         entity: fan.master_bedroom_fan
-    - type: horizontal-stack
-      cards:
       - type: entity-button
         icon: mdi:lightbulb-on
-        entity: switch.welcome_room_light
+        entity: switch.upper_big_bedroom_lava_lamp
+      - type: entity-button
+        icon: mdi:lightbulb-on
+        entity: switch.upper_big_bedroom_bed_light
+
+    - type: horizontal-stack
+      cards:
+
       - type: entity-button
         icon: mdi:lightbulb-on
         entity: switch.backyard_light_left

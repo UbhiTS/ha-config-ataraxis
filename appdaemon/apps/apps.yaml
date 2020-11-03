@@ -1,15 +1,22 @@
 home:
   module: home_controller
   class: HomeController
-  buzz_control: input_boolean.buzz_home
-  internet_control: input_boolean.reset_internet
-  internet_switch: switch.garage_internet_switch
   alexa_kitchen: media_player.kitchen_alexa
   alexa_upper_big_bedroom: media_player.upper_big_bedroom_alexa
   alexa_entryway: media_player.entryway_alexa
-  jhadoo_battery_level: sensor.jhadoo_battery_level
+  buzz_control: input_boolean.buzz_home
   energy_meter: sensor.hem_energy
+  internet_control: input_boolean.reset_internet
+  internet_switch: switch.garage_internet_switch
+  jhadoo_battery_level: sensor.jhadoo_battery_level
   
+tv_manager:
+  module: tv_manager
+  class: TVManager
+  tv: media_player.tv_living_room
+  tv_speaker_switch: switch.tv_living_room_subwoofer_switch
+  debug: false
+
 alexa_door_window_announce:
   module: alexa_door_window_announce
   class: AlexaDoorWindowAnnounce

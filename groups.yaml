@@ -90,6 +90,11 @@ living_room:
     - binary_sensor.living_room_window_right
     - binary_sensor.living_room_window_left
     - vacuum.jhadoo
+    - switch.tv_living_room_subwoofer_switch
+    - sensor.tv_living_room_subwoofer_switch_power
+    - sensor.tv_living_room_subwoofer_switch_current
+    
+    
     
 kitchen:
   name: Kitchen

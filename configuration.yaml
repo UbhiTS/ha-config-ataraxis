@@ -69,6 +69,10 @@ emulated_hue:
       hidden: false
     switch.side_deck_light:
       hidden: false
+    switch.upper_big_bedroom_bed_light:
+      hidden: false
+    switch.upper_big_bedroom_lava_lamp:
+      hidden: false
 
 geo_location:
   - platform: usgs_earthquakes_feed

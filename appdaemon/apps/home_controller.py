@@ -29,7 +29,7 @@ class HomeController(hass.Hass):
     self.listen_state(self.reset_internet, self.internet_control)
     self.listen_state(self.jhadoo_battery_level_alert, self.jhadoo_battery_level)
     
-    self.run_daily(self.reset_energy_meter, time(20, 00, 00))
+    self.run_daily(self.reset_energy_meter, time(11, 59, 59))
     
     #self.run_hourly(self.play_music_entryway, time(datetime.now().hour, 0, 0))
 
@@ -56,7 +56,7 @@ class HomeController(hass.Hass):
     
     date = datetime.now()
 
-    if date.month == 8 and date.day == 20:
+    if date.month == 10 and date.day == 18:
       self.call_service("zwave/reset_node_meters", node_id = 30)
       self.log("ENERGY SURPLUS PG&E: RESET METER")
 

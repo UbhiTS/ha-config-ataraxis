@@ -33,7 +33,7 @@ class ResfeshablePictureCard extends HTMLElement {
     try{
         
         html += `
-        <img id="thePic" class="center thePic" src="${picture}" ></img>
+        <img id="thePic" class="center thePic" src="${picture}"  ></img>
         <br>
         `;
         const css = `
@@ -54,7 +54,7 @@ class ResfeshablePictureCard extends HTMLElement {
           }
           
         `;
-        
+  
         
         const root = this.shadowRoot;
         this._hass = hass;
@@ -64,18 +64,35 @@ class ResfeshablePictureCard extends HTMLElement {
         if(!this.content){
              this.content = document.createElement('div');
              const style = document.createElement('style');
+             
+  
              style.textContent = css;
              this.content.innerHTML = html;
              card.appendChild(this.content);
              card.appendChild(style);
-     
-             root.appendChild(card);
              
+             root.appendChild(card);
+             card.onclick = function(){
+                if(config.tap_action){
+                  let domain = config.tap_action.call.split(".")[0]
+                  let action = config.tap_action.call.split(".")[1]
+                   console.log(config.tap_action.data);
+                   hass.callService(domain,
+                            action, 
+                            config.tap_action.data
+                             );
+                }else if(config.navigate){
+                  window.open(config.navigate);
+                }
+              
+              };
               this._bindrefresh(card, this._hass, this._config);
+              
               window[`scriptLoaded`] = true
         }
     
     } catch(err){
+      console.log(err)
       console.log('waiting for refreshable-picture-card to load');
     }
     
@@ -114,8 +131,9 @@ class ResfeshablePictureCard extends HTMLElement {
        }else{
          pictureUrl = pictureUrl + "?currentTimeCache=" + (new Date().getTime())
        }
-       console.log(pictureUrl)
+      // console.log(pictureUrl)
        picture.src = pictureUrl;
+    
      }
       
        setTimeout(refreshFunc, refreshTime * 1000)

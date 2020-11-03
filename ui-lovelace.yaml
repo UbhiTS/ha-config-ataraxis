@@ -1,11 +1,11 @@
-custom_header:
-  compact_mode: true
-  button_text:
-    options: '{{ hours12LZ }}:{{ minutesLZ }}'
-  hide_help: true
-  hide_config: true
-  shadow: on
-  chevrons: false
+#custom_header:
+#  compact_mode: true
+#  button_text:
+#    options: '{{ hours12LZ }}:{{ minutesLZ }}'
+#  hide_help: true
+#  hide_config: true
+#  shadow: on
+#  chevrons: false
   
 title: Home
 #background: var(--background-image)

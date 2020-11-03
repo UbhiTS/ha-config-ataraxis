@@ -97,3 +97,17 @@
     authentication: digest
     username: !secret nvr_username
     password: !secret nvr_password
+  - platform: generic
+    name: street_front_camera
+    still_image_url: !secret nvr_cam15_still_image_url
+    stream_source: !secret nvr_cam15_stream_source_url
+    authentication: digest
+    username: !secret nvr_username
+    password: !secret nvr_password
+  - platform: generic
+    name: street_side_camera
+    still_image_url: !secret nvr_cam16_still_image_url
+    stream_source: !secret nvr_cam16_stream_source_url
+    authentication: digest
+    username: !secret nvr_username
+    password: !secret nvr_password

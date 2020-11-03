@@ -262,7 +262,7 @@ class AlexaAlarmControlPanel(AlarmControlPanel, AlexaMedia):
         self._available = True
         self._assumed_state = False
         _LOGGER.debug("%s: Alarm State: %s", self.account, self.state)
-        self.async_schedule_update_ha_state()
+        self.async_write_ha_state()
 
     @_catch_login_errors
     async def _async_alarm_set(self, command: Text = "", code=None) -> None:
@@ -282,6 +282,7 @@ class AlexaAlarmControlPanel(AlarmControlPanel, AlexaMedia):
         )
         if available_media_players:
             _LOGGER.debug("Sending guard command to: %s", available_media_players[0])
+            available_media_players[0].check_login_changes()
             await available_media_players[0].alexa_api.set_guard_state(
                 self._appliance_id.split("_")[2],
                 command_map[command],
@@ -296,7 +297,7 @@ class AlexaAlarmControlPanel(AlarmControlPanel, AlexaMedia):
                 self._login, self._guard_entity_id, command
             )
         await self.async_update(no_throttle=True)
-        self.async_schedule_update_ha_state()
+        self.async_write_ha_state()
 
     async def async_alarm_disarm(self, code=None) -> None:
         # pylint: disable=unexpected-keyword-arg

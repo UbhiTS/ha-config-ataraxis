@@ -1,24 +1,24 @@
-  - platform: generic
-    name: welcome_room_camera
-    still_image_url: !secret camera_welcome_room_still_image_url
-    stream_source: !secret camera_welcome_room_stream_source_url
-    authentication: !secret camera_authentication
-    username: !secret camera_username
-    password: !secret camera_password
-  - platform: generic
-    name: living_room_camera
-    still_image_url: !secret camera_living_room_still_image_url
-    stream_source: !secret camera_living_room_stream_source_url
-    authentication: !secret camera_authentication
-    username: !secret camera_username
-    password: !secret camera_password
-  - platform: generic
-    name: hallway_camera
-    still_image_url: !secret camera_hallway_still_image_url
-    stream_source: !secret camera_hallway_stream_source_url
-    authentication: !secret camera_authentication
-    username: !secret camera_username
-    password: !secret camera_password
+#  - platform: generic
+#    name: welcome_room_camera
+#    still_image_url: !secret camera_welcome_room_still_image_url
+#    stream_source: !secret camera_welcome_room_stream_source_url
+#    authentication: !secret camera_authentication
+#    username: !secret camera_username
+#    password: !secret camera_password
+#  - platform: generic
+#    name: living_room_camera
+#    still_image_url: !secret camera_living_room_still_image_url
+#    stream_source: !secret camera_living_room_stream_source_url
+#    authentication: !secret camera_authentication
+#    username: !secret camera_username
+#    password: !secret camera_password
+#  - platform: generic
+#    name: hallway_camera
+#    still_image_url: !secret camera_hallway_still_image_url
+#    stream_source: !secret camera_hallway_stream_source_url
+#    authentication: !secret camera_authentication
+#    username: !secret camera_username
+#    password: !secret camera_password
     
   - platform: generic
     name: front_left_camera
@@ -91,12 +91,33 @@
     username: !secret nvr_username
     password: !secret nvr_password
   - platform: generic
+    name: cam11
+    still_image_url: !secret nvr_cam11_still_image_url
+    stream_source: !secret nvr_cam11_stream_source_url
+    authentication: digest
+    username: !secret nvr_username
+    password: !secret nvr_password
+  - platform: generic
     name: main_door_camera
     still_image_url: !secret nvr_cam12_still_image_url
     stream_source: !secret nvr_cam12_stream_source_url
     authentication: digest
     username: !secret nvr_username
     password: !secret nvr_password
+  - platform: generic
+    name: cam13
+    still_image_url: !secret nvr_cam13_still_image_url
+    stream_source: !secret nvr_cam13_stream_source_url
+    authentication: digest
+    username: !secret nvr_username
+    password: !secret nvr_password
+  - platform: generic
+    name: cam14
+    still_image_url: !secret nvr_cam14_still_image_url
+    stream_source: !secret nvr_cam14_stream_source_url
+    authentication: digest
+    username: !secret nvr_username
+    password: !secret nvr_password    
   - platform: generic
     name: street_front_camera
     still_image_url: !secret nvr_cam15_still_image_url

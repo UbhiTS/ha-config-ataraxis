@@ -14,6 +14,9 @@ homeassistant:
       device_class: door
     "binary_sensor.*window*":
       device_class: window
+    "binary_sensor.*motion*":
+      device_class: motion
+    
 
 # Enables configuration UI
 config:
@@ -203,11 +206,6 @@ tts:
 #upnp:
 #  port_mapping: false
 #  sensors: false
-
-roomba:
-  - host: !secret roomba_host
-    blid: !secret roomba_username
-    password: !secret roomba_password
 
 wake_on_lan:
 

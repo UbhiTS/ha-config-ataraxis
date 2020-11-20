@@ -123,8 +123,7 @@ auto_internet_rebooter:
     upload_mbps: 4.0
     ping_ms: 50
   schedule:
-    - "05:30:00"
-    - "17:30:00"
+    - "04:30:00"
   notify:
     alexa: media_player.upper_big_bedroom_alexa
     start_time: "08:00:00"

@@ -103,7 +103,7 @@ auto_fan_speed_master_bedroom:
     low: 67
     medium: 69
     high: 71
-    sun_offset: -2
+    sun_offset: -1
   time:
     start: "21:00:00"
     end: "10:00:00"

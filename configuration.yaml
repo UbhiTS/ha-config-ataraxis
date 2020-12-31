@@ -204,11 +204,6 @@ tts:
 #  port_mapping: false
 #  sensors: false
 
-roomba:
-  - host: !secret roomba_host
-    blid: !secret roomba_username
-    password: !secret roomba_password
-
 wake_on_lan:
 
 weather:

@@ -1,24 +1,24 @@
-#  - platform: generic
-#    name: welcome_room_camera
-#    still_image_url: !secret camera_welcome_room_still_image_url
-#    stream_source: !secret camera_welcome_room_stream_source_url
-#    authentication: !secret camera_authentication
-#    username: !secret camera_username
-#    password: !secret camera_password
-#  - platform: generic
-#    name: living_room_camera
-#    still_image_url: !secret camera_living_room_still_image_url
-#    stream_source: !secret camera_living_room_stream_source_url
-#    authentication: !secret camera_authentication
-#    username: !secret camera_username
-#    password: !secret camera_password
-#  - platform: generic
-#    name: hallway_camera
-#    still_image_url: !secret camera_hallway_still_image_url
-#    stream_source: !secret camera_hallway_stream_source_url
-#    authentication: !secret camera_authentication
-#    username: !secret camera_username
-#    password: !secret camera_password
+  - platform: generic
+    name: welcome_room_camera
+    still_image_url: !secret camera_welcome_room_still_image_url
+    stream_source: !secret camera_welcome_room_stream_source_url
+    authentication: !secret camera_authentication
+    username: !secret camera_username
+    password: !secret camera_password
+  - platform: generic
+    name: living_room_camera
+    still_image_url: !secret camera_living_room_still_image_url
+    stream_source: !secret camera_living_room_stream_source_url
+    authentication: !secret camera_authentication
+    username: !secret camera_username
+    password: !secret camera_password
+  - platform: generic
+    name: hallway_camera
+    still_image_url: !secret camera_hallway_still_image_url
+    stream_source: !secret camera_hallway_stream_source_url
+    authentication: !secret camera_authentication
+    username: !secret camera_username
+    password: !secret camera_password
     
   - platform: generic
     name: front_left_camera

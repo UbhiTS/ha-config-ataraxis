@@ -7,24 +7,24 @@ cards:
       - type: horizontal-stack
         cards:
           - type: picture-entity
-            entity: camera.cam13
-            camera_image: camera.cam13
+            entity: camera.living_room_camera
+            camera_image: camera.living_room_camera
             camera_view: "auto"
             show_name: false
             show_state: false
       - type: horizontal-stack
         cards:
           - type: picture-entity
-            entity: camera.cam11
-            camera_image: camera.cam11
+            entity: camera.welcome_room_camera
+            camera_image: camera.welcome_room_camera
             camera_view: "auto"
             show_name: false
             show_state: false
       - type: horizontal-stack
         cards:
           - type: picture-entity
-            entity: camera.cam14
-            camera_image: camera.cam14
+            entity: camera.hallway_camera
+            camera_image: camera.hallway_camera
             camera_view: "auto"
             show_name: false
             show_state: false

@@ -27,7 +27,7 @@ class HomeController(hass.Hass):
     
     self.listen_state(self.buzz_kitchen, self.buzz_control)
     self.listen_state(self.reset_internet, self.internet_control)
-    self.listen_state(self.jhadoo_battery_level_alert, self.jhadoo_battery_level)
+    #self.listen_state(self.jhadoo_battery_level_alert, self.jhadoo_battery_level)
     
     self.run_daily(self.reset_energy_meter, time(11, 59, 59))
     

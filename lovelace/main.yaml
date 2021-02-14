@@ -18,8 +18,9 @@ cards:
             defaultMode: 2
             entities:
             - entity: calendar.important_dates
-              color: red
-              type: icon1,icon2,icon3
+              type: icon1
+            - entity: calendar.birthdays
+              type: icon2
             - entity: calendar.holidays_in_united_states
               type: holiday
             fullDayEventText: 'All Day'
@@ -49,14 +50,14 @@ cards:
             showProgressBar: false
             progressBarColor: blue
             CalEventHolidayColor: magenta
-            CalEventIcon1Color: red
-            CalEventIcon2Color: cyan
-            CalEventIcon3Color: yellow
-            CalEventIcon1Filter: birthday,anniversary
-            CalEventIcon2Filter: receipt,claim
-            CalEventIcon3Filter: insurance,bill,invoice,vacation,reminder,blackberry,stocks,shares
-            CalEventIcon1: mdi:gift
-            CalEventIcon2: mdi:home
+            CalEventIcon1Color: cyan
+            CalEventIcon2Color: red
+            CalEventIcon3Color: green
+            #CalEventIcon1Filter: birthday,anniversary
+            #CalEventIcon2Filter: receipt,claim
+            #CalEventIcon3Filter: insurance,bill,invoice,vacation,reminder,blackberry,stocks,shares
+            CalEventIcon1: mdi:home
+            CalEventIcon2: mdi:gift
             CalEventIcon3: mdi:octagram
           # CALENDAR CARD
       - type: vertical-stack
@@ -65,11 +66,18 @@ cards:
             cards:
               - type: "custom:config-template-card"
                 entities:
+                #  - sensor.solar_power
+                #  - sensor.grid_power
+                #  - sensor.grid_bar_target
+                #  - sensor.powerwall_power
+                #  - sensor.powerwall_bar_target
+                #  - sensor.house_load
+                  
                   - sensor.solar_power
                   - sensor.grid_power
-                  - sensor.grid_bar_target
+                  - sensor.grid_power_target
                   - sensor.powerwall_power
-                  - sensor.powerwall_bar_target
+                  - sensor.powerwall_power_target
                   - sensor.house_load
                 card:
                   # HOUSE ENERGY PROFILE BARS
@@ -98,7 +106,7 @@ cards:
                           to: 8
                     - entity: sensor.grid_power
                       name: "grid"
-                      target: "${states['sensor.grid_bar_target'].state}"
+                      target: "${states['sensor.grid_power_target'].state}"
                       min: 0
                       max: 8
                       icon: mdi:transmission-tower
@@ -108,7 +116,7 @@ cards:
                           to: 8
                     - entity: sensor.powerwall_power
                       name: "batt"
-                      target: "${states['sensor.powerwall_bar_target'].state}"
+                      target: "${states['sensor.powerwall_power_target'].state}"
                       min: 0
                       max: 8
                       icon: mdi:car-battery

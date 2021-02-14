@@ -14,7 +14,7 @@ tv_manager:
   module: tv_manager
   class: TVManager
   tv: media_player.tv_living_room
-  tv_speaker_switch: switch.tv_living_room_subwoofer_switch
+  tv_speaker_switch: switch.home_theatre_living_room
   debug: false
 
 alexa_door_window_announce:
@@ -58,10 +58,10 @@ alexa_talking_clock:
     - media_player.upper_big_bedroom_alexa
   announcements:
     bell: true  # for SONOS, set to False
-    start_time: "07:30:00"
+    start_time: "07:15:00"
     end_time: "21:30:00"
     half_hour: true
-    quarter_hour: true
+    quarter_hour: false
     default_speech: "It's {time}." # {day} {date} {time} 
   voice: # for SONOS, remove this section
     volume_offset: 0 # -40 to 4, default 0
@@ -70,8 +70,12 @@ alexa_talking_clock:
     whisper: false
   reminders: 
     # daily
+    - schedule: "daily, 07:15:00" 
+      reminder: "Good morning. It's {time}. Today is {day}, {date}. Remember, a great day starts with a good workout."
     - schedule: "daily, 07:30:00" 
-      reminder: "Good morning. Today is {day}, {date}, and it's {time}."
+      reminder: "It's {time}. And just remember, every second counts to achieve your dreams."
+    - schedule: "daily, 07:45:00" 
+      reminder: "It's {time}. If you're already on your feet, this day is yours."
     - schedule: "daily, 12:00:00"
       reminder: "Good afternoon. Today is {day}, {date}, and it's {time}."
     - schedule: "daily, 17:00:00"
@@ -135,6 +139,7 @@ calendar_tv_reminders:
   class: CalendarTVReminders
   tv: media_player.tv_living_room
   calendars:
+    - calendar.birthdays
     - calendar.important_dates
     - calendar.holidays_in_united_states
   notifications:

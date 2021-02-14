@@ -8,19 +8,21 @@ For more details about this platform, please refer to the documentation at
 https://community.home-assistant.io/t/echo-devices-alexa-as-media-player-testers-needed/58639
 """
 
-import functools
 import logging
-import sys
+import hashlib
 from typing import Any, Callable, List, Optional, Text
 
 from alexapy import AlexapyLoginCloseRequested, AlexapyLoginError, hide_email
 from alexapy.alexalogin import AlexaLogin
+from homeassistant.const import (
+    CONF_EMAIL,
+    CONF_URL,
+)
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_component import EntityComponent
 import wrapt
 
-from . import DATA_ALEXAMEDIA
-from .const import EXCEPTION_TEMPLATE
+from .const import DATA_ALEXAMEDIA, EXCEPTION_TEMPLATE
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -208,11 +210,18 @@ def report_relogin_required(hass, login, email) -> bool:
     if hass and login and email:
         if login.status:
             _LOGGER.debug(
-                "Reporting need to relogin to %s with %s", login.url, hide_email(email)
+                "Reporting need to relogin to %s with %s stats: %s",
+                login.url,
+                hide_email(email),
+                login.stats,
             )
             hass.bus.async_fire(
                 "alexa_media_relogin_required",
-                event_data={"email": hide_email(email), "url": login.url},
+                event_data={
+                    "email": hide_email(email),
+                    "url": login.url,
+                    "stats": login.stats,
+                },
             )
             return True
     return False
@@ -244,3 +253,37 @@ def _existing_serials(hass, login_obj) -> List:
             #               existing_serials, apps)
             existing_serials = existing_serials + apps
     return existing_serials
+
+
+async def calculate_uuid(hass, email: Text, url: Text) -> dict:
+    """Return uuid and index of email/url.
+
+    Args
+        hass (bool): Hass entity
+        url (Text): url for account
+        email (Text): email for account
+
+    Returns
+        dict: dictionary with uuid and index
+
+    """
+    result = {}
+    return_index = 0
+    if hass.config_entries.async_entries(DATA_ALEXAMEDIA):
+        for index, entry in enumerate(
+            hass.config_entries.async_entries(DATA_ALEXAMEDIA)
+        ):
+            if entry.data.get(CONF_EMAIL) == email and entry.data.get(CONF_URL) == url:
+                return_index = index
+                break
+    uuid = await hass.helpers.instance_id.async_get()
+    result["uuid"] = hex(
+        int(uuid, 16)
+        # increment uuid for second accounts
+        + return_index
+        # hash email/url in case HA uuid duplicated
+        + int(hashlib.md5((email.lower() + url.lower()).encode()).hexdigest(), 16)
+    )[-32:]
+    result["index"] = return_index
+    _LOGGER.debug("%s: Returning uuid %s", hide_email(email), result)
+    return result

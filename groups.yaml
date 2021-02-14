@@ -64,20 +64,15 @@ time_date:
 home_energy:
   name: Home Energy
   entities:
-    - zwave.fortrezz_ssa2_siren_strobe_light_alarm
-    - sensor.fortrezz_ssa2_siren_strobe_light_alarm_burglar
+    - sensor.powerwall_solar_now
+    - sensor.powerwall_site_now
+    - sensor.powerwall_battery_now
+    - sensor.powerwall_load_now
+    - sensor.powerwall_charge
+    - binary_sensor.grid_status
     - sensor.hem_current
     - sensor.hem_power
     - sensor.hem_energy
-    - sensor.house_load
-    - sensor.solar_power
-    - sensor.grid_power
-    - sensor.powerwall_power
-    - sensor.powerwall_bar_target
-    - sensor.powerwall_power_display
-    - sensor.powerwall_capacity_display
-    - sensor.powerwall_charge
-    - sensor.grid_status_display
     - sensor.entryway_outlet_power
     
 living_room:
@@ -93,9 +88,7 @@ living_room:
     - switch.tv_living_room_subwoofer_switch
     - sensor.tv_living_room_subwoofer_switch_power
     - sensor.tv_living_room_subwoofer_switch_current
-    
-    
-    
+
 kitchen:
   name: Kitchen
   entities:
@@ -124,7 +117,6 @@ master_bathroom:
   name: Master Bathroom
   entities:
     - binary_sensor.master_bathroom_window
-
 
 upper_big_bedroom:
   name: Upper Big Bedroom

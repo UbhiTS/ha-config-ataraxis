@@ -15,7 +15,10 @@ cards:
         entity: switch.kitchen_light
       - type: entity-button
         icon: mdi:lightbulb-on
-        entity: switch.welcome_room_light                
+        entity: switch.welcome_room_light  
+      - type: entity-button
+        icon: mdi:lightbulb-on
+        entity: switch.home_theatre_living_room
         
     - type: horizontal-stack
       cards:

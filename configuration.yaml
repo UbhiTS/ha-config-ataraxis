@@ -146,8 +146,6 @@ lovelace:
     type: js
   - url: /hacsfiles/config-template-card/config-template-card.js
     type: module
-  - url: /hacsfiles/custom-header/custom-header.js
-    type: module
   - url: /hacsfiles/lovelace-auto-entities/auto-entities.js
     type: module
   - url: /hacsfiles/lovelace-layout-card/layout-card.js
@@ -182,14 +180,11 @@ mqtt:
     topic: 'hass/status'
     payload: 'offline'
 
-nest:
-  client_id: !secret nest_client_id
-  client_secret: !secret nest_client_secret
+#nest:
+#  client_id: !secret nest_client_id
+#  client_secret: !secret nest_client_secret
 
 notify:
-
-powerwall:
-  ip_address: !secret powerwall_ipaddress
 
 recorder:
   purge_keep_days: 7

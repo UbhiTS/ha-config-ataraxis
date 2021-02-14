@@ -1,8 +1,12 @@
 # pylint: disable=missing-docstring,invalid-name
 import asyncio
+
 from aiogithubapi import AIOGitHubAPIException
 
-from custom_components.hacs.helpers.classes.exceptions import HacsException
+from custom_components.hacs.helpers.classes.exceptions import (
+    HacsException,
+    HacsRepositoryArchivedException,
+)
 from custom_components.hacs.helpers.functions.logger import getLogger
 from custom_components.hacs.helpers.functions.register_repository import (
     register_repository,
@@ -11,7 +15,7 @@ from custom_components.hacs.helpers.functions.register_repository import (
 max_concurrent_tasks = asyncio.Semaphore(15)
 sleeper = 5
 
-logger = getLogger("factory")
+_LOGGER = getLogger()
 
 
 class HacsTaskFactory:
@@ -24,7 +28,7 @@ class HacsTaskFactory:
             try:
                 await repository.common_update()
             except (AIOGitHubAPIException, HacsException) as exception:
-                logger.error("%s - %s", repository.data.full_name, exception)
+                _LOGGER.error("%s - %s", repository.data.full_name, exception)
 
             # Due to GitHub ratelimits we need to sleep a bit
             await asyncio.sleep(sleeper)
@@ -33,8 +37,10 @@ class HacsTaskFactory:
         async with max_concurrent_tasks:
             try:
                 await repository.update_repository()
+            except HacsRepositoryArchivedException as exception:
+                _LOGGER.warning("%s - %s", repository.data.full_name, exception)
             except (AIOGitHubAPIException, HacsException) as exception:
-                logger.error("%s - %s", repository.data.full_name, exception)
+                _LOGGER.error("%s - %s", repository.data.full_name, exception)
 
             # Due to GitHub ratelimits we need to sleep a bit
             await asyncio.sleep(sleeper)
@@ -44,7 +50,7 @@ class HacsTaskFactory:
             try:
                 await register_repository(repo, category)
             except (AIOGitHubAPIException, HacsException) as exception:
-                logger.error("%s - %s", repo, exception)
+                _LOGGER.error("%s - %s", repo, exception)
 
             # Due to GitHub ratelimits we need to sleep a bit
             await asyncio.sleep(sleeper)

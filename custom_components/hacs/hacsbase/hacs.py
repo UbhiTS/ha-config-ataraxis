@@ -7,7 +7,6 @@ from queueman import QueueManager
 from queueman.exceptions import QueueManagerExecutionStillInProgress
 
 from custom_components.hacs.helpers import HacsHelpers
-
 from custom_components.hacs.helpers.functions.get_list_from_default import (
     async_get_list_from_default,
 )
@@ -32,8 +31,8 @@ from custom_components.hacs.share import (
     list_removed_repositories,
 )
 
+from ..base import HacsBase
 from ..enums import HacsCategory, HacsStage
-from ..models.base import Hacs as HacsBase
 
 
 class HacsStatus:
@@ -130,7 +129,7 @@ class Hacs(HacsBase, HacsHelpers):
         """Register a repository."""
         await register_repository(full_name, category, check=check)
 
-    async def startup_tasks(self, _event):
+    async def startup_tasks(self, _event=None):
         """Tasks that are started after startup."""
         await self.async_set_stage(HacsStage.STARTUP)
         self.status.background_task = True
@@ -167,7 +166,6 @@ class Hacs(HacsBase, HacsHelpers):
         self.status.background_task = False
         self.hass.bus.async_fire("hacs/status", {})
         await self.async_set_stage(HacsStage.RUNNING)
-        await self.data.async_write()
 
     async def handle_critical_repositories_startup(self):
         """Handled critical repositories during startup."""

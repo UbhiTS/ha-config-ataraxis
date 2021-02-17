@@ -75,7 +75,6 @@ cards:
                   
                   - sensor.solar_power
                   - sensor.grid_power
-                  - sensor.grid_power_target
                   - sensor.powerwall_power
                   - sensor.powerwall_power_target
                   - sensor.house_load
@@ -115,7 +114,7 @@ cards:
                           from: -8
                           to: 8
                     - entity: sensor.powerwall_power
-                      name: "batt"
+                      name: "${states['sensor.powerwall_power_name'].state}"
                       target: "${states['sensor.powerwall_power_target'].state}"
                       min: 0
                       max: 8

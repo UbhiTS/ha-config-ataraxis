@@ -74,26 +74,32 @@
       grid_power:
         unit_of_measurement: kW
         value_template: "{{ states('sensor.powerwall_site_now') | float | round(1) }}"
+      
+      grid_power_target:
+        unit_of_measurement: kW
+        value_template: "{{ states('sensor.powerwall_site_now') | float | abs | round(1) }}"
         
       powerwall_power:
         unit_of_measurement: kW
         value_template: "{{ states('sensor.powerwall_battery_now') | float | round(1) }}"
+      
+      powerwall_power_target:
+        unit_of_measurement: kW
+        value_template: "{{ states('sensor.powerwall_battery_now') | float | abs | round(1) }}"
+        #value_template: "{{ states('sensor.powerwall_charge') | float / 12.5 | round(1) }}"
+      
+      powerwall_power_name:
+        value_template: >-
+          {% if states('sensor.powerwall_charge') | float == 100 %}
+            batt
+          {% else %}
+            bat {{ states('sensor.powerwall_charge') }}%
+          {% endif %}
         
       house_load:
         unit_of_measurement: kW
         value_template: "{{ states('sensor.powerwall_load_now') | float | round(1) }}"
-        
-      grid_power_target:
-        value_template: >
-          {% if states('sensor.powerwall_site_now') | float < 0 %}
-            {{ states('sensor.powerwall_site_now') | float * -1 | round(1) }}
-          {% else %}
-            {{ states('sensor.powerwall_site_now') | float | round(1) }}
-          {% endif %}
           
-      powerwall_power_target:
-        value_template: "{{ states('sensor.powerwall_charge') | float / 12.5 | round(1) }}"
-
       fan_mode_master_bedroom:
         value_template: '{{ (states.climate.thermostat_master_bedroom_mode.attributes.fan_mode) }}' 
         friendly_name: 'Master Bedroom' 

@@ -69,11 +69,17 @@
 
       solar_power:
         unit_of_measurement: kW
-        value_template: "{{ states('sensor.powerwall_solar_now') | float | round(1) }}"
+        value_template: "{{ states('sensor.powerwall_solar_now') | float | abs | round(1) }}"
         
       grid_power:
         unit_of_measurement: kW
-        value_template: "{{ states('sensor.powerwall_site_now') | float | round(1) }}"
+        #value_template: "{{ states('sensor.powerwall_site_now') | float | round(1) }}"
+        value_template: >-
+          {% if states('sensor.powerwall_site_now') | float | abs == 0 %}
+            0
+          {% else %}
+            {{ states('sensor.powerwall_site_now') | float | round(1) }}
+          {% endif %}
       
       grid_power_target:
         unit_of_measurement: kW
@@ -81,7 +87,13 @@
         
       powerwall_power:
         unit_of_measurement: kW
-        value_template: "{{ states('sensor.powerwall_battery_now') | float | round(1) }}"
+        #value_template: "{{ states('sensor.powerwall_battery_now') | float | round(1) }}"
+        value_template: >-
+          {% if states('sensor.powerwall_battery_now') | float | abs == 0 %}
+            0
+          {% else %}
+            {{ states('sensor.powerwall_battery_now') | float | round(1) }}
+          {% endif %}
       
       powerwall_power_target:
         unit_of_measurement: kW

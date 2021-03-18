@@ -105,14 +105,14 @@ auto_fan_speed_master_bedroom:
   sun: sun.sun
   speeds:
     low: 67
-    medium: 69
-    high: 71
+    medium: 70
+    high: 72
     sun_offset: -1
   time:
     start: "21:00:00"
-    end: "10:00:00"
+    end: "09:00:00"
     turn_off_at_end_time: true
-  debug: false
+  debug: true
 
 auto_internet_rebooter:
   module: auto_internet_rebooter
@@ -329,3 +329,4 @@ wallmote:
   alexa_upper_guest_bedroom: media_player.upper_guest_bedroom_alexa
   doorbell: switch.living_room_doorbell
   internet_switch: switch.garage_internet_switch
+  tv: media_player.tv_living_room

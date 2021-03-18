@@ -28,6 +28,7 @@ class WallMoteController(hass.Hass):
     self.alexa_upper_small_bedroom = self.args["alexa_upper_small_bedroom"]
     self.alexa_upper_guest_bedroom = self.args["alexa_upper_guest_bedroom"]
     self.internet_switch = self.args["internet_switch"]
+    self.tv = self.args["tv"]
 
     self.listen_event(self.button_one_single_tap, "zwave.scene_activated", entity_id = "zwave.wallmote_quad_01", scene_id = 1, scene_data = 0)
     self.listen_event(self.button_one_hold, "zwave.scene_activated", entity_id = "zwave.wallmote_quad_01", scene_id = 1, scene_data = 2)
@@ -42,62 +43,61 @@ class WallMoteController(hass.Hass):
     self.listen_event(self.button_four_hold, "zwave.scene_activated", entity_id = "zwave.wallmote_quad_01", scene_id = 4 , scene_data = 2)
     self.listen_event(self.button_four_release, "zwave.scene_activated", entity_id = "zwave.wallmote_quad_01", scene_id = 4, scene_data = 1)
 
+    #self.call_service("media_player/play_media", entity_id = self.alexa_kitchen, media_content_type = "sequence", media_content_id = "Alexa.Joke.Play")
+    #self.call_service("webostv/button", entity_id = self.tv, button = sequence[step])
+    #self.call_service("notify/alexa_media", data = {"type":"tts", "method":"all"}, target = self.alexa_upper_big_bedroom, message = "hi, your attention please. this is a call for beer time")
+    #self.call_service("notify/alexa_media", data = {"type":"tts", "method":"all"}, target = self.alexa_upper_small_bedroom, message = "hi, your attention please. this is a call for beer time")
+    #self.call_service("notify/alexa_media", data = {"type":"tts", "method":"all"}, target = self.alexa_upper_guest_bedroom, message = "hi, your attention please. this is a call for beer time")
+
+
 
   def button_one_single_tap(self, event, data, kwargs):
-    self.log("button_one_single_tap")
-    self.call_service("media_player/play_media", entity_id = self.alexa_kitchen, media_content_type = "sequence", media_content_id = "Alexa.Joke.Play")
+    self.tv_energy_save_off()
 
 
   def button_one_hold(self, event, data, kwargs):
-    self.log("button_one_hold")
+    pass
 
 
   def button_one_release(self, event, data, kwargs):
-    self.log("button_one_release")
+    pass
 
 
   def button_two_single_tap(self, event, data, kwargs):
-    self.log("button_two_single_tap")
-    self.call_service("switch/turn_on", entity_id = self.doorbell)
-    self.call_service("notify/alexa_media", data = {"type":"tts", "method":"all"}, target = self.alexa_kitchen, message = "Your attention please. There is someone at the door!")
+    self.tv_energy_save_min()
 
 
   def button_two_hold(self, event, data, kwargs):
-    self.log("button_two_hold")
+    pass
 
 
   def button_two_release(self, event, data, kwargs):
-    self.log("button_two_release")
-    self.call_service("notify/alexa_media", data = {"type":"tts", "method":"all"}, target = self.alexa_upper_big_bedroom, message = "hi, your attention please. this is a call for beer time")
-    self.call_service("notify/alexa_media", data = {"type":"tts", "method":"all"}, target = self.alexa_upper_small_bedroom, message = "hi, your attention please. this is a call for beer time")
-    self.call_service("notify/alexa_media", data = {"type":"tts", "method":"all"}, target = self.alexa_upper_guest_bedroom, message = "hi, your attention please. this is a call for beer time")
-
+    pass
+    
 
   def button_three_single_tap(self, event, data, kwargs):
-    self.log("button_three_single_tap")
-    self.call_service("media_player/play_media", entity_id = self.alexa_kitchen, media_content_type = "sequence", media_content_id = "Alexa.Joke.Play")
+    self.tv_energy_save_med()
 
 
   def button_three_hold(self, event, data, kwargs):
-    self.log("button_three_hold")
+    pass
 
 
   def button_three_release(self, event, data, kwargs):
-    self.log("button_three_release")
+    pass
 
 
   def button_four_single_tap(self, event, data, kwargs):
-    self.log("button_four_single_tap")
-    self.call_service("media_player/play_media", entity_id = self.alexa_kitchen, media_content_type = "sequence", media_content_id = "Alexa.Joke.Play")
+    self.tv_energy_save_max()
 
 
   def button_four_hold(self, event, data, kwargs):
-    self.log("button_four_hold")
+    pass
 
 
   def button_four_release(self, event, data, kwargs):
-    self.log("button_four_release")
-    self.reset_internet()
+    self.tv_energy_save_screen_off()
+    pass
 
 
   def reset_internet(self):
@@ -114,3 +114,88 @@ class WallMoteController(hass.Hass):
   def turn_on_switch(self, kwargs):
     self.log("INTERNET_RESET:TURN_ON")
     self.call_service("switch/turn_on", entity_id = self.internet_switch)
+  
+  
+  def tv_energy_save_off(self):
+    self.run_sequence([
+      {"webostv/button": {"entity_id": self.tv, "button": "MENU"}},  {"sleep": 2},
+      {"webostv/button": {"entity_id": self.tv, "button": "UP"}},    {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 3},
+      {"webostv/button": {"entity_id": self.tv, "button": "RIGHT"}}, {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 2.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "EXIT"}}
+      ])
+      
+  def tv_energy_save_min(self):
+    self.run_sequence([
+      {"webostv/button": {"entity_id": self.tv, "button": "MENU"}},  {"sleep": 2},
+      {"webostv/button": {"entity_id": self.tv, "button": "UP"}},    {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 3},
+      {"webostv/button": {"entity_id": self.tv, "button": "RIGHT"}}, {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 2.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "EXIT"}}
+      ])
+  
+  def tv_energy_save_med(self):
+    self.run_sequence([
+      {"webostv/button": {"entity_id": self.tv, "button": "MENU"}},  {"sleep": 2},
+      {"webostv/button": {"entity_id": self.tv, "button": "UP"}},    {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 3},
+      {"webostv/button": {"entity_id": self.tv, "button": "RIGHT"}}, {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 2.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "EXIT"}}
+      ])
+  
+  def tv_energy_save_max(self):
+    self.run_sequence([
+      {"webostv/button": {"entity_id": self.tv, "button": "MENU"}},  {"sleep": 2},
+      {"webostv/button": {"entity_id": self.tv, "button": "UP"}},    {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 3},
+      {"webostv/button": {"entity_id": self.tv, "button": "RIGHT"}}, {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 2.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "EXIT"}}
+      ])
+
+  def tv_energy_save_screen_off(self):
+    self.run_sequence([
+      {"webostv/button": {"entity_id": self.tv, "button": "MENU"}},  {"sleep": 2},
+      {"webostv/button": {"entity_id": self.tv, "button": "UP"}},    {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 3},
+      {"webostv/button": {"entity_id": self.tv, "button": "RIGHT"}}, {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 2.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+      {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}
+      ])

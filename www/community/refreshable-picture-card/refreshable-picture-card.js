@@ -1,4 +1,5 @@
 
+var hassObj = null;
 class ResfeshablePictureCard extends HTMLElement {
 
   constructor() {
@@ -14,12 +15,16 @@ class ResfeshablePictureCard extends HTMLElement {
     this._config = cardConfig
   }
 
+ 
   
   set hass(hass) {
     
+    hassObj = hass;
 
   
     const config = this._config;
+    
+    // console.log(hassObj.states[config.entity_picture]["attributes"][config.attribute])
     
     let picture = config.static_picture;
     let title = config.title || ""
@@ -111,7 +116,7 @@ class ResfeshablePictureCard extends HTMLElement {
     
   _bindrefresh(card, hass, config){
     var picture =  card.getElementsByClassName(`thePic`)[0];
-    // console.log(hass.states[config.entity_picture]["attributes"][config.attribute])
+  
     
     let refreshTime = config.update_interval || 30
     
@@ -120,7 +125,7 @@ class ResfeshablePictureCard extends HTMLElement {
       var pictureUrl = config.static_picture
       
       if(config.entity_picture){
-       pictureUrl = hass.states[config.entity_picture]["attributes"][config.attribute]
+       pictureUrl = hassObj.states[config.entity_picture]["attributes"][config.attribute]
       
        
      }

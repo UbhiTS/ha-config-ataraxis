@@ -76,10 +76,17 @@ class AutoInternetRebooter(hass.Hass):
 
   def evaluate_internet_health(self, entity, attribute, old, new, kwargs):
     
-    speed_download = float(self.get_state(self.sensor_download))
-    speed_upload = float(self.get_state(self.sensor_upload))
-    speed_ping = float(self.get_state(self.sensor_ping))
-    
+    speed_download = self.threshold_download
+    speed_upload = self.threshold_upload
+    speed_ping = self.threshold_ping
+
+    try:
+      speed_download = float(self.get_state(self.sensor_download))
+      speed_upload = float(self.get_state(self.sensor_upload))
+      speed_ping = float(self.get_state(self.sensor_ping))
+    except:
+      pass
+
     d = speed_download < self.threshold_download
     u = speed_upload < self.threshold_upload
     p = speed_ping > self.threshold_ping

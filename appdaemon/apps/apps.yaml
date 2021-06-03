@@ -106,7 +106,7 @@ auto_fan_speed_master_bedroom:
   speeds:
     low: 67
     medium: 70
-    high: 72
+    high: 73
     sun_offset: -1
   time:
     start: "21:00:00"
@@ -132,7 +132,7 @@ auto_internet_rebooter:
     alexa: media_player.upper_big_bedroom_alexa
     start_time: "08:00:00"
     end_time: "21:30:00"
-  debug: false
+  debug: true
 
 calendar_tv_reminders:
   module: calendar_tv_reminders

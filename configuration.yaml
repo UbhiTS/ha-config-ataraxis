@@ -95,11 +95,8 @@ history:
 
 http:
   use_x_forwarded_for: true
-  trusted_proxies:
-    - 192.168.86.11
-    - 192.168.86.0/24
-    - 127.0.0.1
-    - ::1
+  trusted_proxies: !secret http_trusted_proxies
+
 
 influxdb:
   api_version: !secret influxdb_api_version

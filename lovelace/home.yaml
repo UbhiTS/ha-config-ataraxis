@@ -1,6 +1,5 @@
 title: Home
 icon: mdi:home
-background: var(--background)
 cards:
 
   - type: entities

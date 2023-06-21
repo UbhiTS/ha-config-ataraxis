@@ -4,57 +4,166 @@
 #                                                               #
 #################################################################
 
+# The items below are some of the default values from 
+# https://github.com/home-assistant/frontend/blob/master/src/resources/ha-style.ts 
+# Where the default value isn't changed, its noted.
+
 midnight:
-  background: 'center / cover no-repeat url("/local/backgrounds/grey2.jpg") fixed'
-  ha-card-background: "rgba(128, 128, 128, 0.1)"
-  ha-card-border-radius: "7px"
-  ha-card-box-shadow: "3px 3px 13px -6px rgba(0,0,0,1)"
-  label-badge-text-color: "#ffffff"
-  label-badge-background-color: "#21252b"
-  sidebar-background-color: "#000000"
-  sidebar-icon-color: "#03a9f4"
-  switch-checked-color: "#03a9f4"
-  switch-unchecked-color: "#7f848e"
-  switch-unchecked-button-color: "#7f848e"
-  table-row-background-color: "#2c3139"
-  table-row-alternative-background-color: "#424a56"
+  #Fonts
+  # primary-font-family: "Ubuntu,sans-serif"
+  # secondary-font-family: "Oxygen,sans-serif"
+  # paper-font-common-base_-_font-family: "var(--secondary-font-family)"
+  # paper-font-common-code_-_font-family: "var(--secondary-font-family)"
+  # paper-font-body1_-_font-family: "var(--secondary-font-family)"
+  # paper-font-subhead_-_font-family: "var(--secondary-font-family)"
+  # paper-font-headline_-_font-family: "var(--primary-font-family)"
+  # paper-font-caption_-_font-family: "var(--secondary-font-family)"
+  # paper-font-title_-_font-family: "var(--primary-font-family)"
+  # ha-card-header-font-family: "var(--primary-font-family)"
 
-  # The items below are some of the default values from 
-  # https://github.com/home-assistant/frontend/blob/master/src/resources/ha-style.ts 
-  # Where the default value isn't changed, its noted.
+  # Change the value below 6px to 0px to remove the rounded corners
+  ha-card-border-radius: "6px"
 
-  #Text
-  primary-text-color: "#ffffff"
-  secondary-text-color: "#b3b3b3"
-  text-primary-color: "#ffffff"
-  disabled-text-color: "#7f848e"
+  # Place the backgrounds in the folder  /config/www/waves/
+  background-image: "center / cover no-repeat url('/local/midnight/background.jpg') fixed"
+  lovelace-background: var(--background-image)
 
-  #Main interface colors
+  # Main colors
   primary-color: "#03a9f4"
-  dark-primary-color: "#03a9f4"
+  secondary-color: "#f4b400"
+  active-color: "#ffff00"
+  inactive-color: "#606060"
+  unavailable-color: "#606060"
+  disabled-color: "#1e1e1e"
   light-primary-color: "#03a9f4"
-  accent-color: "#03a9f4"
+  dark-primary-color: "#03a9f4"
+  accent-color: "#2e2d2d"
+  graph-color: var(--primary-color)
+  primary-background-color: "#2e2d2d"
+  secondary-background-color: "#5e5e5e"
   divider-color: "rgba(0, 0, 0, .12)" #Default Value
-  scrollbar-thumb-color: "rgb(194, 194, 194)" #Default Value
+
+  # Text colors
+  primary-text-color: "#ffffff"
+  text-primary-color: "#ffffff"
+  secondary-text-color: "#b3b3b3"
+  text-medium-light-color: rgba(160, 162, 168, 1)
+  text-medium-color: rgba(128, 130, 138, 1)
+  disabled-text-color: "#7f848e"
   error-color: "#db4437" #Default Value
   warning-color: "#f4b400" #Default Value
   success-color: "#0f9d58" #Default Value
   info-color: "#4285f4" #Default Value
 
-  #States and badges
-  state-icon-color: "#03a9f4"
-  state-icon-active-color: "#ffff00"
+  # Sidebar colors
+  sidebar-background-color: var(--disabled-color)
+  sidebar-icon-color: var(--primary-color)
+  sidebar-text-color: var(--primary-text-color)
+  sidebar-selected-background-color: var(--secondary-color)
+  sidebar-selected-icon-color: var(--primary-color)
+  sidebar-selected-text-color: var(--primary-text-color)
 
-  #Background and sidebar
-  card-background-color: "#000000"
-  primary-background-color: "#000000"
-  secondary-background-color: "#5e5e5e"
+  # App Header
+  app-header-background-color: var(--disabled-color)
+  app-header-icon-color: var(--light-primary-color)
+  app-header-text-color: var(--primary-text-color)
+  app-header-selection-bar-color: var(--primary-color)
+  app-header-selection-color: var(--secondar-color)
 
-  #For label-badge
+  # Icons colors
+  state-icon-color: var(--primary-color)
+  state-icon-active-color: var(--active-color)
+  state-icon-unavailable-color: var(--unavailable-color)
+  # Fix for 2023.01.25 and higher.
+  state-light-active-color:  var(--active-color)
+  state-binary_sensor-active-color: var(--active-color)
+  state-cover-open-color: var(--active-color)
+  state-cover-opening-color: var(--secondary-color)
+  state-cover-closing-color: var(--secondary-color)
+  state-light-color: var(--inactive-color)
+  state-light-on-color: var(--active-color)
+  state-remote-on-color: var(--active-color)
+  state-switch-on-color: var(--active-color)
+  # Settins and colors of Mini Media Player
+  mini-media-player-icon-color: var(--primary-color)
+  mini-media-player-accent-color: var(--primary-color)
+  mini-media-player-progress-height: 8px
+  # Papers slider colors
+  paper-slider-knob-color: var(--primary-color)
+  paper-slider-knob-start-color: var(--paper-slider-knob-color)
+  paper-slider-pin-color: var(--paper-slider-knob-color)
+  paper-slider-active-color: var(--paper-slider-knob-color)
+  paper-slider-container-color: var(--disabled-color)
+  # Labels colors
+  label-badge-text-color: "#ffffff"
+  label-badge-background-color: "#21252b"
   label-badge-red: "#df4c1e" #Default Value
   label-badge-blue: "#039be5" #Default Value
   label-badge-green: "#0da035" #Default Value
   label-badge-yellow: "#f4b400" #Default Value
+  # Cards colors / border
+  ha-card-background: "rgba(128, 128, 128, 0.1)"
+  card-background-color: var(--primary-background-color)
+  paper-card-background-color: var(--ha-card-background)
+  paper-listbox-background-color: var(--primary-background-color)
+  ha-card-border-width: 0px
+  # Toggle button colors
+  paper-toggle-button-checked-button-color: var(--primary-color)
+  paper-toggle-button-checked-bar-color: var(--light-primary-color)
+  paper-toggle-button-unchecked-button-color: var(--disabled-color)
+  paper-toggle-button-unchecked-bar-color: var(--primary-background-color)
+  # Switch colors
+  switch-checked-color: var(--active-color)
+  switch-unchecked-button-color: "#7f848e"
+  switch-unchecked-color: "#7f848e"
+  switch-unchecked-track-color: var(--paper-toggle-button-unchecked-bar-color)
+  # Table colors
+  table-row-background-color: "#2c3139"
+  table-row-alternative-background-color: "#424a56"
+  # Animated icons - Place the icons in /config/www/waves/
+  weather-icon-clear-night: url("/local/waves/clear-night.svg")
+  weather-icon-cloudy: url("/local/waves/cloudy.svg")
+  weather-icon-fog: url("/local/waves/fog.svg")
+  weather-icon-lightning: url("/local/waves/lightning.svg")
+  weather-icon-lightning-rainy: url("/local/waves/lightning-rainy.svg")
+  weather-icon-partlycloudy: url("/local/waves/partlycloudy.svg")
+  weather-icon-pouring: url("/local/waves/pouring.svg")
+  weather-icon-rainy: url("/local/waves/rainy.svg")
+  weather-icon-hail: url("/local/waves/hail.svg")
+  weather-icon-snowy: url("/local/waves/snowy.svg")
+  weather-icon-snowy-rainy: url("/local/waves/snowy-rainy.svg")
+  weather-icon-sunny: url("/local/waves/sunny.svg")
+  weather-icon-windy: url("/local/waves/windy.svg")
+  weather-icon-windy-variant: url("/local/waves/windy-variant.svg")
+  weather-icon-exceptional: url("/local/waves/exceptional.svg")
+  # Shadown
+  ha-card-box-shadow: "3px 3px 13px -6px rgba(0,0,0,1)"
+  # HACS
+  hacs-badge-color: var(--primary-color)
+  link-text-color: var(--disabled-color)
+  markdown-code-background-color: "#f6f8fa" #Default Value
+  google-blue-500: var(--primary-color)
+  hacs-accent-color: var(--light-primary-color)
+  hacs-chip-color: var(--accent-color)
+  hacs-error-color: var(--error-color)
+  hacs-warning-color: var(--warning-color)
+  hacs-update-color: var(--success-color)
+  hacs-new-color: var(--info-color)
+  # Code Editor
+  code-editor-background-color: "#2f3542"
+  codemirror-property: "#16a085"
+  mdc-text-field-fill-color: var(--primary-background-color)
+  mdc-text-field-ink-color: var(--primary-text-color)
+  mdc-text-field-label-ink-color: var(--primary-text-color)
+  input-fill-color: var(--primary-background-color)
+  input-ink-color: var(--primary-text-color)
+  input-label-ink-color: var(--primary-text-color)
+  input-disabled-fill-color: var(--primary-background-color)
+  input-disabled-ink-color: var(--disabled-text-color)
+  input-disabled-label-ink-color: var(--disabled-text-color)
+  input-idle-line-color: var(--primary-background-color)
+  input-dropdown-icon-color: var(--primary-text-color)
+  input-hover-line-color: var(--primary-color)
 
   #Paper items - These Need to Be removed/repalced based on Breaking Changes in 0.113.0 release notes
   paper-grey-50: "#fafafa" #Default Value
@@ -64,8 +173,9 @@ midnight:
   paper-blue-400: "#42a5f5" #Default Value
   paper-orange-400: "#ffa726" #Default Value
 
-  #Markdown styles
-  markdown-code-background-color: "#f6f8fa" #Default Value
+
+  scrollbar-thumb-color: "rgb(194, 194, 194)" #Default Value
+
 
 ####################################################
 #                                                  #

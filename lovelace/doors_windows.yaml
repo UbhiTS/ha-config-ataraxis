@@ -1,6 +1,5 @@
 title: Doors & Windows
 icon: mdi:door-open
-background: var(--background)
 cards:
   - type: entities
     state_color: true

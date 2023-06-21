@@ -1,7 +1,6 @@
 title: Lights & Fans
 icon: mdi:lightbulb-on
-background: var(--background)
-panel: false
+panel: true
 cards:
 
   - type: vertical-stack

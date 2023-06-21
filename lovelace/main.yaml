@@ -1,6 +1,6 @@
 title: Main Dashboard
+
 icon: mdi:human-greeting
-background: var(--background)
 panel: true
 cards:
   - type: vertical-stack
@@ -127,7 +127,7 @@ cards:
                       color: "${states['sensor.plexnas_smart_status_drive_0_2'].state == 'OK' ? 'green' : 'red'}"
 
       - type: grid
-        columns: 3
+        columns: 4
         square: false
         cards:
           - type: "custom:config-template-card" # HOUSE ENERGY PROFILE BARS
@@ -202,6 +202,7 @@ cards:
             #title: 'Solar Production'
           - type: energy-usage-graph
             #title: 'Energy Usage'
+          - type: energy-distribution
       - type: grid
         columns: 3
         square: false

@@ -1,5 +1,5 @@
 title: Home
-
+background: var(--background-image)
 views:
   - !include lovelace/main.yaml
   - !include lovelace/thermostats.yaml

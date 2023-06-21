@@ -158,6 +158,8 @@ lovelace:
     type: module
   - url: /local/floorplan/floorplan-card.js?v=1.1.14
     type: module
+  - url: https://fonts.googleapis.com/css2?family=Oxygen&family=Ubuntu:wght@300&display=swap
+    type: css
 
 media_source:
 media_player:

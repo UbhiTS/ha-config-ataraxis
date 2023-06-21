@@ -1,6 +1,5 @@
 title: Thermostats
 icon: mdi:radiator
-background: var(--background)
 panel: false
 cards:
   - type: thermostat

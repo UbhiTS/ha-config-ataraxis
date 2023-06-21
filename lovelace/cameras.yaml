@@ -1,6 +1,5 @@
 title: Outdoor Cams
 icon: mdi:cctv
-background: var(--background)
 cards:
   - type: picture-entity
     name: "Baby Monitor"

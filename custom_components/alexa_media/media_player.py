@@ -9,9 +9,8 @@ https://community.home-assistant.io/t/echo-devices-alexa-as-media-player-testers
 import asyncio
 import logging
 import re
-from typing import List, Optional, Text  # noqa pylint: disable=unused-import
+from typing import List, Optional
 
-from alexapy import AlexaAPI
 from homeassistant import util
 from homeassistant.components.media_player.const import (
     MEDIA_TYPE_MUSIC,
@@ -90,10 +89,15 @@ DEPENDENCIES = [ALEXA_DOMAIN]
 
 # @retry_async(limit=5, delay=2, catch_exceptions=True)
 async def async_setup_platform(hass, config, add_devices_callback, discovery_info=None):
-    # pylint: disable=unused-argument
     """Set up the Alexa media player platform."""
     devices = []  # type: List[AlexaClient]
-    account = config[CONF_EMAIL] if config else discovery_info["config"][CONF_EMAIL]
+    account = None
+    if config:
+        account = config.get(CONF_EMAIL)
+    if account is None and discovery_info:
+        account = discovery_info.get("config", {}).get(CONF_EMAIL)
+    if account is None:
+        raise ConfigEntryNotReady
     account_dict = hass.data[DATA_ALEXAMEDIA]["accounts"][account]
     entry_setup = len(account_dict["entities"]["media_player"])
     alexa_client = None
@@ -188,7 +192,6 @@ class AlexaClient(MediaPlayerDevice, AlexaMedia):
     """Representation of a Alexa device."""
 
     def __init__(self, device, login, second_account_index=0):
-        # pylint: disable=unused-argument
         """Initialize the Alexa device."""
         super().__init__(self, login)
 
@@ -277,9 +280,13 @@ class AlexaClient(MediaPlayerDevice, AlexaMedia):
             "coordinator"
         )
         if coordinator:
-            coordinator.async_remove_listener(self.update)
+            try:
+                coordinator.async_remove_listener(self.update)
+            except AttributeError:
+                pass  # ignore missing listener
 
     async def _handle_event(self, event):
+        # pylint: disable=too-many-branches,too-many-statements
         """Handle events.
 
         This will update last_called and player_state events.
@@ -375,7 +382,6 @@ class AlexaClient(MediaPlayerDevice, AlexaMedia):
                 and self._last_called_timestamp
                 != event["last_called_change"]["timestamp"]
             ):
-
                 _LOGGER.debug(
                     "%s: %s is last_called: %s",
                     hide_email(self._login.email),
@@ -517,6 +523,7 @@ class AlexaClient(MediaPlayerDevice, AlexaMedia):
     @util.Throttle(MIN_TIME_BETWEEN_SCANS, MIN_TIME_BETWEEN_FORCED_SCANS)
     @_catch_login_errors
     async def refresh(self, device=None, skip_api: bool = False):
+        # pylint: disable=too-many-branches,too-many-statements
         """Refresh device data.
 
         This is a per device refresh and for many Alexa devices can result in
@@ -591,7 +598,7 @@ class AlexaClient(MediaPlayerDevice, AlexaMedia):
                 if playing_parents:
                     if len(playing_parents) > 1:
                         _LOGGER.warning(
-                            "Found multiple playing parents " "please file an issue"
+                            "Found multiple playing parents please file an issue"
                         )
                     parent = self.hass.data[DATA_ALEXAMEDIA]["accounts"][
                         self._login.email
@@ -999,7 +1006,7 @@ class AlexaClient(MediaPlayerDevice, AlexaMedia):
         return self._last_update
 
     @property
-    def media_image_url(self) -> Optional[Text]:
+    def media_image_url(self) -> Optional[str]:
         """Return the image URL of current playing media."""
         if self._media_image_url:
             return re.sub("\\(", "%28", re.sub("\\)", "%29", self._media_image_url))
@@ -1261,7 +1268,9 @@ class AlexaClient(MediaPlayerDevice, AlexaMedia):
                 )
             )
         else:
-            await self.alexa_api.send_tts(message, customer_id=self._customer_id, **kwargs)
+            await self.alexa_api.send_tts(
+                message, customer_id=self._customer_id, **kwargs
+            )
 
     @_catch_login_errors
     async def async_send_announcement(self, message, **kwargs):
@@ -1307,7 +1316,7 @@ class AlexaClient(MediaPlayerDevice, AlexaMedia):
 
     @_catch_login_errors
     async def async_play_media(self, media_type, media_id, enqueue=None, **kwargs):
-        # pylint: disable=unused-argument
+        # pylint: disable=unused-argument,too-many-branches
         """Send the play_media command to the media player."""
         queue_delay = self.hass.data[DATA_ALEXAMEDIA]["accounts"][self.email][
             "options"
@@ -1482,7 +1491,7 @@ class AlexaClient(MediaPlayerDevice, AlexaMedia):
             await self.async_update()
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return the state attributes."""
         attr = {
             "available": self.available,

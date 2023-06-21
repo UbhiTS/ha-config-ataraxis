@@ -1,47 +1,39 @@
 """Constants for HACS"""
-NAME_LONG = "HACS (Home Assistant Community Store)"
+from typing import TypeVar
+
+from aiogithubapi.common.const import ACCEPT_HEADERS
+
 NAME_SHORT = "HACS"
-INTEGRATION_VERSION = "1.11.3"
 DOMAIN = "hacs"
 CLIENT_ID = "395a8e669c5de9f7c6e8"
-MINIMUM_HA_VERSION = "2020.12.0"
-PROJECT_URL = "https://github.com/hacs/integration/"
-CUSTOM_UPDATER_LOCATIONS = [
-    "{}/custom_components/custom_updater.py",
-    "{}/custom_components/custom_updater/__init__.py",
-]
+MINIMUM_HA_VERSION = "2022.11.0"
 
-ISSUE_URL = f"{PROJECT_URL}issues"
-DOMAIN_DATA = f"{NAME_SHORT.lower()}_data"
+URL_BASE = "/hacsfiles"
 
-ELEMENT_TYPES = ["integration", "plugin"]
+TV = TypeVar("TV")
 
 PACKAGE_NAME = "custom_components.hacs"
 
-IFRAME = {
-    "title": "HACS",
-    "icon": "hacs:hacs",
-    "url": "/community_overview",
-    "path": "community",
-    "require_admin": True,
+DEFAULT_CONCURRENT_TASKS = 15
+DEFAULT_CONCURRENT_BACKOFF_TIME = 1
+
+HACS_REPOSITORY_ID = "172733314"
+
+HACS_ACTION_GITHUB_API_HEADERS = {
+    "User-Agent": "HACS/action",
+    "Accept": ACCEPT_HEADERS["preview"],
 }
 
 VERSION_STORAGE = "6"
 STORENAME = "hacs"
 
-# Messages
-NO_ELEMENTS = "No elements to show, open the store to install some awesome stuff."
+HACS_SYSTEM_ID = "0717a0cd-745c-48fd-9b16-c8534c9704f9-bc944b0f-fd42-4a58-a072-ade38d1444cd"
 
-CUSTOM_UPDATER_WARNING = """
-This cannot be used with custom_updater.
-To use this you need to remove custom_updater form {}
-"""
-
-STARTUP = f"""
+STARTUP = """
 -------------------------------------------------------------------
 HACS (Home Assistant Community Store)
 
-Version: {INTEGRATION_VERSION}
+Version: %s
 This is a custom integration
 If you have any issues with this you need to open an issue here:
 https://github.com/hacs/integration/issues

@@ -28,8 +28,17 @@ class IOSHACompanionController(hass.Hass):
     if data["actionName"] == 'close_garage_small':
       self.log('IOS_COMPANION_CLOSE_GARAGE_SMALL')
       self.call_service("cover/close_cover", entity_id = 'cover.garage_door_small')
+    if data["actionName"] == 'backyard_mesh_lights':
+      self.log('IOS_COMPANION_BACKYARD_MESH_LIGHTS')
+      self.call_service("switch/toggle", entity_id = 'switch.backyard_mesh_lights')
+    if data["actionName"] == 'entryway_light':
+      self.log('IOS_COMPANION_ENTRYWAY_LIGHT')
+      self.call_service("switch/toggle", entity_id = 'switch.entryway_light')
+
     if data["actionName"] == 'buzz_home':
       self.log('IOS_COMPANION_BUZZ_HOME')
       self.call_service("notify/alexa_media", data = {"type":"announce", "method":"all"}, target = 'media_player.kitchen_alexa', message = "Someone's calling you. Please pick up the phone or call them back immediately!")
-      
+    if data["actionName"] == 'net_reboot':
+      self.log('IOS_COMPANION_NET_REBOOT')
+
 

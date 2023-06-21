@@ -32,15 +32,15 @@ class AlexaDoorbell(hass.Hass):
     self.door_sensor = self.args["door"]["sensor"] if "sensor" in self.args["door"] else None
     self.door_alexa = self.args["door"]["alexa"] if "alexa" in self.args["door"] else None
     self.door_alexa_bell = self.args["door"]["announce_bell"] if "announce_bell" in self.args["door"] else False
-    self.door_bell_switch = self.args["door"]["bell_switch"] if "bell_switch" in self.args["door"] else None
+    self.bell_switch_debug_override = self.args["door"]["bell_switch_debug_override"] if "bell_switch_debug_override" in self.args["door"] else None
     self.home_alexa = self.args["home"]["alexa"] if "alexa" in self.args["home"] else None
     self.home_alexa_bell = self.args["home"]["announce_bell"] if "announce_bell" in self.args["home"] else True
     self.home_doorbell = self.args["home"]["doorbell"] if "doorbell" in self.args["home"] else None
     
     self.listen_state(self.evaluate_and_ring_doorbell, self.door_motion_sensor, attribute = "state")
     
-    if self.door_bell_switch:
-      self.listen_state(self.doorbell_override, self.door_bell_switch, attribute = "state", old = "off", new = "on")
+    if self.bell_switch_debug_override:
+      self.listen_state(self.doorbell_override, self.bell_switch_debug_override, attribute = "state", old = "off", new = "on")
     
     self.time_start = datetime.strptime("07:00:00", '%H:%M:%S').time()
     self.time_end = datetime.strptime("22:00:00", '%H:%M:%S').time()
@@ -98,7 +98,6 @@ class AlexaDoorbell(hass.Hass):
 
 
   def doorbell_override(self, entity, attribute, old, new, kwargs):
-    self.call_service("switch/turn_off", entity_id = self.door_bell_switch)
     if self.home_doorbell is not None: self.run_in(self.doorbell_ring, 0)
     self.run_in(self.notify_home, 0)
     self.debug_log("DOORBELL OVERRIDE SWITCH")

@@ -1,0 +1,46 @@
+platform: template
+sensors:
+
+  solar_power:
+    unique_id: "uid_solar_power"
+    unit_of_measurement: kW
+    value_template: "{{ states('sensor.powerwall_solar_now') | float | abs | round(1) }}"
+    
+  grid_power:
+    unique_id: "uid_grid_power"
+    unit_of_measurement: kW
+    value_template: >-
+      {% if states('sensor.powerwall_site_now') | float | abs == 0 %}
+        0
+      {% else %}
+        {{ states('sensor.powerwall_site_now') | float | abs | round(1) }}
+      {% endif %}
+  
+  grid_power_target:
+    unique_id: "uid_grid_power_target"
+    unit_of_measurement: kW
+    value_template: "{{ states('sensor.powerwall_site_now') | float | abs | round(1) }}"
+    
+  powerwall_power:
+    unique_id: "uid_powerwall_power"
+    unit_of_measurement: kW
+    value_template: >-
+      {% if states('sensor.powerwall_battery_now') | float | abs == 0 %}
+        0
+      {% else %}
+        {{ states('sensor.powerwall_battery_now') | float | abs | round(1) }}
+      {% endif %}
+  
+  powerwall_power_target:
+    unique_id: "uid_powerwall_power_target"
+    unit_of_measurement: kW
+    value_template: "{{ states('sensor.powerwall_charge') | float / 12.5 | round(1) }}"
+  
+  powerwall_power_name:
+    unique_id: "uid_powerwall_power_name"
+    value_template: "{{ states('sensor.powerwall_charge') }}%"
+    
+  house_load:
+    unique_id: "uid_house_load"
+    unit_of_measurement: kW
+    value_template: "{{ states('sensor.powerwall_load_now') | float | abs | round(1) }}"

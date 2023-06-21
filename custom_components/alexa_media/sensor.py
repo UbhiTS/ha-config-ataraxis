@@ -7,18 +7,21 @@ For more details about this platform, please refer to the documentation at
 https://community.home-assistant.io/t/echo-devices-alexa-as-media-player-testers-needed/58639
 """
 import datetime
+import json
 import logging
-from typing import Callable, List, Optional, Text  # noqa pylint: disable=unused-import
+from typing import Callable, Optional
 
-from homeassistant.const import (
-    DEVICE_CLASS_TIMESTAMP,
-    STATE_UNAVAILABLE,
-    __version__ as HA_VERSION,
+from homeassistant.components.sensor import (
+    SensorDeviceClass,
+    SensorEntity,
+    SensorStateClass,
 )
+from homeassistant.const import UnitOfTemperature, __version__ as HA_VERSION
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady, NoEntitySpecifiedError
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.event import async_track_point_in_utc_time
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.util import dt
 from packaging import version
 import pytz
@@ -32,8 +35,20 @@ from . import (
     hide_email,
     hide_serial,
 )
-from .const import RECURRING_PATTERN, RECURRING_PATTERN_ISO_SET
-from .helpers import add_devices, retry_async
+from .alexa_entity import (
+    parse_air_quality_from_coordinator,
+    parse_temperature_from_coordinator,
+)
+from .const import (
+    ALEXA_ICON_CONVERSION,
+    ALEXA_ICON_DEFAULT,
+    ALEXA_UNIT_CONVERSION,
+    CONF_EXTENDED_ENTITY_DISCOVERY,
+    RECURRING_DAY,
+    RECURRING_PATTERN,
+    RECURRING_PATTERN_ISO_SET,
+)
+from .helpers import add_devices, alarm_just_dismissed
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -41,14 +56,21 @@ LOCAL_TIMEZONE = datetime.datetime.now(datetime.timezone.utc).astimezone().tzinf
 
 
 async def async_setup_platform(hass, config, add_devices_callback, discovery_info=None):
+    # pylint: disable=too-many-locals
     """Set up the Alexa sensor platform."""
-    devices: List[AlexaMediaNotificationSensor] = []
-    SENSOR_TYPES = {
+    devices: list[AlexaMediaNotificationSensor] = []
+    SENSOR_TYPES = {  # pylint: disable=invalid-name
         "Alarm": AlarmSensor,
         "Timer": TimerSensor,
         "Reminder": ReminderSensor,
     }
-    account = config[CONF_EMAIL] if config else discovery_info["config"][CONF_EMAIL]
+    account = None
+    if config:
+        account = config.get(CONF_EMAIL)
+    if account is None and discovery_info:
+        account = discovery_info.get("config", {}).get(CONF_EMAIL)
+    if account is None:
+        raise ConfigEntryNotReady
     include_filter = config.get(CONF_INCLUDE_DEVICES, [])
     exclude_filter = config.get(CONF_EXCLUDE_DEVICES, [])
     account_dict = hass.data[DATA_ALEXAMEDIA]["accounts"][account]
@@ -65,7 +87,7 @@ async def async_setup_platform(hass, config, add_devices_callback, discovery_inf
             raise ConfigEntryNotReady
         if key not in (account_dict["entities"]["sensor"]):
             (account_dict["entities"]["sensor"][key]) = {}
-            for (n_type, class_) in SENSOR_TYPES.items():
+            for n_type, class_ in SENSOR_TYPES.items():
                 n_type_dict = (
                     account_dict["notifications"][key][n_type]
                     if key in account_dict["notifications"]
@@ -73,7 +95,7 @@ async def async_setup_platform(hass, config, add_devices_callback, discovery_inf
                     else {}
                 )
                 if (
-                    n_type in ("Alarm, Timer")
+                    n_type in ("Alarm", "Timer")
                     and "TIMERS_AND_ALARMS" in device["capabilities"]
                 ):
                     alexa_client = class_(
@@ -106,9 +128,29 @@ async def async_setup_platform(hass, config, add_devices_callback, discovery_inf
                     hide_email(account),
                     alexa_client,
                 )
+
+    temperature_sensors = []
+    temperature_entities = account_dict.get("devices", {}).get("temperature", [])
+    if temperature_entities and account_dict["options"].get(
+        CONF_EXTENDED_ENTITY_DISCOVERY
+    ):
+        temperature_sensors = await create_temperature_sensors(
+            account_dict, temperature_entities
+        )
+
+    # AIAQM Sensors
+    air_quality_sensors = []
+    air_quality_entities = account_dict.get("devices", {}).get("air_quality", [])
+    if air_quality_entities and account_dict["options"].get(
+        CONF_EXTENDED_ENTITY_DISCOVERY
+    ):
+        air_quality_sensors = await create_air_quality_sensors(
+            account_dict, air_quality_entities
+        )
+
     return await add_devices(
         hide_email(account),
-        devices,
+        devices + temperature_sensors + air_quality_sensors,
         add_devices_callback,
         include_filter,
         exclude_filter,
@@ -134,36 +176,204 @@ async def async_unload_entry(hass, entry) -> bool:
     return True
 
 
-class AlexaMediaNotificationSensor(Entity):
+async def create_temperature_sensors(account_dict, temperature_entities):
+    """Create temperature sensors."""
+    devices = []
+    coordinator = account_dict["coordinator"]
+    for temp in temperature_entities:
+        _LOGGER.debug(
+            "Creating entity %s for a temperature sensor with name %s",
+            temp["id"],
+            temp["name"],
+        )
+        serial = temp["device_serial"]
+        device_info = lookup_device_info(account_dict, serial)
+        sensor = TemperatureSensor(coordinator, temp["id"], temp["name"], device_info)
+        account_dict["entities"]["sensor"].setdefault(serial, {})
+        account_dict["entities"]["sensor"][serial]["Temperature"] = sensor
+        devices.append(sensor)
+    return devices
+
+
+async def create_air_quality_sensors(account_dict, air_quality_entities):
+    devices = []
+    coordinator = account_dict["coordinator"]
+
+    for temp in air_quality_entities:
+        _LOGGER.debug(
+            "Creating entity %s for a air quality sensor with name %s",
+            temp["id"],
+            temp["name"],
+        )
+        # Each AIAQM has 5 different sensors.
+        for subsensor in temp["sensors"]:
+            sensor_type = subsensor["sensorType"]
+            instance = subsensor["instance"]
+            unit = subsensor["unit"]
+            serial = temp["device_serial"]
+            device_info = lookup_device_info(account_dict, serial)
+            sensor = AirQualitySensor(
+                coordinator,
+                temp["id"],
+                temp["name"],
+                device_info,
+                sensor_type,
+                instance,
+                unit,
+            )
+            _LOGGER.debug("Create air quality sensors %s", sensor)
+            account_dict["entities"]["sensor"].setdefault(serial, {})
+            account_dict["entities"]["sensor"][serial].setdefault(sensor_type, {})
+            account_dict["entities"]["sensor"][serial][sensor_type][
+                "Air_Quality"
+            ] = sensor
+            devices.append(sensor)
+    return devices
+
+
+def lookup_device_info(account_dict, device_serial):
+    """Get the device to use for a given Echo based on a given device serial id.
+
+    This may return nothing as there is no guarantee that a given temperature sensor is actually attached to an Echo.
+    """
+    for key, mediaplayer in account_dict["entities"]["media_player"].items():
+        if (
+            key == device_serial
+            and mediaplayer.device_info
+            and "identifiers" in mediaplayer.device_info
+        ):
+            for ident in mediaplayer.device_info["identifiers"]:
+                return ident
+    return None
+
+
+class TemperatureSensor(SensorEntity, CoordinatorEntity):
+    """A temperature sensor reported by an Echo."""
+
+    def __init__(self, coordinator, entity_id, name, media_player_device_id):
+        """Initialize temperature sensor."""
+        super().__init__(coordinator)
+        self.alexa_entity_id = entity_id
+        self._attr_name = name + " Temperature"
+        self._attr_device_class = SensorDeviceClass.TEMPERATURE
+        self._attr_state_class = SensorStateClass.MEASUREMENT
+        self._attr_native_value: Optional[
+            datetime.datetime
+        ] = parse_temperature_from_coordinator(coordinator, entity_id)
+        self._attr_native_unit_of_measurement: Optional[str] = UnitOfTemperature.CELSIUS
+        # This includes "_temperature" because the Alexa entityId is for a physical device
+        # A single physical device could have multiple HA entities
+        self._attr_unique_id = entity_id + "_temperature"
+        self._attr_device_info = (
+            {
+                "identifiers": {media_player_device_id},
+                "via_device": media_player_device_id,
+            }
+            if media_player_device_id
+            else None
+        )
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = parse_temperature_from_coordinator(
+            self.coordinator, self.alexa_entity_id
+        )
+        super()._handle_coordinator_update()
+
+
+class AirQualitySensor(SensorEntity, CoordinatorEntity):
+    """A air quality sensor reported by an Amazon indoor air quality monitor."""
+
+    def __init__(
+        self,
+        coordinator,
+        entity_id,
+        name,
+        media_player_device_id,
+        sensor_name,
+        instance,
+        unit,
+    ):
+        super().__init__(coordinator)
+        self.alexa_entity_id = entity_id
+        self._sensor_name = sensor_name
+        # tidy up name
+        self._sensor_name = self._sensor_name.replace("Alexa.AirQuality.", "")
+        self._sensor_name = "".join(
+            " " + char if char.isupper() else char.strip() for char in self._sensor_name
+        ).strip()
+        self._attr_name = name + " " + self._sensor_name
+        self._attr_device_class = self._sensor_name
+        self._attr_state_class = SensorStateClass.MEASUREMENT
+        self._attr_native_value: Optional[
+            datetime.datetime
+        ] = parse_air_quality_from_coordinator(coordinator, entity_id, instance)
+        self._attr_native_unit_of_measurement: Optional[
+            str
+        ] = ALEXA_UNIT_CONVERSION.get(unit)
+        self._attr_unique_id = entity_id + " " + self._sensor_name
+        self._attr_icon = ALEXA_ICON_CONVERSION.get(sensor_name, ALEXA_ICON_DEFAULT)
+        self._attr_device_info = (
+            {
+                "identifiers": {media_player_device_id},
+                "via_device": media_player_device_id,
+            }
+            if media_player_device_id
+            else None
+        )
+        self._instance = instance
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_native_value = parse_air_quality_from_coordinator(
+            self.coordinator, self.alexa_entity_id, self._instance
+        )
+        super()._handle_coordinator_update()
+
+
+class AlexaMediaNotificationSensor(SensorEntity):
     """Representation of Alexa Media sensors."""
 
     def __init__(
         self,
         client,
         n_dict,
-        sensor_property: Text,
+        sensor_property: str,
         account,
         name="Next Notification",
         icon=None,
     ):
         """Initialize the Alexa sensor device."""
         # Class info
+        self._attr_device_class = SensorDeviceClass.TIMESTAMP
+        self._attr_state_class = None
+        self._attr_native_value: Optional[datetime.datetime] = None
+        self._attr_name = f"{client.name} {name}"
+        self._attr_unique_id = f"{client.unique_id}_{name}"
+        self._attr_icon = icon
+        self._attr_device_info = {
+            "identifiers": {(ALEXA_DOMAIN, client.unique_id)},
+            "via_device": (ALEXA_DOMAIN, client.unique_id),
+        }
+        self._attr_assumed_state = client.assumed_state
+        self._attr_available = client.available
         self._client = client
         self._n_dict = n_dict
         self._sensor_property = sensor_property
         self._account = account
-        self._dev_id = client.unique_id
-        self._name = name
-        self._unit = None
-        self._device_class = DEVICE_CLASS_TIMESTAMP
-        self._icon = icon
+        self._type = "" if not self._type else self._type
         self._all = []
         self._active = []
-        self._next = None
+        self._next: Optional[dict] = None
         self._prior_value = None
         self._timestamp: Optional[datetime.datetime] = None
         self._tracker: Optional[Callable] = None
-        self._state: Optional[datetime.datetime] = None
+        self._dismissed: Optional[datetime.datetime] = None
+        self._status: Optional[str] = None
+        self._amz_id: Optional[str] = None
+        self._version: Optional[str] = None
 
     def _process_raw_notifications(self):
         self._all = (
@@ -175,13 +385,23 @@ class AlexaMediaNotificationSensor(Entity):
         self._all = sorted(self._all, key=lambda x: x[1][self._sensor_property])
         self._prior_value = self._next if self._active else None
         self._active = (
-            list(filter(lambda x: x[1]["status"] == "ON", self._all))
+            list(filter(lambda x: x[1]["status"] in ("ON", "SNOOZED"), self._all))
             if self._all
             else []
         )
         self._next = self._active[0][1] if self._active else None
-        self._state = self._process_state(self._next)
-        if self._state == STATE_UNAVAILABLE or self._next != self._prior_value:
+        alarm = next(
+            (alarm[1] for alarm in self._all if alarm[1].get("id") == self._amz_id),
+            None,
+        )
+        if alarm_just_dismissed(alarm, self._status, self._version):
+            self._dismissed = dt.now().isoformat()
+        self._attr_native_value = self._process_state(self._next)
+        self._status = self._next.get("status", "OFF") if self._next else "OFF"
+        self._version = self._next.get("version", "0") if self._next else None
+        self._amz_id = self._next.get("id") if self._next else None
+
+        if self._attr_native_value is None or self._next != self._prior_value:
             # cancel any event triggers
             if self._tracker:
                 _LOGGER.debug(
@@ -189,16 +409,16 @@ class AlexaMediaNotificationSensor(Entity):
                     self,
                 )
                 self._tracker()
-            if self._state != STATE_UNAVAILABLE:
+            if self._attr_native_value is not None and self._status != "SNOOZED":
                 _LOGGER.debug(
                     "%s: Scheduling event in %s",
                     self,
-                    dt.as_utc(dt.parse_datetime(self._state)) - dt.utcnow(),
+                    dt.as_utc(self._attr_native_value) - dt.utcnow(),
                 )
                 self._tracker = async_track_point_in_utc_time(
                     self.hass,
                     self._trigger_event,
-                    dt.as_utc(dt.parse_datetime(self._state)),
+                    dt.as_utc(self._attr_native_value),
                 )
 
     def _trigger_event(self, time_date) -> None:
@@ -225,7 +445,9 @@ class AlexaMediaNotificationSensor(Entity):
         ):
             return value
         naive_time = dt.parse_datetime(value[1][self._sensor_property])
-        timezone = pytz.timezone(self._client._timezone)
+        timezone = pytz.timezone(
+            self._client._timezone  # pylint: disable=protected-access
+        )
         if timezone and naive_time:
             value[1][self._sensor_property] = timezone.localize(naive_time)
         elif not naive_time:
@@ -249,41 +471,55 @@ class AlexaMediaNotificationSensor(Entity):
                 self._client.name,
                 value[1],
                 naive_time,
-                self._client._timezone,
+                self._client._timezone,  # pylint: disable=protected-access
             )
         return value
 
     def _update_recurring_alarm(self, value):
         _LOGGER.debug("Sensor value %s", value)
-        alarm = value[1][self._sensor_property]
+        next_item = value[1]
+        alarm = next_item[self._sensor_property]
         reminder = None
-        if isinstance(value[1][self._sensor_property], (int, float)):
+        recurrence = []
+        if isinstance(next_item[self._sensor_property], (int, float)):
             reminder = True
             alarm = dt.as_local(
                 self._round_time(
                     datetime.datetime.fromtimestamp(alarm / 1000, tz=LOCAL_TIMEZONE)
                 )
             )
-        alarm_on = value[1]["status"] == "ON"
-        recurring_pattern = value[1].get("recurringPattern")
+        alarm_on = next_item["status"] == "ON"
+        r_rule_data = next_item.get("rRuleData")
+        if (
+            r_rule_data
+        ):  # the new recurrence pattern; https://github.com/custom-components/alexa_media_player/issues/1608
+            next_trigger_times = r_rule_data.get("nextTriggerTimes")
+            weekdays = r_rule_data.get("byWeekDays")
+            if next_trigger_times:
+                alarm = next_trigger_times[0]
+            elif weekdays:
+                for day in weekdays:
+                    recurrence.append(RECURRING_DAY[day])
+        else:
+            recurring_pattern = next_item.get("recurringPattern")
+            recurrence = RECURRING_PATTERN_ISO_SET.get(recurring_pattern)
         while (
             alarm_on
-            and recurring_pattern
-            and RECURRING_PATTERN_ISO_SET[recurring_pattern]
-            and alarm.isoweekday not in RECURRING_PATTERN_ISO_SET[recurring_pattern]
+            and recurrence
+            and alarm.isoweekday not in recurrence
             and alarm < dt.now()
         ):
             alarm += datetime.timedelta(days=1)
         if reminder:
             alarm = dt.as_timestamp(alarm) * 1000
-        if alarm != value[1][self._sensor_property]:
+        if alarm != next_item[self._sensor_property]:
             _LOGGER.debug(
                 "%s with recurrence %s set to %s",
-                value[1]["type"],
-                RECURRING_PATTERN[recurring_pattern],
+                next_item["type"],
+                recurrence,
                 alarm,
             )
-            value[1][self._sensor_property] = alarm
+        next_item[self._sensor_property] = alarm
         return value
 
     @staticmethod
@@ -333,32 +569,12 @@ class AlexaMediaNotificationSensor(Entity):
                 == self._client.device_serial_number
             ):
                 _LOGGER.debug("Updating sensor %s", self)
-                self.async_schedule_update_ha_state(True)
-
-    @property
-    def available(self):
-        """Return the availability of the sensor."""
-        return self._client.available
-
-    @property
-    def assumed_state(self):
-        """Return whether the state is an assumed_state."""
-        return self._client.assumed_state
+                self.schedule_update_ha_state(True)
 
     @property
     def hidden(self):
         """Return whether the sensor should be hidden."""
-        return self.state == STATE_UNAVAILABLE
-
-    @property
-    def unique_id(self):
-        """Return the unique ID."""
-        return f"{self._client.unique_id}_{self._name}"
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return f"{self._client.name} {self._name}"
+        return self.state is None
 
     @property
     def should_poll(self):
@@ -367,27 +583,8 @@ class AlexaMediaNotificationSensor(Entity):
             self.hass.data[DATA_ALEXAMEDIA]["accounts"][self._account]["websocket"]
         )
 
-    @property
-    def state(self) -> datetime.datetime:
-        """Return the state of the sensor."""
-        return self._state
-
-    def _process_state(self, value):
-        return (
-            dt.as_local(value[self._sensor_property]).isoformat()
-            if value
-            else STATE_UNAVAILABLE
-        )
-
-    @property
-    def unit_of_measurement(self):
-        """Return the unit_of_measurement of the device."""
-        return self._unit
-
-    @property
-    def device_class(self):
-        """Return the device_class of the device."""
-        return self._device_class
+    def _process_state(self, value) -> Optional[datetime.datetime]:
+        return dt.as_local(value[self._sensor_property]) if value else None
 
     async def async_update(self):
         """Update state."""
@@ -399,7 +596,9 @@ class AlexaMediaNotificationSensor(Entity):
         account_dict = self.hass.data[DATA_ALEXAMEDIA]["accounts"][self._account]
         self._timestamp = account_dict["notifications"]["process_timestamp"]
         try:
-            self._n_dict = account_dict["notifications"][self._dev_id][self._type]
+            self._n_dict = account_dict["notifications"][
+                self._client.device_serial_number
+            ][self._type]
         except KeyError:
             self._n_dict = None
         self._process_raw_notifications()
@@ -409,44 +608,34 @@ class AlexaMediaNotificationSensor(Entity):
             pass  # we ignore this due to a harmless startup race condition
 
     @property
-    def device_info(self):
-        """Return the device_info of the device."""
-        return {
-            "identifiers": {(ALEXA_DOMAIN, self._dev_id)},
-            "via_device": (ALEXA_DOMAIN, self._dev_id),
-        }
-
-    @property
-    def icon(self):
-        """Return the icon of the sensor."""
-        return self._icon
-
-    @property
     def recurrence(self):
         """Return the recurrence pattern of the sensor."""
         return (
-            RECURRING_PATTERN[self._next.get("recurringPattern")]
+            RECURRING_PATTERN.get(self._next.get("recurringPattern"))
             if self._next
             else None
         )
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return additional attributes."""
-        import json
-
         attr = {
             "recurrence": self.recurrence,
-            "process_timestamp": dt.as_local(
-                datetime.datetime.fromtimestamp(self._timestamp.timestamp())
-            ).isoformat(),
+            "process_timestamp": dt.as_local(self._timestamp).isoformat(),
             "prior_value": self._process_state(self._prior_value),
             "total_active": len(self._active),
             "total_all": len(self._all),
             "sorted_active": json.dumps(self._active, default=str),
             "sorted_all": json.dumps(self._all, default=str),
+            "status": self._status,
+            "dismissed": self._dismissed,
         }
         return attr
+
+    @callback
+    def exclude_attributes(hass: HomeAssistant) -> set[str]:
+        """Exclude sorted_active and sorted_all from being recorded in the database."""
+        return {"sorted_active", "sorted_all"}
 
 
 class AlarmSensor(AlexaMediaNotificationSensor):
@@ -479,24 +668,22 @@ class TimerSensor(AlexaMediaNotificationSensor):
             else "mdi:timer",
         )
 
-    def _process_state(self, value):
+    def _process_state(self, value) -> Optional[datetime.datetime]:
         return (
             dt.as_local(
                 super()._round_time(
-                    datetime.datetime.fromtimestamp(
-                        self._timestamp.timestamp()
-                        + value[self._sensor_property] / 1000
-                    )
+                    self._timestamp
+                    + datetime.timedelta(milliseconds=value[self._sensor_property])
                 )
-            ).isoformat()
+            )
             if value and self._timestamp
-            else STATE_UNAVAILABLE
+            else None
         )
 
     @property
     def paused(self) -> Optional[bool]:
         """Return the paused state of the sensor."""
-        return self._next["status"] == "PAUSED" if self._next else None
+        return self._next.get("status") == "PAUSED" if self._next else None
 
     @property
     def icon(self):
@@ -506,7 +693,7 @@ class TimerSensor(AlexaMediaNotificationSensor):
             if (version.parse(HA_VERSION) >= version.parse("0.113.0"))
             else "mdi:timer-off"
         )
-        return self._icon if not self.paused else off_icon
+        return self._attr_icon if not self.paused else off_icon
 
 
 class ReminderSensor(AlexaMediaNotificationSensor):
@@ -520,7 +707,7 @@ class ReminderSensor(AlexaMediaNotificationSensor):
             client, n_json, "alarmTime", account, f"next {self._type}", "mdi:reminder"
         )
 
-    def _process_state(self, value):
+    def _process_state(self, value) -> Optional[datetime.datetime]:
         return (
             dt.as_local(
                 super()._round_time(
@@ -528,19 +715,19 @@ class ReminderSensor(AlexaMediaNotificationSensor):
                         value[self._sensor_property] / 1000, tz=LOCAL_TIMEZONE
                     )
                 )
-            ).isoformat()
+            )
             if value
-            else STATE_UNAVAILABLE
+            else None
         )
 
     @property
     def reminder(self):
         """Return the reminder of the sensor."""
-        return self._next["reminderLabel"] if self._next else None
+        return self._next.get("reminderLabel") if self._next else None
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         """Return the scene state attributes."""
-        attr = super().device_state_attributes
+        attr = super().extra_state_attributes
         attr.update({"reminder": self.reminder})
         return attr

@@ -7,7 +7,7 @@ from datetime import datetime, time, timedelta
 #hvac_master_bedroom:
 #  module: alexa_smart_talking_thermostat
 #  class: AlexaSmartTalkingThermostat
-#  thermostat: climate.thermostat_master_bedroom_mode
+#  thermostat: climate.thermostat_master_bedroom
 #  alexa: media_player.master_bedroom_alexa
 #  hvac_limits:
 #    cooling_min: 67
@@ -64,6 +64,8 @@ class AlexaSmartTalkingThermostat(hass.Hass):
       self.listen_state(self.enforce_temp_limits, self.thermostat, attribute = "temperature")
       self.listen_state(self.enforce_temp_limits, self.thermostat, attribute = "target_temp_high")
       self.listen_state(self.enforce_temp_limits, self.thermostat, attribute = "target_temp_low")
+      self.listen_state(self.enforce_temp_limits, self.thermostat, attribute = "max_temp")
+      self.listen_state(self.enforce_temp_limits, self.thermostat, attribute = "min_temp")
       
       init_log += [f"  TEMP {self.cooling_min}/{self.heating_max}\n"]
       
@@ -127,7 +129,7 @@ class AlexaSmartTalkingThermostat(hass.Hass):
 
   def enforce_fan_auto_mode(self, entity, attribute, old, new, kwargs):
     if new != 'Auto Low' and self.recirc_in_progress == False:
-      self.call_service("climate/set_fan_mode", entity_id = self.thermostat, fan_mode = 'Auto Low')
+      self.call_service("climate/set_fan_mode", entity_id = self.thermostat, fan_mode = 'auto')
       self.notify_speaker("Your attention please. AC fan mode has been set to auto.")
       self.debug_log("ENFORCE FAN MODE AUTO")
 
@@ -181,7 +183,7 @@ class AlexaSmartTalkingThermostat(hass.Hass):
 
   def air_cycle(self, kwargs):
     self.recirc_in_progress = True
-    self.call_service("climate/set_fan_mode", entity_id = self.thermostat, fan_mode = 'On Low')
+    self.call_service("climate/set_fan_mode", entity_id = self.thermostat, fan_mode = 'Low')
     self.run_in(self.air_cycle_off, (60 * int(self.recirc_duration)) + 5)
     self.debug_log("AIR RECIRCULATE")
 

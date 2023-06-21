@@ -99,12 +99,12 @@ cards:
               
         - name: Thermostat States
           entities:
-            - climate.thermostat_master_bedroom_mode
-            - climate.thermostat_living_room_mode
-            - climate.thermostat_entertainment_room_mode
-            - climate.thermostat_upper_guest_bedroom_mode
-            - climate.thermostat_upper_small_bedroom_mode
-            - climate.thermostat_upper_big_bedroom_mode
+            - climate.thermostat_master_bedroom
+            - climate.thermostat_living_room
+            - climate.thermostat_entertainment_room
+            - climate.thermostat_upper_guest_bedroom
+            - climate.thermostat_upper_small_bedroom
+            - climate.thermostat_upper_big_bedroom
           text_template: '${entity.attributes.current_temperature ? entity.attributes.current_temperature : "undefined"}'
           states:
             - state: 'heat'

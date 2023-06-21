@@ -1,17 +1,42 @@
 title: Main Dashboard
 icon: mdi:human-greeting
+background: var(--background)
 panel: true
 cards:
-  - type: horizontal-stack
+  - type: vertical-stack
     cards:
-      - type: vertical-stack
+
+      - type: grid
+        columns: 3
+        square: false
         cards:
-          # WEATHER CARD
-          - type: custom:weather-card
-            entity: weather.darksky
-            forecast: true
-          # WEATHER CARD
-          # CALENDAR CARD
+          - type: grid
+            columns: 1
+            square: false
+            cards:
+              - type: weather-forecast
+                title: "Weather"
+                entity: weather.openweathermap
+              - type: grid
+                columns: 2
+                square: false
+                cards:
+                  - type: tile
+                    vertical: true
+                    entity: input_boolean.buzz_home
+                    tap_action:
+                      action: toggle
+                    icon_tap_action:
+                      action: toggle
+                  - type: tile
+                    vertical: true
+                    entity: input_boolean.reset_internet
+                    tap_action:
+                      action: more-info
+                    icon_tap_action:
+                      action: more-info
+
+
           - type: custom:atomic-calendar
             title: "Calendar"
             enableModeChange: true
@@ -59,245 +84,391 @@ cards:
             CalEventIcon1: mdi:home
             CalEventIcon2: mdi:gift
             CalEventIcon3: mdi:octagram
-          # CALENDAR CARD
-      - type: vertical-stack
-        cards:
-          - type: horizontal-stack
+
+          - type: grid
+            columns: 1
+            square: false
             cards:
               - type: "custom:config-template-card"
                 entities:
-                #  - sensor.solar_power
-                #  - sensor.grid_power
-                #  - sensor.grid_bar_target
-                #  - sensor.powerwall_power
-                #  - sensor.powerwall_bar_target
-                #  - sensor.house_load
-                  
-                  - sensor.solar_power
-                  - sensor.grid_power
-                  - sensor.powerwall_power
-                  - sensor.powerwall_power_target
-                  - sensor.house_load
+                  - sensor.ubhinas_smart_status_drive_0_1
+                  - sensor.ubhinas_smart_status_drive_0_2
+                  - sensor.plexnas_smart_status_drive_0_1
+                  - sensor.plexnas_smart_status_drive_0_2
                 card:
-                  # HOUSE ENERGY PROFILE BARS
-                  type: custom:bar-card
-                  columns: 4
-                  title_position: bottom
-                  direction: up
-                  positions:
-                    icon: inside
-                    name: outside
-                    value: outside
-                    indicator: 'off'
-                  animation:
-                    state: 'on'
-                    speed: 5
-                  entities:
-                    - entity: sensor.solar_power
-                      name: "solar"
-                      target: "${states['sensor.solar_power'].state}"
-                      min: 0
-                      max: 8
-                      icon: mdi:weather-sunset
-                      severity:
-                        - color: 'yellow'
-                          from: 0
-                          to: 8
-                    - entity: sensor.grid_power
-                      name: "grid"
-                      target: "${states['sensor.grid_power_target'].state}"
-                      min: 0
-                      max: 8
-                      icon: mdi:transmission-tower
-                      severity:
-                        - color: 'orange'
-                          from: -8
-                          to: 8
-                    - entity: sensor.powerwall_power
-                      name: "${states['sensor.powerwall_power_name'].state}"
-                      target: "${states['sensor.powerwall_power_target'].state}"
-                      min: 0
-                      max: 8
-                      icon: mdi:car-battery
-                      severity:
-                        - color: 'green'
-                          from: -8
-                          to: 8
-                    - entity: sensor.house_load
-                      name: "load"
-                      target: "${states['sensor.house_load'].state}"
-                      min: 0
-                      max: 8
-                      icon: mdi:home
-                      severity:
-                        - color: 'red'
-                          from: 0
-                          to: 8
-                  # HOUSE ENERGY PROFILE BARS
-              - type: custom:mini-graph-card
-                entities:
-                 - sensor.hem_energy
-                name: Grid Surplus
-                icon: mdi:transmission-tower
-                hours_to_show: 48
-                points_per_hour: 1
-                aggregate_func: max
-                line_width: 2
-                smoothing: false
-                font_size: 83
-                show:
-                  points: true
-                  extrema: false
-                  fill: fade
-          # HOUSE BUZZ BUTTON
-          - type: entities
-            show_header_toggle: false
-            entities: 
-              #- input_boolean.buzz_home
-              - input_boolean.reset_internet
-              - cover.garage_door_big
-              - cover.garage_door_small
-          # HOUSE BUZZ BUTTON
-          # CURRENT HOUSE ENTITIES ON
-          - type: entity-filter
-            card:
-              type: glance
-              show_state: false
-              show_icon: true
-              show_name: true
-              columns: 8
-            show_empty: false
-            state_filter:
-            - "on"
+                  type: grid  # HDD STATUS
+                  title: 'NAS HDD Status'
+                  columns: 2
+                  square: false
+                  cards:
+                    - type: tile
+                      vertical: true
+                      name: 'UbhiNAS HD1'
+                      icon: "${states['sensor.ubhinas_smart_status_drive_0_1'].state == 'OK' ? 'mdi:harddisk' : 'mdi:harddisk-remove'}"
+                      entity: sensor.ubhinas_smart_status_drive_0_1
+                      color: "${states['sensor.ubhinas_smart_status_drive_0_1'].state == 'OK' ? 'green' : 'red'}"
+                    - type: tile
+                      vertical: true
+                      name: 'UbhiNAS HD2'
+                      icon: "${states['sensor.ubhinas_smart_status_drive_0_2'].state == 'OK' ? 'mdi:harddisk' : 'mdi:harddisk-remove'}"
+                      entity: sensor.ubhinas_smart_status_drive_0_2
+                      color: "${states['sensor.ubhinas_smart_status_drive_0_2'].state == 'OK' ? 'green' : 'red'}"
+                    - type: tile
+                      vertical: true
+                      name: 'PlexNAS HD1'
+                      icon: "${states['sensor.plexnas_smart_status_drive_0_1'].state == 'OK' ? 'mdi:harddisk' : 'mdi:harddisk-remove'}"
+                      entity: sensor.plexnas_smart_status_drive_0_1
+                      color: "${states['sensor.plexnas_smart_status_drive_0_1'].state == 'OK' ? 'green' : 'red'}"
+                    - type: tile
+                      vertical: true
+                      name: 'PlexNAS HD2'
+                      icon: "${states['sensor.plexnas_smart_status_drive_0_2'].state == 'OK' ? 'mdi:harddisk' : 'mdi:harddisk-remove'}"
+                      entity: sensor.plexnas_smart_status_drive_0_2
+                      color: "${states['sensor.plexnas_smart_status_drive_0_2'].state == 'OK' ? 'green' : 'red'}"
+
+      - type: grid
+        columns: 3
+        square: false
+        cards:
+          - type: "custom:config-template-card" # HOUSE ENERGY PROFILE BARS
+            
             entities:
-              - light.living_room_light
-              - light.master_bedroom_light_left
-              - light.master_bedroom_light_right
-              - fan.master_bedroom_fan
-              - switch.kitchen_light
-              - switch.welcome_room_light
-              - switch.entryway_outlet_switch
-              - binary_sensor.main_door
-              - cover.garage_door_big
-              - cover.garage_door_small
-              - binary_sensor.entertainment_room_window_left
-              - binary_sensor.entertainment_room_window_right
-              - binary_sensor.kitchen_door
-              - binary_sensor.kitchen_window_left
-              - binary_sensor.kitchen_window_right
-              - binary_sensor.living_room_window_left
-              - binary_sensor.living_room_window_right
-              - binary_sensor.upper_big_bedroom_window_left
-              - binary_sensor.upper_big_bedroom_window_right
-              - binary_sensor.upper_big_bedroom_door
-              - binary_sensor.upper_small_bedroom_window
-              - binary_sensor.upper_small_bedroom_door
-              - binary_sensor.upper_guest_bedroom_door
-              - binary_sensor.upper_guest_bedroom_window
-              - binary_sensor.master_bedroom_door
-              - binary_sensor.master_bedroom_window_left
-              - binary_sensor.master_bedroom_window_right
-              - binary_sensor.master_bedroom_window_left_small
-              - binary_sensor.master_bedroom_window_right_small
-              - binary_sensor.master_bathroom_window
-              - binary_sensor.welcome_window_peep
-              - binary_sensor.welcome_window_front
-              - binary_sensor.welcome_window_left
-              - binary_sensor.welcome_window_right
-              - binary_sensor.garage_laundry_door
-              - binary_sensor.welcome_laundry_door
-          # CURRENT HOUSE ENTITIES ON
-          # INTERNET SPEED
-          - type: horizontal-stack
-            cards:
-              - type: custom:bar-card
-                height: 25px
-                positions:
-                  icon: 'off'
-                  name: outside
-                  indicator: 'off'
-                entities:
-                  - entity: sensor.speedtest_download
-                    name: "D/L"
-                    min: 0
-                    max: 125
-                    severity:
-                    - color: '#bf4040'
-                      from: 0
-                      to: 40
-                    - color: '#bf9540' 
-                      from: 40
-                      to: 75
-                    - color: '#40bf40'
-                      from: 75
-                      to: 125
-                  - entity: sensor.speedtest_upload
-                    name: "U/L"
-                    min: 0
-                    max: 10
-                    severity:
-                    - color: '#bf4040'
-                      from: 0
-                      to: 3
-                    - color: '#bf9540' 
-                      from: 3
-                      to: 5
-                    - color: '#40bf40'
-                      from: 5
-                      to: 10
-              - type: custom:bar-card
-                height: 25px
-                positions:
-                  icon: 'off'
-                  name: outside
-                  indicator: 'off'
-                entities:
-                  - entity: sensor.speedtest_ping
-                    name: "PING"
-                    min: 0
-                    max: 100
-                    severity:
-                    - color: '#40bf40'
-                      from: 0
-                      to: 40
-                    - color: '#bf9540' 
-                      from: 40
-                      to: 75
-                    - color: '#bf4040'
-                      from: 75
-                      to: 100
-                  - entity: sensor.google_wifi_uptime
-                    name: "DAYS"
-                    min: 0
-                    max: 15
-                    severity:
-                    - color: '#40bf40'
-                      from: 0
-                      to: 5
-                    - color: '#bf9540' 
-                      from: 5
-                      to: 10
-                    - color: '#bf4040'
-                      from: 10
-                      to: 15
-          # INTERNET SPEED
-          - type: horizontal-stack
-            cards:
-            - type: custom:bar-card
-              height: 25px
+              - sensor.solar_power
+              - sensor.grid_power
+              - sensor.grid_bar_target
+              - sensor.powerwall_power
+              - sensor.powerwall_power_target
+              - sensor.house_load
+            card:
+              type: custom:bar-card
+              title: "Energy Profile"
+              columns: 4
+              height: 100px
+              width: 95%
+              decimal: 1
+              direction: up
               positions:
-                  icon: 'off'
-                  name: outside
-                  indicator: 'off'
+                icon: inside
+                name: 'off'
+                value: outside
+                indicator: 'off'
+              animation:
+                state: 'on'
+                speed: 5
               entities:
-                - entity: sensor.ubhinas_smart_status_drive_0_1
-                  name: 'HDD01'
-            - type: custom:bar-card
-              height: 25px
-              positions:
-                  icon: 'off'
-                  name: outside
-                  indicator: 'off'
-              entities:
-                - entity: sensor.ubhinas_smart_status_drive_0_2
-                  name: 'HDD02'
+                - entity: sensor.solar_power
+                  name: "solar"
+                  target: "${states['sensor.solar_power'].state}"
+                  min: 0
+                  max: 8
+                  icon: mdi:weather-sunset
+                  severity:
+                    - color: 'yellow'
+                      from: 0
+                      to: 8
+                - entity: sensor.grid_power
+                  name: "grid"
+                  target: "${states['sensor.grid_power_target'].state}"
+                  min: 0
+                  max: 8
+                  icon: mdi:transmission-tower
+                  severity:
+                    - color: 'orange'
+                      from: 0
+                      to: 8
+                - entity: sensor.powerwall_power
+                  name: "${states['sensor.powerwall_power_name'].state}"
+                  target: "${states['sensor.powerwall_power_target'].state}"
+                  min: 0
+                  max: 8
+                  icon: mdi:car-battery
+                  severity:
+                    - color: 'green'
+                      from: 0
+                      to: 8
+                  positions:
+                    name: inside
+                - entity: sensor.house_load
+                  name: "load"
+                  target: "${states['sensor.house_load'].state}"
+                  min: 0
+                  max: 8
+                  icon: mdi:home
+                  severity:
+                    - color: 'red'
+                      from: 0
+                      to: 8 
+          - type: energy-solar-graph
+            #title: 'Solar Production'
+          - type: energy-usage-graph
+            #title: 'Energy Usage'
+      - type: grid
+        columns: 3
+        square: false
+        cards:
+          - type: energy-water-graph
+            title: 'Water Consumption'
+          - type: gauge
+            entity: sensor.flume_sensor_home_current
+            name: "Current"
+            needle: true
+            min: 0
+            max: 5
+            segments:
+              - from: 0
+                color: '#43a047'
+              - from: 2
+                color: '#ffa600'
+              - from: 4
+                color: '#db4437'
+          - type: gauge
+            entity: sensor.flume_sensor_home_60_minutes
+            name: "Last Hour"
+            needle: true
+            min: 0
+            max: 15
+            segments:
+              - from: 0
+                color: '#43a047'
+              - from: 8
+                color: '#ffa600'
+              - from: 12
+                color: '#db4437'
+
+
+
+
+      - type: grid
+        columns: 3
+        square: false
+        cards:
+          - type: custom:mini-graph-card # INTERNET DATA USAGE
+            name: Data Usage
+            icon: mdi:wan
+            entities:
+              - entity: sensor.xfinity_usage
+                name: Used
+                show_state: true
+                show_points: true
+                state_adaptive_color: true
+                color: orange
+              - entity: sensor.data_allowance_till_date
+                name: Limit
+                show_state: true
+                show_line: false
+                show_points: false
+                state_adaptive_color: true
+                smoothing: true
+                color: tomato
+              - entity: binary_sensor.sleep_time
+                show_fill: true
+                show_state: false
+                show_line: false
+                show_legend: false
+                show_points: false
+                color: black
+                y_axis: secondary
+            
+            cache: false
+            hours_to_show: 72
+            points_per_hour: 1
+            aggregate_func: max
+            line_width: 2
+            smoothing: false
+            font_size: 83
+            show:
+              legend: true
+              extrema: false
+              labels: false
+              labels_secondary: false
+              fill: fade
+            state_map:
+              - value: "off"
+              - value: "on"
+
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+
+              - type: gauge
+                entity: sensor.speedtest_ping
+                name: "Ping"
+                needle: true
+                min: 0
+                max: 150
+                segments:
+                  - from: 0
+                    color: '#43a047'
+                  - from: 40
+                    color: '#ffa600'
+                  - from: 80
+                    color: '#db4437'
+
+              - type: gauge
+                entity: sensor.google_wifi_uptime
+                name: "Days"
+                needle: true
+                min: 0
+                max: 15
+                segments:
+                  - from: 0
+                    color: '#43a047'
+                  - from: 5
+                    color: '#ffa600'
+                  - from: 10
+                    color: '#db4437'
+
+              - type: gauge
+                entity: sensor.speedtest_download
+                name: "Download"
+                needle: true
+                min: 0
+                max: 350
+                segments:
+                  - from: 0
+                    color: '#db4437'
+                  - from: 150
+                    color: '#ffa600'
+                  - from: 200
+                    color: '#43a047'
+
+              - type: gauge
+                entity: sensor.speedtest_upload
+                name: "Upload"
+                needle: true
+                min: 0
+                max: 15
+                segments:
+                  - from: 0
+                    color: '#db4437'
+                  - from: 8
+                    color: '#ffa600'
+                  - from: 12
+                    color: '#43a047'
+              
+          - type: grid
+            columns: 2
+            square: false
+            cards:
+              - type: button
+                name: 'Grafana'
+                tap_action:
+                  action: url
+                  url_path: !secret grafana_url
+                icon: mdi:chart-areaspline
+              - type: button
+                name: 'ZWave JS'
+                tap_action:
+                  action: url
+                  url_path: !secret zwavejs_url
+                icon: mdi:z-wave
+              - type: button
+                name: 'Nginx'
+                tap_action:
+                  action: url
+                  url_path: !secret nginx_url
+                icon: mdi:server-security
+              - type: button
+                name: 'Portainer'
+                tap_action:
+                  action: url
+                  url_path: !secret portainer_url
+                icon: mdi:docker
+
+      - type: entity-filter
+        card:
+          type: glance
+          show_state: false
+          show_icon: true
+          show_name: true
+          columns: 3
+        show_empty: false
+        state_filter:
+        - "on"
+        entities:
+          - cover.garage_door_big
+          - cover.garage_door_small
+          - fan.master_bedroom_fan
+          - light.living_room_light
+          - light.master_bedroom_light_left
+          - light.master_bedroom_light_right
+          - switch.backyard_light_left
+          - switch.backyard_light_right
+          - switch.entryway_light
+          - switch.kitchen_light
+          - switch.side_deck_light
+          - switch.welcome_room_light
+          - switch.upper_small_bedroom_light_fan
+          - switch.upper_guest_bedroom_light_fan
+          - switch.home_theatre_living_room
+          - switch.entryway_outlet_switch
+          - binary_sensor.entertainment_room_window_left
+          - binary_sensor.entertainment_room_window_right
+          - binary_sensor.garage_laundry_door
+          - binary_sensor.kitchen_door
+          - binary_sensor.kitchen_window_left
+          - binary_sensor.kitchen_window_right
+          - binary_sensor.living_room_window_left
+          - binary_sensor.living_room_window_right
+          - binary_sensor.lower_common_bathroom_door
+          - binary_sensor.main_door
+          - binary_sensor.master_bedroom_door
+          - binary_sensor.master_bedroom_window_left
+          - binary_sensor.master_bedroom_window_right
+          - binary_sensor.master_bedroom_window_left_small
+          - binary_sensor.master_bedroom_window_right_small
+          - binary_sensor.master_bathroom_window
+          - binary_sensor.upper_big_bedroom_window_left
+          - binary_sensor.upper_big_bedroom_window_right
+          - binary_sensor.upper_big_bedroom_door
+          - binary_sensor.upper_common_bathroom_door
+          - binary_sensor.upper_guest_bedroom_window
+          - binary_sensor.upper_guest_bedroom_door
+          - binary_sensor.upper_small_bedroom_window
+          - binary_sensor.upper_small_bedroom_door
+          - binary_sensor.welcome_laundry_door
+          - binary_sensor.welcome_window_peep
+          - binary_sensor.welcome_window_front
+          - binary_sensor.welcome_window_left
+          - binary_sensor.welcome_window_right
+
+
+
+
+
+# - type: custom:mini-graph-card # GRID SURPLUS
+#   name: Grid Surplus
+#   icon: mdi:transmission-tower
+#   entities:
+#     - entity: sensor.hem_energy
+#       name: Used
+#       show_state: true
+#       show_points: true
+#       state_adaptive_color: true
+#       color: "#FFDF00"
+#     - entity: binary_sensor.night
+#       show_fill: true
+#       show_state: false
+#       show_line: false
+#       show_legend: false
+#       show_points: false
+#       color: black
+#       y_axis: secondary
+  
+#   cache: false
+#   hours_to_show: 72
+#   points_per_hour: 1
+#   aggregate_func: max
+#   line_width: 2
+#   smoothing: false
+#   font_size: 83
+#   show:
+#     legend: false
+#     extrema: false
+#     labels: false
+#     labels_secondary: false
+#     fill: fade
+#   state_map:
+#     - value: "off"
+#     - value: "on"

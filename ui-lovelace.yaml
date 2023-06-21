@@ -1,24 +1,13 @@
-#custom_header:
-#  compact_mode: true
-#  button_text:
-#    options: '{{ hours12LZ }}:{{ minutesLZ }}'
-#  hide_help: true
-#  hide_config: true
-#  shadow: on
-#  chevrons: false
-  
 title: Home
-#background: var(--background-image)
-background: 'center / cover no-repeat url("/local/backgrounds/grey2.jpg") fixed'
+
 views:
   - !include lovelace/main.yaml
   - !include lovelace/thermostats.yaml
   - !include lovelace/lights_fans.yaml
   - !include lovelace/doors_windows.yaml
-  - !include lovelace/cams_indoor.yaml
-  - !include lovelace/cams_outdoor.yaml
-  - !include lovelace/cams_side.yaml
+  - !include lovelace/cameras.yaml
   - !include lovelace/floorplan.yaml
   - !include lovelace/home.yaml
   - !include lovelace/monitor.yaml
+  - !include lovelace/links.yaml
 

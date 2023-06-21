@@ -1,5 +1,6 @@
 import appdaemon.plugins.hass.hassapi as hass
-import datetime
+from datetime import datetime, time, timedelta
+import holidays as hd
 
 #
 # Perimeter Lights Controller App
@@ -16,43 +17,91 @@ class PerimeterLightsController(hass.Hass):
     
     self.alexa = self.args["alexa"]
     
-    self.run_at_sunrise(self.turn_off_perimeter_lights)
-    self.run_at_sunset(self.turn_on_perimeter_lights)
+    self.run_at_sunset(self.sunset)
+    self.run_at_sunrise(self.sunrise)
+    self.run_daily(self.wind_down, time(21, 30, 00))
+    self.run_daily(self.night, time(23, 15, 00))
+
+    year = datetime.now().year
+    hds = hd.India(years=year) + hd.US(years=year) + hd.India(years=year + 1) + hd.US(years=year + 1)
+    self.holidays = sorted(hds.items())
+
+    self.run_every(self.check_holidays, "now", 5 * 60)
     
-  def turn_on_perimeter_lights(self, kwargs):
+
+  def sunset(self, kwargs):
+    self.log("SUNSET")
     
-    self.call_service("notify/alexa_media", data = {"type":"tts", "method":"all"}, target = self.alexa, message = "Good evening. I'll turn on the perimeter lights.")
+    self.call_service("notify/alexa_media", data = {"type":"tts", "method":"all"}, target = self.alexa, message = "Good evening. I'll turn on the lights.")
     
+    self.turn_on("switch.entryway_festival_leds_01")
+    self.turn_on("switch.entryway_festival_leds_02")
+    self.turn_on("switch.backyard_mesh_lights")
+    self.turn_on("switch.side_deck_light")
+    self.turn_on("switch.kitchen_light")
+    self.turn_on("light.living_room_light")
+
+
+  def sunrise(self, kwargs):
+    self.log("SUNRISE")
+    
+    self.turn_off("switch.entryway_festival_leds_01")
+    self.turn_off("switch.entryway_festival_leds_02")
+    self.turn_off("switch.backyard_mesh_lights")
+    self.turn_off("switch.backyard_light_left")
+    self.turn_off("switch.entryway_light")
+    self.turn_off("switch.side_deck_light")
+    self.turn_off("switch.kitchen_light")
+    self.turn_off("light.living_room_light")
+
+
+  def wind_down(self, kwargs):
+    self.log("WINDING DOWN")
+
+    self.turn_off("switch.backyard_mesh_lights")
+
+
+  def night(self, kwargs):
+    self.log("NIGHT")
+
+    self.turn_off("switch.entryway_festival_leds_01")
+    self.turn_off("switch.entryway_festival_leds_02")
+    self.turn_off("switch.kitchen_light")
+
     self.turn_on("switch.entryway_light")
     self.turn_on("switch.backyard_light_left")
-    self.turn_on("switch.side_deck_light")
-    self.turn_on("switch.entryway_outlet_switch")
-    
-    self.run_in(self.check_festival_lights, 15, **kwargs)
 
 
-  def turn_off_perimeter_lights(self, kwargs):
-    
-    self.turn_off("switch.entryway_light")
-    self.turn_off("switch.backyard_light_left")
-    self.turn_off("switch.side_deck_light")
+  def check_holidays(self, kwargs):
 
+    if self.get_state("light.welcome_leds") != "on": return
+    
+    self.log("FRONT LEDS: CHECKING HOLIDAYS (2 WEEKS AHEAD)")
 
-  def check_festival_lights(self, kwargs):
+    holiday = 'default'
+
+    wled_playlists = self.get_state("select.welcome_leds_playlist", attribute='options')
+    wled_presets = self.get_state("select.welcome_leds_preset", attribute='options')
+
+    for date, occasion in self.holidays:
+      if date.today() <= date <= (date.today() + timedelta(weeks=2)):
+        date = date.strftime('%d %b')
+        occasion = occasion.split("*")[0]
+        if occasion in wled_playlists:
+          self.log(f"FOUND WLED PLAYLIST FOR '{occasion}' ON '{date}'")
+          holiday = occasion
+          break
+        elif occasion in wled_presets:
+          self.log(f"FOUND WLED PRESET FOR '{occasion}' ON '{date}'")
+          holiday = occasion
+          break
     
-    # if outlet power is more than 10W, turn off entryway lights
-    power = self.get_state("sensor.entryway_outlet_power")
-    
-    if float(power) > 15:
-      self.call_service("notify/alexa_media", data = {"type":"tts", "method":"all"}, target = self.alexa, message = "Hi again, I'm sensing, the festival lights are connected. I'll turn off the entryway lights till midnight.")
-      self.turn_off("switch.entryway_light")
-      self.run_at(self.turn_off_festival_lights, datetime.datetime.now().replace(hour = 22, minute = 30, second = 0))
+    if holiday in wled_playlists:
+      self.call_service("select/select_option", entity_id="select.welcome_leds_playlist", option=holiday)
+      self.log(f"SET WLED PLAYLIST '{holiday}'")
+    elif holiday in wled_presets:
+      self.call_service("select/select_option", entity_id="select.welcome_leds_preset", option=holiday)
+      self.log(f"SET WLED PRESET '{holiday}'")
     else:
-      self.turn_off("switch.entryway_outlet_switch")
-
-
-  def turn_off_festival_lights(self, kwargs):
-    
-    self.call_service("notify/alexa_media", data = {"type":"tts", "method":"all"}, target = self.alexa, message = "I've turned off the festival lights. Please remove our laser from the front yard.")
-    self.turn_off("switch.entryway_outlet_switch")
-    self.turn_on("switch.entryway_light")
+      self.call_service("select/select_option", entity_id="select.welcome_leds_preset", option='default')
+      self.log(f"SET 'DEFAULT' PRESET")

@@ -1,0 +1,42 @@
+platform: template
+sensors:
+  month_days_in_current:
+    friendly_name: Days in Current Month
+    icon_template: mdi:calendar
+    value_template: >-
+      {% if now().month in [1,3,5,7,8,10,12] %}
+        31
+      {% elif now().month in [4,6,9,11] %}
+        30
+      {% elif now().month == 2 and ((now().year-2000) % 4 > 0) %}
+        28
+      {% elif now().month == 2 and ((now().year-2000) % 4 == 0) %}
+        29
+      {% endif %}
+
+  month_current_day:
+    friendly_name: Curreny Day in Month
+    icon_template: mdi:calendar
+    value_template: >-
+      {{ now().day }}
+
+  month_percent:
+    friendly_name: Percentage Through Month
+    icon_template: mdi:calendar
+    value_template: >-
+      {{ ((states('sensor.month_current_day')|float / states('sensor.month_days_in_current')|float) * 100) | round(0) }}
+
+  data_allowance_till_date:
+    friendly_name: Data Allowance Till Date
+    icon_template: mdi:search-web
+    unit_of_measurement: "GB"
+    value_template: >-
+      {% if now().month in [1,3,5,7,8,10,12] %}
+        {{ ((1229 / 31) * now().day) | int }}
+      {% elif now().month in [4,6,9,11] %}
+        {{ ((1229 / 30) * now().day) | int }}
+      {% elif now().month == 2 and ((now().year-2000) % 4 > 0) %}
+        {{ ((1229 / 28) * now().day) | int }}
+      {% elif now().month == 2 and ((now().year-2000) % 4 == 0) %}
+        {{ ((1229 / 29) * now().day) | int }}
+      {% endif %}

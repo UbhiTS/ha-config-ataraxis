@@ -4,6 +4,8 @@ appdaemon:
   longitude: !secret home_longitude
   elevation: !secret home_elevation
   time_zone: !secret home_timezone
+  internal_function_timeout: 30 # https://github.com/AppDaemon/appdaemon/issues/852#issuecomment-632084010
+  thread_duration_warning_threshold: 10 # https://github.com/AppDaemon/appdaemon/issues/852#issuecomment-632115803
   plugins:
     HASS:
       type: hass

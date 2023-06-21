@@ -28,6 +28,9 @@ secrets.yaml
 webostv.conf
 zwcfg_*
 zwscene.xml
+home-assistant.log
+home-assistant.log.1
+home-assistant.log.fault
 
 
 # Ignore files created by IDE's

@@ -1,6 +1,7 @@
 title: Lights & Fans
 icon: mdi:lightbulb-on
-panel: true
+background: var(--background)
+panel: false
 cards:
 
   - type: vertical-stack
@@ -8,52 +9,71 @@ cards:
     
     - type: horizontal-stack
       cards:
+      
       - type: light
+        icon: mdi:chandelier
         entity: light.living_room_light
-      - type: entity-button
-        icon: mdi:lightbulb-on
+      - type: button
+        icon: mdi:wall-sconce-flat
         entity: switch.kitchen_light
-      - type: entity-button
-        icon: mdi:lightbulb-on
+      - type: button
+        icon: mdi:chandelier
         entity: switch.welcome_room_light  
-      - type: entity-button
-        icon: mdi:lightbulb-on
+      - type: button
+        icon: mdi:speaker-wireless
         entity: switch.home_theatre_living_room
-        
+
     - type: horizontal-stack
       cards:
       - type: light
+        icon: mdi:floor-lamp
         entity: light.master_bedroom_light_left
       - type: light
+        icon: mdi:floor-lamp
         entity: light.master_bedroom_light_right
-      - type: entity-button
-        icon: mdi:fan
-        tap_action:
-          action: more-info
-        hold_action:
-          action: toggle
-        entity: fan.master_bedroom_fan
-      - type: entity-button
-        icon: mdi:lightbulb-on
-        entity: switch.upper_big_bedroom_lava_lamp
-      - type: entity-button
-        icon: mdi:lightbulb-on
-        entity: switch.upper_big_bedroom_bed_light
+      # - type: button
+      #   icon: mdi:fan
+      #   tap_action:
+      #     action: more-info
+      #   hold_action:
+      #     action: toggle
+      #   entity: fan.master_bedroom_fan
+      - type: button
+        icon: mdi:ceiling-fan-light
+        entity: switch.upper_guest_bedroom_light_fan
+      - type: button
+        icon: mdi:ceiling-fan-light
+        entity: switch.upper_small_bedroom_light_fan
 
     - type: horizontal-stack
       cards:
-
-      - type: entity-button
-        icon: mdi:lightbulb-on
-        entity: switch.backyard_light_left
-      - type: entity-button
-        icon: mdi:lightbulb-on
-        entity: switch.backyard_light_right
-      - type: entity-button
-        icon: mdi:lightbulb-on
-        entity: switch.side_deck_light
-      - type: entity-button
-        icon: mdi:lightbulb-on
+      - type: button
+        icon: mdi:string-lights
+        entity: switch.backyard_mesh_lights
+      # - type: button
+      #   icon: mdi:weight-lifter
+      #   entity: switch.backyard_gym_lights
+      - type: button
+        icon: mdi:coach-lamp
         entity: switch.entryway_light
-      - type: entity-button
+      - type: button
+        icon: mdi:coach-lamp
+        entity: switch.backyard_light_left
+      - type: button
+        icon: mdi:coach-lamp
+        entity: switch.backyard_light_right
+      - type: button
+        icon: mdi:coach-lamp
+        entity: switch.side_deck_light
+
+    - type: horizontal-stack
+      cards:
+      - type: button
+        icon: mdi:led-strip-variant
+        entity: switch.entryway_festival_leds_01
+      - type: button
+        icon: mdi:led-strip-variant
+        entity: switch.entryway_festival_leds_02
+      - type: button
+        icon: mdi:power-socket-us
         entity: switch.entryway_outlet_switch

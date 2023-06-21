@@ -1,0 +1,15 @@
+platform: influxdb
+api_version: 2
+ssl: false
+organization: home
+bucket: home_assistant
+token: !secret xfinity_sensor_influxdb_token
+queries_flux:
+  - range_start: "-7d"
+    name: "xfinity_data_usage"
+    query: >
+      filter(fn: (r) => r["entity_id"] == "xfinity_usage" and r["_field"] == "value")
+      |> keep(columns: ["_value", "_time", "friendly_name"])
+      |> aggregateWindow(every: 1h, fn: last, createEmpty: false)
+      |> sort(columns: ["_time"])
+

@@ -1,47 +1,56 @@
 title: System Monitor
 icon: mdi:monitor-dashboard
-panel: true
+background: var(--background)
 cards:
-  - type: horizontal-stack
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      state_color: true
+      title: UbhiNAS
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.ubhinas
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      state_color: true
+      title: PlexNAS
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.plexnas
+      
+  - type: custom:auto-entities
+    card:
+      type: entities
+      state_color: true
+      title: System Monitor
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.system_monitor
+      
+  - type: vertical-stack
     cards:
       - type: custom:auto-entities
         card:
           type: entities
           state_color: true
-          title: UbhiNAS
+          title: Internet
           show_header_toggle: false
         filter:
           include:
-            - group: group.ubhinas
+            - group: group.internet
           
       - type: custom:auto-entities
         card:
           type: entities
           state_color: true
-          title: System Monitor
+          title: Time & Date
           show_header_toggle: false
         filter:
           include:
-            - group: group.system_monitor
-          
-      - type: vertical-stack
-        cards:
-          - type: custom:auto-entities
-            card:
-              type: entities
-              state_color: true
-              title: Internet
-              show_header_toggle: false
-            filter:
-              include:
-                - group: group.internet
-              
-          - type: custom:auto-entities
-            card:
-              type: entities
-              state_color: true
-              title: Time & Date
-              show_header_toggle: false
-            filter:
-              include:
-                - group: group.time_date
+            - group: group.time_date

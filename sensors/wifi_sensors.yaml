@@ -1,0 +1,2 @@
+platform: google_wifi
+host: !secret google_wifi_host

@@ -1,13 +1,15 @@
 title: Home
 icon: mdi:home
+background: var(--background)
 cards:
+
   - type: entities
     state_color: true
     title: People
     show_header_toggle: false
     entities:
-      - device_tracker.iphone_ubhits
-      - device_tracker.iphone_rcsdavis
+      - device_tracker.funky_monkey_s_iphone
+      - device_tracker.ivavvays_iphone
 
   - type: custom:auto-entities
     card:
@@ -18,6 +20,26 @@ cards:
     filter:
       include:
         - group: group.home_energy
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      state_color: true
+      title: Solar Forecast
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.solar_forecast
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      state_color: true
+      title: Water (ACWD)
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.home_water
 
   - type: custom:auto-entities
     card:

@@ -22,6 +22,30 @@ ubhinas:
     - sensor.ubhinas_network_link_eth0
     - sensor.ubhinas_network_link_eth1
 
+plexnas:
+  name: PlexNAS
+  entities:
+    - sensor.plexnas_status
+    - sensor.plexnas_smart_status_drive_0_1
+    - sensor.plexnas_smart_status_drive_0_2
+    - sensor.plexnas_temperature_drive_0_1
+    - sensor.plexnas_temperature_drive_0_2
+    - sensor.plexnas_system_temperature
+    - sensor.plexnas_cpu_temperature
+    - sensor.plexnas_volume_used_storage
+    - sensor.plexnas_memory_usage
+    - sensor.plexnas_cpu_usage
+    - sensor.plexnas_free_space_storage
+    - sensor.plexnas_used_space_storage
+    - sensor.plexnas_memory_available
+    - sensor.plexnas_memory_used
+    - sensor.plexnas_network_up_eth0
+    - sensor.plexnas_network_up_eth1
+    - sensor.plexnas_network_down_eth0
+    - sensor.plexnas_network_down_eth1
+    - sensor.plexnas_network_link_eth0
+    - sensor.plexnas_network_link_eth1
+
 system_monitor:
   name: System Monitor
   entities:
@@ -45,6 +69,7 @@ internet:
     - sensor.speedtest_download
     - sensor.speedtest_upload
     - sensor.speedtest_ping
+    - sensor.xfinity_usage
     - sensor.uptime
     - sensor.google_wifi_status
     - sensor.google_wifi_uptime
@@ -62,7 +87,7 @@ time_date:
     - sensor.time_utc
     
 home_energy:
-  name: Home Energy
+  name: Energy
   entities:
     - sensor.powerwall_solar_now
     - sensor.powerwall_site_now
@@ -74,20 +99,47 @@ home_energy:
     - sensor.hem_power
     - sensor.hem_energy
     - sensor.entryway_outlet_power
-    
+    - sensor.home_theatre_living_room_electric_consumption_w
+    - sensor.home_theatre_living_room_electric_consumption_kwh
+
+solar_forecast:
+  name: "Solar Forecast"
+  entities:
+    - sensor.power_production_next_12hours
+    - sensor.power_production_next_24hours
+    - sensor.power_production_next_hour
+    - sensor.energy_next_hour
+    - sensor.energy_production_today_remaining
+    - sensor.energy_current_hour
+    - sensor.energy_production_today
+    - sensor.energy_production_tomorrow
+    - sensor.power_production_now
+    - sensor.power_highest_peak_time_today
+    - sensor.power_highest_peak_time_tomorrow
+
+home_water:
+  name: Water (ACWD)
+  entities:
+    - sensor.flume_sensor_home_24_hours
+    - sensor.flume_sensor_home_30_days
+    - sensor.flume_sensor_home_60_minutes
+    - sensor.flume_sensor_home_current
+    - sensor.flume_sensor_home_current_day
+    - sensor.flume_sensor_home_current_month
+    - sensor.flume_sensor_home_current_week
+    - binary_sensor.flume_sensor_home_high_flow
+    - binary_sensor.flume_sensor_home_leak_detected
+
 living_room:
   name: Living Room
   entities:
     - light.living_room_light
-    - sensor.thermostat_living_room_temperature
+#    - sensor.thermostat_living_room_temperature
     - sensor.thermostat_living_room_humidity
-    - climate.thermostat_living_room_mode
+    - climate.thermostat_living_room
     - binary_sensor.living_room_window_right
     - binary_sensor.living_room_window_left
-    - vacuum.jhadoo
-    - switch.tv_living_room_subwoofer_switch
-    - sensor.tv_living_room_subwoofer_switch_power
-    - sensor.tv_living_room_subwoofer_switch_current
+    - switch.home_theatre_living_room
 
 kitchen:
   name: Kitchen
@@ -104,9 +156,9 @@ master_bedroom:
     - light.master_bedroom_light_left
     - light.master_bedroom_light_right
     - fan.master_bedroom_fan
-    - sensor.thermostat_master_bedroom_temperature
+#    - sensor.thermostat_master_bedroom_temperature
     - sensor.thermostat_master_bedroom_humidity
-    - climate.thermostat_master_bedroom_mode
+    - climate.thermostat_master_bedroom
     - binary_sensor.master_bedroom_door
     - binary_sensor.master_bedroom_window_left
     - binary_sensor.master_bedroom_window_right
@@ -121,37 +173,43 @@ master_bathroom:
 upper_big_bedroom:
   name: Upper Big Bedroom
   entities:
-    - sensor.thermostat_upper_big_bedroom_temperature
+#    - sensor.thermostat_upper_big_bedroom_temperature
     - sensor.thermostat_upper_big_bedroom_humidity
-    - climate.thermostat_upper_big_bedroom_mode
+    - climate.thermostat_upper_big_bedroom
     - binary_sensor.upper_big_bedroom_door
     - binary_sensor.upper_big_bedroom_window_left
     - binary_sensor.upper_big_bedroom_window_right
+    - switch.upper_big_bedroom_bed_light
+    - switch.upper_big_bedroom_lava_lamp
     
 upper_small_bedroom:
   name: Upper Small Bedroom
   entities:
-    - sensor.thermostat_upper_small_bedroom_temperature
+#    - sensor.thermostat_upper_small_bedroom_temperature
     - sensor.thermostat_upper_small_bedroom_humidity
-    - climate.thermostat_upper_small_bedroom_mode
+    - climate.thermostat_upper_small_bedroom
     - binary_sensor.upper_small_bedroom_door
     - binary_sensor.upper_small_bedroom_window
+    - switch.upper_small_bedroom_light_fan
     
 upper_guest_bedroom:
   name: Upper Guest Bedroom
   entities:
-    - sensor.thermostat_upper_guest_bedroom_temperature
+#    - sensor.thermostat_upper_guest_bedroom_temperature
     - sensor.thermostat_upper_guest_bedroom_humidity
-    - climate.thermostat_upper_guest_bedroom_mode
+    - climate.thermostat_upper_guest_bedroom
     - binary_sensor.upper_guest_bedroom_door
     - binary_sensor.upper_guest_bedroom_window
+    - switch.upper_guest_bedroom_light_fan
     
 entertainment_room:
   name: Entertainment Room
   entities:
-    - sensor.thermostat_entertainment_room_temperature
+#    - sensor.thermostat_entertainment_room_temperature
     - sensor.thermostat_entertainment_room_humidity
-    - climate.thermostat_entertainment_room_mode
+    - climate.thermostat_entertainment_room
+    - binary_sensor.entertainment_room_window_left
+    - binary_sensor.entertainment_room_window_right
     
 welcome_room:
   name: Welcome Room
@@ -168,19 +226,18 @@ welcome_room:
 entryway:
   name: Entryway
   entities:
-    - binary_sensor.main_door_motion
     - switch.entryway_light
     - switch.entryway_outlet_switch
     - sensor.entryway_outlet_power
+    - binary_sensor.main_door_motion
     
 garage:
   name: Garage
   entities:
-    - switch.garage_internet_switch
+#    - switch.garage_internet_switch
     - cover.garage_door_big
     - cover.garage_door_small
     - binary_sensor.garage_laundry_door
-    - binary_sensor.garage_side_door
     
 backyard:
   name: Backyard
@@ -191,9 +248,9 @@ backyard:
 attic:
   name: Attic
   entities:
-    - sensor.thermostat_attic_temperature
+#    - sensor.thermostat_attic_temperature
     - sensor.thermostat_attic_humidity
-    - climate.thermostat_attic_mode
+    - climate.thermostat_attic
 
 side_deck:
   name: Side Deck

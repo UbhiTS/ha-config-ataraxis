@@ -1,0 +1,75 @@
+
+title: Weblinks
+path: Weblinks
+icon: mdi:web
+background: var(--background)
+cards:
+
+  - type: grid
+    title: Links
+    columns: 3
+    square: true
+    cards:
+
+      - type: button
+        name: Grafana
+        tap_action:
+          action: url
+          url_path: !secret grafana_url
+        icon: mdi:chart-areaspline
+
+      - type: button
+        name: ZWave JS
+        tap_action:
+          action: url
+          url_path: !secret zwavejs_url
+        icon: mdi:z-wave
+
+      - type: button
+        name: Portainer
+        tap_action:
+          action: url
+          url_path: !secret portainer_url
+        icon: mdi:docker
+
+      - type: button
+        name: InfluxDB
+        tap_action:
+          action: url
+          url_path: !secret influxdb_url
+        icon: mdi:database-settings-outline
+
+      - type: button
+        name: Mosquitto
+        tap_action:
+          action: url
+          url_path: !secret mqtt_url
+        icon: mdi:message-settings-outline
+
+      - type: button
+        name: NGINX
+        tap_action:
+          action: url
+          url_path: !secret nginx_url
+        icon: mdi:server-security
+
+      - type: button
+        name: Xfinity Usage
+        tap_action:
+          action: url
+          url_path: !secret xfinity_usage_url
+        icon: mdi:search-web
+
+      - type: button
+        name: UbhiNAS
+        tap_action:
+          action: url
+          url_path: !secret ubhinas_url
+        icon: mdi:nas
+
+      - type: button
+        name: PlexNAS
+        tap_action:
+          action: url
+          url_path: !secret plexnas_url
+        icon: mdi:nas

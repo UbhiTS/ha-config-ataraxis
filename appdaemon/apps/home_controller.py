@@ -7,88 +7,153 @@ from datetime import datetime, time
 # home:
 #   module: home_controller
 #   class: HomeController
-#   buzz_control: input_boolean.buzz_home
-#   alexa_kitchen: media_player.kitchen_alexa
-#   alexa_entryway: media_player.entryway_alexa
+
 
 class HomeController(hass.Hass):
 
   def initialize(self):
-    self.buzz_control = self.args["buzz_control"]
-    self.internet_control = self.args["internet_control"]
-    self.internet_switch = self.args["internet_switch"]
-    self.alexa_kitchen = self.args["alexa_kitchen"]
-    self.alexa_entryway = self.args["alexa_entryway"]
-    self.alexa_upper_big_bedroom = self.args["alexa_upper_big_bedroom"]
-    self.jhadoo_battery_level = self.args["jhadoo_battery_level"]
-    self.energy_meter = self.args["energy_meter"]
+    self.bool_buzz_home = "input_boolean.buzz_home"
+    self.bool_reset_internet = "input_boolean.reset_internet"
+    self.garage_internet_switch = "switch.garage_internet_switch"
+    self.vacuum_jhadoo_pocha = "vacuum.jhadoo_pocha"
+    self.kitchen_alexa = "media_player.kitchen_alexa"
+    self.entryway_alexa = "media_player.entryway_alexa"
+    self.upper_big_bedroom_alexa = "media_player.upper_big_bedroom_alexa"
+    self.upper_small_bedroom_alexa = "media_player.upper_small_bedroom_alexa"
+    self.hem_energy = "sensor.hem_energy"
+
+    self.notification_devices = ['notify/mobile_app_funky_monkey_s_iphone', 'notify/mobile_app_ivavvay_s_iphone']
     
-    self.call_service("notify/alexa_media", data = {"type":"announce", "method":"all"}, target = self.alexa_kitchen, message = "Hi, your Home Assistant is ready to rock and roll!")
+    self.listen_state(self.buzz_kitchen, self.bool_buzz_home)
+    self.listen_state(self.internet_reset, self.bool_reset_internet)
+    self.listen_state(self.vacuum_event_handler, self.vacuum_jhadoo_pocha)
     
-    self.listen_state(self.buzz_kitchen, self.buzz_control)
-    self.listen_state(self.reset_internet, self.internet_control)
-    #self.listen_state(self.jhadoo_battery_level_alert, self.jhadoo_battery_level)
+    self.run_every(self.internet_turn_on, "now", 15 * 60)
+    self.run_every(self.nas_hdd_error_alert, "now", 30 * 60, random_start = -5 * 60, random_end = 5 * 60)
+    self.run_every(self.solar_production_loss_alert, "now", 60 * 60, random_start = -10 * 60, random_end = 10 * 60)
     
-    self.run_daily(self.reset_energy_meter, time(11, 59, 59))
-    
+    #self.run_daily(self.reset_energy_meter, time(11, 59, 59))
     #self.run_hourly(self.play_music_entryway, time(datetime.now().hour, 0, 0))
 
+    self.call_service("notify/alexa_media", data = {"type":"tts", "method":"speak"}, target = self.kitchen_alexa, message = """                
+    <speak>
+        Hi, your Home Assistant is ready to rock and roll!
+    </speak>
+    """)
+
+    self.solar_production_loss_alert(None)
+    
 
   def buzz_kitchen(self, entity, attribute, old, new, kwargs):
-
     if old == "off" and new == "on":
       self.log("HOME BUZZ")
-      self.call_service("notify/alexa_media", data = {"type":"announce", "method":"all"}, target = self.alexa_kitchen, message = "Someone's calling you. Please pick up the phone or call them back immediately!")
-      self.call_service("input_boolean/turn_off", entity_id = self.buzz_control)
+      self.call_service("notify/alexa_media", data = {"type":"announce", "method":"all"}, target = self.kitchen_alexa, message = "Someone's calling you. Please pick up the phone or call them back immediately!")
+      self.call_service("input_boolean/turn_off", entity_id = self.bool_buzz_home)
       
       
-  def reset_internet(self, entity, attribute, old, new, kwargs):
-
+  def internet_reset(self, entity, attribute, old, new, kwargs):
     if old == "off" and new == "on":
-      self.log("RESET INTERNET")
-      self.call_service("input_boolean/turn_off", entity_id = self.internet_control)
+      self.log("INTERNET RESET: INITIATE")
+      self.call_service("input_boolean/turn_off", entity_id = self.bool_reset_internet)
+      self.call_service("notify/alexa_media", data = {"type":"tts", "method":"speak"}, target = self.kitchen_alexa, message = """
+      <speak>
+        <amazon:emotion name="excited" intensity="high">
+          Embrace yourself for total meltdown. Resetting the internet in 5 seconds!
+        </amazon:emotion>
+      </speak>
+      """)
       
-      self.run_in(self.turn_off_switch, 5)
-      self.run_in(self.turn_on_switch, 15)
+      self.run_in(self.internet_turn_off, 10)
+      self.run_in(self.internet_turn_on, 15)
 
 
-  def reset_energy_meter(self, kwargs):
+  def internet_turn_off(self, kwargs):
+    self.log("INTERNET: TURN OFF")
+    self.call_service("switch/turn_off", entity_id = self.garage_internet_switch)
+
+
+  def internet_turn_on(self, kwargs):
+    self.log("INTERNET: TURN ON")
+    self.call_service("switch/turn_on", entity_id = self.garage_internet_switch)
+
+
+  def vacuum_event_handler(self, entity, attribute, old, new, kwargs):
+    if attribute == "state" and (old, new) in [("cleaning", "error")]:
+      self.log("VACCUM ERROR HANDLER")
+      self.call_service("vacuum/start", entity_id = self.vacuum_jhadoo_pocha)
+
+
+  def nas_hdd_error_alert(self, kwargs):
+    self.log("NAS HDD HEALTH EVALUATE")
+
+    ubhinas_hdd_01_not_ok = self.get_state("sensor.ubhinas_smart_status_drive_0_1") != "OK"
+    ubhinas_hdd_02_not_ok = self.get_state("sensor.ubhinas_smart_status_drive_0_2") != "OK"
+    plexnas_hdd_01_not_ok = self.get_state("sensor.plexnas_smart_status_drive_0_1") != "OK"
+    plexnas_hdd_02_not_ok = self.get_state("sensor.plexnas_smart_status_drive_0_2") != "OK"
+
+    if any([ubhinas_hdd_01_not_ok, ubhinas_hdd_02_not_ok, plexnas_hdd_01_not_ok, plexnas_hdd_02_not_ok]):
+      self.log("NAS HDD CRITIAL ERROR ALERT")
+
+      self.call_service("notify/alexa_media", data = {"type":"tts", "method":"speak"}, target = self.kitchen_alexa, message = """
+      <speak>
+        <amazon:emotion name="excited" intensity="medium">
+          Critical Emergency! One of the hard drives in your NASS has failed. Time is of the essence, immediate action is required!
+        </amazon:emotion>
+      </speak>
+      """)
+
+      for device in self.notification_devices:
+        self.call_service(device, title = 'NAS HDD ALERT: CRITICAL', message = 'One of the hard drives in your NAS has failed. Time is of the essence, immediate action is required!')
+
+
+  def solar_production_loss_alert(self, kwargs):
     
-    date = datetime.now()
+    solar_forecast = self.get_state("sensor.power_production_now")
+    try: solar_forecast = float(solar_forecast)
+    except ValueError: solar_forecast = 0
 
-    if date.month == 10 and date.day == 18:
-      self.call_service("zwave/reset_node_meters", node_id = 30)
-      self.log("ENERGY SURPLUS PG&E: RESET METER")
+    if solar_forecast < 250: return
 
-  def play_music_entryway(self, kwargs):
-    #self.log("ENTRYWAY_MUSIC_PLAY")
-    #self.call_service("media_player/media_play", entity_id = self.alexa_entryway)
-    pass
+    self.log("SOLAR PRODUCTION EVALUATION")
+
+    solar_production = self.get_state("sensor.powerwall_solar_now")
+    try: solar_production = float(solar_production)
+    except ValueError: solar_production = 0
+
+    delta = solar_forecast - solar_production
+    
+    if delta > 500:
+      self.log("SOLAR PRODUCTION LOSS ALERT: NET LOSS " + str(delta) + "W")
+
+      self.call_service("notify/alexa_media", data = {"type":"tts", "method":"speak"}, target = self.kitchen_alexa, message = """
+      <speak>
+        <amazon:emotion name="excited" intensity="medium">
+          Warning. The solar production is significantly less than the anticipated forecast right now. Please inspect the system promptly!
+        </amazon:emotion>
+      </speak>
+      """)
+      for device in self.notification_devices:
+        self.call_service(device, title = 'SOLAR ALERT: WARNING', message = 'Warning. The solar production is significantly less than the anticipated forecast right now. Please inspect the system promptly!')
+
+
+  # def reset_energy_meter(self, kwargs):
+  #   date = datetime.now()
+  #   if date.month == 10 and date.day == 18:
+  #     self.call_service("zwave_js/reset_meter", node_id = 116)
+  #     self.log("ENERGY SURPLUS PG&E: RESET METER")
+
+
+  # def play_music_entryway(self, kwargs):
+  #   self.log("ENTRYWAY_MUSIC_PLAY")
+  #   self.call_service("media_player/media_play", entity_id = self.alexa_entryway)
+  #   pass
   
 
-  def turn_off_switch(self, kwargs):
-    self.log("INTERNET_RESET: TURN_OFF")
-    self.call_service("switch/turn_off", entity_id = self.internet_switch)
+  #  def set_guest_volume_high(self, kwargs):
+  #    self.call_service("media_player/volume_set", entity_id = self.door_alexa, volume_level = .99)
+  #    self.log("GUEST VOLUME HIGH")
 
 
-  def turn_on_switch(self, kwargs):
-    self.log("INTERNET_RESET: TURN_ON")
-    self.call_service("switch/turn_on", entity_id = self.internet_switch)
-
-
-  def jhadoo_battery_level_alert(self, entity, attribute, old, new, kwargs):
-  
-    if (old, new) in [("90", "100")]:
-      self.call_service("notify/alexa_media", data = {"type":"announce", "method":"all"}, target = self.alexa_kitchen, message = f"Jhadoo's battery is fully charged, and it's ready to clean. Please say, 'Ask Roomba to start cleaning'.")
-    elif (old, new) in [("70", "80"), ("80", "90")]:
-      self.call_service("notify/alexa_media", data = {"type":"announce", "method":"all"}, target = self.alexa_kitchen, message = f"Jhadoo's battery is {new}% charged. Please say, 'Ask Roomba to start cleaning'.")
-
-
-#  def set_guest_volume_high(self, kwargs):
-#    self.call_service("media_player/volume_set", entity_id = self.door_alexa, volume_level = .99)
-#    self.log("GUEST VOLUME HIGH")
-
-
-#  def set_guest_volume_low(self, kwargs):
-#    self.call_service("media_player/volume_set", entity_id = self.door_alexa, volume_level = .40)
-#    self.log("GUEST VOLUME LOW")
+  #  def set_guest_volume_low(self, kwargs):
+  #    self.call_service("media_player/volume_set", entity_id = self.door_alexa, volume_level = .40)
+  #    self.log("GUEST VOLUME LOW")

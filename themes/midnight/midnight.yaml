@@ -5,8 +5,7 @@
 #################################################################
 
 midnight:
-
-  background-image: "center / cover no-repeat url('/local/background.jpg') fixed"
+  background: 'center / cover no-repeat url("/local/backgrounds/grey2.jpg") fixed'
   ha-card-background: "rgba(128, 128, 128, 0.1)"
   ha-card-border-radius: "7px"
   ha-card-box-shadow: "3px 3px 13px -6px rgba(0,0,0,1)"

@@ -1,9 +1,24 @@
-  entities:
-  
+entities:
+
     - sun.sun
     
-    - device_tracker.iphone_ubhits
-    - device_tracker.iphone_rcsdavis
+    - binary_sensor.day
+    - binary_sensor.night
+    - binary_sensor.early_morning
+    - binary_sensor.morning
+    - binary_sensor.afternoon
+    - binary_sensor.evening
+    
+    - binary_sensor.sleep_time
+    - binary_sensor.active_time
+
+    - sensor.month_days_in_current
+    - sensor.month_current_day
+    - sensor.month_percent
+    - sensor.data_allowance_till_date
+    
+    - device_tracker.funky_monkeys_iphone
+    - device_tracker.ivavvays_iphone
 
     - cover.garage_door_big
     - cover.garage_door_small
@@ -15,38 +30,53 @@
     - switch.backyard_light_left
     - switch.backyard_light_right
     - switch.entryway_light
-    - switch.entryway_outlet_switch
     - switch.kitchen_light
     - switch.side_deck_light
     - switch.welcome_room_light
-    - switch.garage_internet_switch
-    
-    - climate.thermostat_attic_mode
-    - sensor.thermostat_attic_temperature
+    - switch.upper_big_bedroom_bed_light
+    - switch.upper_big_bedroom_lava_lamp
+    - switch.upper_small_bedroom_light_fan
+    - switch.upper_guest_bedroom_light_fan
+
+    - switch.home_theatre_living_room
+    - sensor.home_theatre_living_room_electric_consumption_a
+    - sensor.home_theatre_living_room_electric_consumption_v
+    - sensor.home_theatre_living_room_electric_consumption_w
+    - sensor.home_theatre_living_room_electric_consumption_kwh
+
+#    - switch.garage_internet_switch
+
+    - switch.entryway_outlet_switch
+    - sensor.entryway_outlet_electric_consumption_w
+    - sensor.entryway_outlet_electric_consumption_kwh
+    - sensor.entryway_outlet_power
+
+    - climate.thermostat_attic
+#    - sensor.thermostat_attic_temperature
     - sensor.thermostat_attic_humidity
 
-    - climate.thermostat_master_bedroom_mode
-    - sensor.thermostat_master_bedroom_temperature
+    - climate.thermostat_master_bedroom
+#    - sensor.thermostat_master_bedroom_temperature
     - sensor.thermostat_master_bedroom_humidity
 
-    - climate.thermostat_living_room_mode
-    - sensor.thermostat_living_room_temperature
+    - climate.thermostat_living_room
+#    - sensor.thermostat_living_room_temperature
     - sensor.thermostat_living_room_humidity
 
-    - climate.thermostat_upper_big_bedroom_mode
-    - sensor.thermostat_upper_big_bedroom_temperature
+    - climate.thermostat_upper_big_bedroom
+#    - sensor.thermostat_upper_big_bedroom_temperature
     - sensor.thermostat_upper_big_bedroom_humidity
 
-    - climate.thermostat_upper_small_bedroom_mode
-    - sensor.thermostat_upper_small_bedroom_temperature
+    - climate.thermostat_upper_small_bedroom
+#    - sensor.thermostat_upper_small_bedroom_temperature
     - sensor.thermostat_upper_small_bedroom_humidity
 
-    - climate.thermostat_upper_guest_bedroom_mode
-    - sensor.thermostat_upper_guest_bedroom_temperature
+    - climate.thermostat_upper_guest_bedroom
+#    - sensor.thermostat_upper_guest_bedroom_temperature
     - sensor.thermostat_upper_guest_bedroom_humidity
 
-    - climate.thermostat_entertainment_room_mode
-    - sensor.thermostat_entertainment_room_temperature
+    - climate.thermostat_entertainment_room
+#    - sensor.thermostat_entertainment_room_temperature
     - sensor.thermostat_entertainment_room_humidity
 
     - binary_sensor.entertainment_room_window_left
@@ -59,6 +89,7 @@
     - binary_sensor.living_room_window_right
     - binary_sensor.lower_common_bathroom_door
     - binary_sensor.main_door
+    - binary_sensor.main_door_motion
     - binary_sensor.master_bedroom_door
     - binary_sensor.master_bedroom_window_left
     - binary_sensor.master_bedroom_window_right
@@ -100,6 +131,27 @@
     - sensor.ubhinas_network_link_eth0
     - sensor.ubhinas_network_link_eth1
 
+    - sensor.plexnas_status
+    - sensor.plexnas_smart_status_drive_0_1
+    - sensor.plexnas_smart_status_drive_0_2
+    - sensor.plexnas_temperature_drive_0_1
+    - sensor.plexnas_temperature_drive_0_2
+    - sensor.plexnas_system_temperature
+    - sensor.plexnas_cpu_temperature
+    - sensor.plexnas_volume_used_storage
+    - sensor.plexnas_memory_usage
+    - sensor.plexnas_cpu_usage
+    - sensor.plexnas_free_space_storage
+    - sensor.plexnas_used_space_storage
+    - sensor.plexnas_memory_available
+    - sensor.plexnas_memory_used
+    - sensor.plexnas_network_up_eth0
+    - sensor.plexnas_network_up_eth1
+    - sensor.plexnas_network_down_eth0
+    - sensor.plexnas_network_down_eth1
+    - sensor.plexnas_network_link_eth0
+    - sensor.plexnas_network_link_eth1
+
     - sensor.processor_use
     - sensor.memory_use_percent
     - sensor.swap_use_percent
@@ -125,15 +177,53 @@
     - sensor.google_wifi_current_version
     - sensor.google_wifi_new_version
 
+    - sensor.xfinity_usage
+
     - sensor.hem_current
     - sensor.hem_power
     - sensor.hem_energy
-    - sensor.house_load
+
     - sensor.solar_power
     - sensor.grid_power
+    - sensor.grid_power_target
     - sensor.powerwall_power
-    - sensor.powerwall_power_display
-    - sensor.powerwall_capacity_display
+    - sensor.powerwall_power_target
+    - sensor.powerwall_power_name
+    - sensor.house_load
+
+    - sensor.power_production_next_12hours
+    - sensor.power_production_next_24hours
+    - sensor.power_production_next_hour
+    - sensor.energy_next_hour
+    - sensor.energy_production_today_remaining
+    - sensor.energy_current_hour
+    - sensor.energy_production_today
+    - sensor.energy_production_tomorrow
+    - sensor.power_production_now
+    - sensor.power_highest_peak_time_today
+    - sensor.power_highest_peak_time_tomorrow
+
+    - binary_sensor.grid_status
+    - sensor.powerwall_battery_now
     - sensor.powerwall_charge
-    - sensor.grid_status_display
-    - sensor.entryway_outlet_power
+    - sensor.powerwall_load_now
+    - sensor.powerwall_site_now
+    - sensor.powerwall_solar_now
+
+    - sensor.powerwall_site_import
+    - sensor.powerwall_site_export
+    - sensor.powerwall_battery_export
+    - sensor.powerwall_battery_import
+    - sensor.powerwall_solar_export
+
+    - sensor.flume_sensor_home_24_hours
+    - sensor.flume_sensor_home_30_days
+    - sensor.flume_sensor_home_60_minutes
+    - sensor.flume_sensor_home_current
+    - sensor.flume_sensor_home_current_day
+    - sensor.flume_sensor_home_current_month
+    - sensor.flume_sensor_home_current_week
+    - binary_sensor.flume_sensor_home_high_flow
+    - binary_sensor.flume_sensor_home_leak_detected
+    
+

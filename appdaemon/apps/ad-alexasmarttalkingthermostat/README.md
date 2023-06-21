@@ -39,7 +39,7 @@ Use [HACS](https://github.com/custom-components/hacs) or [download](https://gith
 hvac_master_bedroom:
   module: alexa_smart_talking_thermostat
   class: AlexaSmartTalkingThermostat
-  thermostat: climate.thermostat_master_bedroom_mode
+  thermostat: climate.thermostat_master_bedroom
   hvac_limits:
     cooling_min: 67
     heating_max: 72

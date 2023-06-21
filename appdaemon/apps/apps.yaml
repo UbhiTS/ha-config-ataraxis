@@ -1,21 +1,38 @@
 home:
   module: home_controller
   class: HomeController
-  alexa_kitchen: media_player.kitchen_alexa
-  alexa_upper_big_bedroom: media_player.upper_big_bedroom_alexa
-  alexa_entryway: media_player.entryway_alexa
-  buzz_control: input_boolean.buzz_home
-  energy_meter: sensor.hem_energy
-  internet_control: input_boolean.reset_internet
-  internet_switch: switch.garage_internet_switch
-  jhadoo_battery_level: sensor.jhadoo_battery_level
-  
+
+
+ios_ha_companion:
+  module: ios_ha_companion_controller
+  class: IOSHACompanionController
+
+
+wallmote:
+  module: wallmote_controller
+  class: WallMoteController
+
+
+perimeter_lights:
+  module: perimeter_lights_controller
+  class: PerimeterLightsController
+  alexa: media_player.kitchen_alexa
+
+
+# festival_lights_sentry:
+#   module: festival_lights_sentry_controller
+#   class: FestivalLightsSentryController
+#   alexa: media_player.kitchen_alexa
+#   alarm_time: 15
+
+
 tv_manager:
   module: tv_manager
   class: TVManager
   tv: media_player.tv_living_room
   tv_speaker_switch: switch.home_theatre_living_room
   debug: false
+
 
 alexa_door_window_announce:
   module: alexa_door_window_announce
@@ -31,7 +48,8 @@ alexa_door_window_announce:
     start_time: "00:00:00"
     end_time: "23:59:59"
   debug: false
-    
+
+
 alexa_doorbell:
   module: alexa_doorbell
   class: AlexaDoorbell
@@ -40,79 +58,73 @@ alexa_doorbell:
     sensor: binary_sensor.main_door # optional
     alexa: media_player.entryway_alexa # optional
     announce_bell: false
-    #bell_switch: switch.kitchen_light
+    #bell_switch_debug_override: switch.kitchen_light
   home:
     alexa: media_player.kitchen_alexa
     doorbell: switch.living_room_doorbell # optional
     announce_bell: true
   time:
     start: "09:00:00"
-    end: "21:00:00"
-  debug: false
+    end: "21:30:00"
+  debug: true
+
 
 alexa_talking_clock:
   module: alexa_talking_clock
   class: AlexaTalkingClock
   alexas:
     - media_player.kitchen_alexa
-    - media_player.upper_big_bedroom_alexa
+    - media_player.master_bedroom_alexa
+    - media_player.upper_small_bedroom_alexa
   announcements:
-    bell: true  # for SONOS, set to False
+    bell: true # for SONOS, set to False
     start_time: "07:15:00"
     end_time: "21:30:00"
     half_hour: true
     quarter_hour: false
-    default_speech: "It's {time}." # {day} {date} {time} 
+    default_speech: "It's {time}." # {day} {date} {time}
   voice: # for SONOS, remove this section
     volume_offset: 0 # -40 to 4, default 0
     pitch_offset: 0 # -33 to 50, default 0
     rate: 100 # 20 to 250, default 100
     whisper: false
-  reminders: 
+  reminders: # daily, weekdays, weekends, mon, tue, wed, thu, fri, sat, sun
     # daily
-    - schedule: "daily, 07:15:00" 
-      reminder: "Good morning. It's {time}. Today is {day}, {date}. Remember, a great day starts with a good workout."
-    - schedule: "daily, 07:30:00" 
-      reminder: "It's {time}. And just remember, every second counts to achieve your dreams."
-    - schedule: "daily, 07:45:00" 
-      reminder: "It's {time}. If you're already on your feet, this day is yours."
+    - schedule: "daily, 07:15:00"
+      reminder: "Good morning. It's {time}. Today is {day}, {date}."
     - schedule: "daily, 12:00:00"
       reminder: "Good afternoon. Today is {day}, {date}, and it's {time}."
     - schedule: "daily, 17:00:00"
       reminder: "Good evening. It's {time}."
     - schedule: "daily, 21:30:00"
-      reminder: "It's {time}. Good night. And sweet dreams."
+      reminder: "It's {time}. Good night. And sweet dreams. I hope you've remembered to have your supplements and vitamins today."
     # weekdays
-    - schedule: "weekdays, 09:30:00"
-      reminder: "It's {time}. Quick reminder. Did you go to gym today?"
+    - schedule: "weekdays, 20:45:00"
+      reminder: "A gentle reminder, have your planned your weekend already? ... Well, have ya, punk!"
     # weekends
-    - schedule: "weekends, 09:30:00"
-      reminder: "It's {time}. Question. Are you planning to go for a run or a hike today?"
+    - schedule: "weekends, 08:30:00"
+      reminder: "It's {time}. Are you planning to go for a run or a hike today?"
     # mon, tue, wed, thu, fri, sat, sun
     - schedule: "tue, 21:00:00"
-      reminder: "It's {time}. Quick Reminder. Did you take out the garbage?"
-    - schedule: "wed, 09:30:00"
-      reminder: "It's {time}. What day is it? It's Hump Day! Yaaaay!"
-    - schedule: "fri, 04:30:00"
-      reminder: "The weekend is almost here. Better plan it now, or lose it forever!"
+      reminder: "It's {time}. Quick Reminder. Have you taken out the garbage?"
   debug: false
 
-auto_fan_speed_master_bedroom:
-  module: auto_fan_speed
-  class: AutoFanSpeed
-  temp_sensor: sensor.thermostat_master_bedroom_temperature
-  fan: fan.master_bedroom_fan
-  sun: sun.sun
-  speeds:
-    low: 67
-    medium: 70
-    high: 73
-    sun_offset: -1
-  time:
-    start: "21:00:00"
-    end: "09:00:00"
-    turn_off_at_end_time: true
-  debug: true
+#auto_fan_speed_master_bedroom:
+#  module: auto_fan_speed
+#  class: AutoFanSpeed
+#  temp_sensor: sensor.thermostat_master_bedroom_temperature
+#  fan: fan.master_bedroom_fan
+#  sun: sun.sun
+#  speeds:
+#    low: 67
+#    medium: 71
+#    high: 76
+#    sun_offset: 0
+#  time:
+#    start: "21:00:00"
+#    end: "10:00:00"
+#    turn_off_at_end_time: true
+#  debug: true
 
 auto_internet_rebooter:
   module: auto_internet_rebooter
@@ -123,13 +135,13 @@ auto_internet_rebooter:
     ping: sensor.speedtest_ping
     switch: switch.garage_internet_switch
   thresholds:
-    download_mbps: 80
-    upload_mbps: 4.0
-    ping_ms: 50
+    download_mbps: 200
+    upload_mbps: 8.0
+    ping_ms: 40
   schedule:
-    - "04:30:00"
+    - "04:45:00"
   notify:
-    alexa: media_player.upper_big_bedroom_alexa
+    alexa: media_player.kitchen_alexa
     start_time: "08:00:00"
     end_time: "21:30:00"
   debug: true
@@ -145,13 +157,13 @@ calendar_tv_reminders:
   notifications:
     service: notify/tv_living_room
     triggers:
-      - 5
-  debug: false
+      - 0
+  debug: true
 
 hvac_living_room:
   module: alexa_smart_talking_thermostat
   class: AlexaSmartTalkingThermostat
-  thermostat: climate.thermostat_living_room_mode
+  thermostat: climate.thermostat_living_room
   hvac_limits:
     cooling_min: 70
     heating_max: 71
@@ -161,20 +173,20 @@ hvac_living_room:
     hour: false
     half_hour: false
     quarter_hour: false
-    minute_offset: 3
+    minute_offset: 0
     duration: 1
   notifications:
-    speaker: media_player.living_room_alexa
+    speaker: media_player.kitchen_alexa
     start_time: "08:00:00"
     end_time: "21:30:00"
   power_backup_guard:
     grid_status_sensor: binary_sensor.grid_status
-  debug: false
-  
+  debug: true
+
 hvac_entertainment_room:
   module: alexa_smart_talking_thermostat
   class: AlexaSmartTalkingThermostat
-  thermostat: climate.thermostat_entertainment_room_mode
+  thermostat: climate.thermostat_entertainment_room
   hvac_limits:
     cooling_min: 70
     heating_max: 72
@@ -187,7 +199,7 @@ hvac_entertainment_room:
     minute_offset: 1
     duration: 1
   notifications:
-    speaker: media_player.living_room_alexa
+    speaker: media_player.kitchen_alexa
     start_time: "08:00:00"
     end_time: "21:30:00"
   power_backup_guard:
@@ -197,12 +209,12 @@ hvac_entertainment_room:
 hvac_master_bedroom:
   module: alexa_smart_talking_thermostat
   class: AlexaSmartTalkingThermostat
-  thermostat: climate.thermostat_master_bedroom_mode
+  thermostat: climate.thermostat_master_bedroom
   hvac_limits:
     cooling_min: 69
     heating_max: 72
     daily_shutoff: "09:30:00"
-    enforce_fan_auto_mode: True
+    enforce_fan_auto_mode: False
   doors_windows:
     - binary_sensor.master_bedroom_door
     - binary_sensor.master_bedroom_window_left
@@ -223,11 +235,11 @@ hvac_master_bedroom:
   power_backup_guard:
     grid_status_sensor: binary_sensor.grid_status
   debug: false
-    
+
 hvac_upper_big_bedroom:
   module: alexa_smart_talking_thermostat
   class: AlexaSmartTalkingThermostat
-  thermostat: climate.thermostat_upper_big_bedroom_mode
+  thermostat: climate.thermostat_upper_big_bedroom
   hvac_limits:
     cooling_min: 71
     heating_max: 72
@@ -250,11 +262,11 @@ hvac_upper_big_bedroom:
   power_backup_guard:
     grid_status_sensor: binary_sensor.grid_status
   debug: false
-  
+
 hvac_upper_small_bedroom:
   module: alexa_smart_talking_thermostat
   class: AlexaSmartTalkingThermostat
-  thermostat: climate.thermostat_upper_small_bedroom_mode
+  thermostat: climate.thermostat_upper_small_bedroom
   hvac_limits:
     cooling_min: 71
     heating_max: 71
@@ -280,7 +292,7 @@ hvac_upper_small_bedroom:
 hvac_upper_guest_bedroom:
   module: alexa_smart_talking_thermostat
   class: AlexaSmartTalkingThermostat
-  thermostat: climate.thermostat_upper_guest_bedroom_mode
+  thermostat: climate.thermostat_upper_guest_bedroom
   hvac_limits:
     cooling_min: 71
     heating_max: 71
@@ -302,31 +314,9 @@ hvac_upper_guest_bedroom:
     grid_status_sensor: binary_sensor.grid_status
   debug: false
 
-festival_lights_sentry:
-  module: festival_lights_sentry_controller
-  class: FestivalLightsSentryController
-  alexa: media_player.kitchen_alexa
-  alarm_time: 15
 
-ios_ha_companion:
-  module: ios_ha_companion_controller
-  class: IOSHACompanionController
 
-perimeter_lights:
-  module: perimeter_lights_controller
-  class: PerimeterLightsController
-  alexa: media_player.kitchen_alexa
 
-wallmote:
-  module: wallmote_controller
-  class: WallMoteController
-  alexa_master_bedroom: media_player.master_bedroom_alexa
-  alexa_master_bathroom: media_player.master_bathroom_alexa
-  alexa_living_room: media_player.living_room_alexa
-  alexa_kitchen: media_player.kitchen_alexa
-  alexa_upper_big_bedroom: media_player.upper_big_bedroom_alexa
-  alexa_upper_small_bedroom: media_player.upper_small_bedroom_alexa
-  alexa_upper_guest_bedroom: media_player.upper_guest_bedroom_alexa
-  doorbell: switch.living_room_doorbell
-  internet_switch: switch.garage_internet_switch
-  tv: media_player.tv_living_room
+
+
+

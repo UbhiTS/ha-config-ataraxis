@@ -7,12 +7,11 @@ from .base import HacsBase
 from .const import DOMAIN
 
 GITHUB_STATUS = "https://www.githubstatus.com/"
+CLOUDFLARE_STATUS = "https://www.cloudflarestatus.com/"
 
 
 @callback
-def async_register(
-    hass: HomeAssistant, register: system_health.SystemHealthRegistration
-) -> None:
+def async_register(hass: HomeAssistant, register: system_health.SystemHealthRegistration) -> None:
     """Register system health callbacks."""
     register.domain = "Home Assistant Community Store"
     register.async_register_info(system_health_info, "/hacs")
@@ -20,18 +19,30 @@ def async_register(
 
 async def system_health_info(hass):
     """Get info for the info page."""
-    client: HacsBase = hass.data[DOMAIN]
-    rate_limit = await client.github.get_rate_limit()
+    hacs: HacsBase = hass.data[DOMAIN]
+    response = await hacs.githubapi.rate_limit()
 
-    return {
-        "GitHub API": system_health.async_check_can_reach_url(
-            hass, BASE_API_URL, GITHUB_STATUS
+    data = {
+        "GitHub API": system_health.async_check_can_reach_url(hass, BASE_API_URL, GITHUB_STATUS),
+        "GitHub Content": system_health.async_check_can_reach_url(
+            hass, "https://raw.githubusercontent.com/hacs/integration/main/hacs.json"
         ),
-        "Github API Calls Remaining": rate_limit.get("remaining", "0"),
-        "Installed Version": client.version,
-        "Stage": client.stage,
-        "Available Repositories": len(client.repositories),
-        "Installed Repositories": len(
-            [repo for repo in client.repositories if repo.data.installed]
+        "GitHub Web": system_health.async_check_can_reach_url(
+            hass, "https://github.com/", GITHUB_STATUS
         ),
+        "GitHub API Calls Remaining": response.data.resources.core.remaining,
+        "Installed Version": hacs.version,
+        "Stage": hacs.stage,
+        "Available Repositories": len(hacs.repositories.list_all),
+        "Downloaded Repositories": len(hacs.repositories.list_downloaded),
     }
+
+    if hacs.system.disabled:
+        data["Disabled"] = hacs.system.disabled_reason
+
+    if hacs.configuration.experimental:
+        data["HACS Data"] = system_health.async_check_can_reach_url(
+            hass, "https://data-v2.hacs.xyz/data.json", CLOUDFLARE_STATUS
+        )
+
+    return data

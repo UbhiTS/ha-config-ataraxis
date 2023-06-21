@@ -4,7 +4,8 @@
             "single_instance_allowed": "Only a single configuration of HACS is allowed.",
             "min_ha_version": "You need at least version {version} of Home Assistant to setup HACS.",
             "github": "Could not authenticate with GitHub, try again later.",
-            "not_setup": "HACS is not setup."
+            "not_setup": "HACS is not setup.",
+            "reauth_successful": "Reauthentication was successful."
         },
         "error": {
             "auth": "Personal Access Token is not correct",
@@ -18,11 +19,14 @@
                     "acc_untested": "I know that everything inside HACS is custom and untested by Home Assistant",
                     "acc_disable": "I know that if I get issues with Home Assistant I should disable all my custom_components"
                 },
-                "description": "Before you can setup HACS you need to acknowledge the following",
-                "title": "HACS"
+                "description": "Before you can setup HACS you need to acknowledge the following"
             },
             "device": {
                 "title": "Waiting for device activation"
+            },
+            "reauth_confirm": {
+                "title": "Reauthentication needed",
+                "description": "You need to reauthenticate with GitHub."
             }
         },
         "progress": {
@@ -30,6 +34,10 @@
         }
     },
     "options": {
+        "abort": {
+            "not_setup": "HACS is not setup.",
+            "release_limit_value": "The release limit needs to be between 1 and 100"
+        },
         "step": {
             "user": {
                 "data": {
@@ -39,11 +47,28 @@
                     "release_limit": "Number of releases to show.",
                     "debug": "Enable debug.",
                     "appdaemon": "Enable AppDaemon apps discovery & tracking",
-                    "netdaemon": "Enable NetDaemon apps discovery & tracking",
+                    "netdaemon": "[DEPRECATED] Enable NetDaemon apps discovery & tracking",
                     "sidepanel_icon": "Side panel icon",
                     "sidepanel_title": "Side panel title"
                 }
             }
+        }
+    },
+    "issues": {
+        "restart_required": {
+            "title": "Restart required",
+            "fix_flow": {
+                "step": {
+                    "confirm_restart": {
+                        "title": "Restart required",
+                        "description": "Restart of Home Assistant is required to finish download/update of {name}, click submit to restart now."
+                    }
+                }
+            }
+        },
+        "removed": {
+            "title": "Repository removed from HACS",
+            "description": "Because {reason}, '{name}' has been removed from HACS. Please visit the [HACS Panel](/hacs/repository/{repositry_id}) to remove it."
         }
     }
 }

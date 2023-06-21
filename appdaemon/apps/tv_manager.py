@@ -16,8 +16,95 @@ class TVManager(hass.Hass):
 
 
   def tv_switched_on(self, entity, attribute, old, new, kwargs):
+    self.log('TV: SWITCHED ON')
     self.call_service("switch/turn_on", entity_id = self.tv_speaker_switch)
     
 
   def tv_switched_off(self, entity, attribute, old, new, kwargs):
+    self.log('TV: SWITCHED OFF')
     self.call_service("switch/turn_off", entity_id = self.tv_speaker_switch)
+
+
+#   def tv_energy_save_off(self):
+#     self.run_sequence([
+#       {"webostv/button": {"entity_id": self.tv, "button": "MENU"}},  {"sleep": 2},
+#       {"webostv/button": {"entity_id": self.tv, "button": "UP"}},    {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 3},
+#       {"webostv/button": {"entity_id": self.tv, "button": "RIGHT"}}, {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 2.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "EXIT"}}
+#       ])
+      
+#   def tv_energy_save_min(self):
+#     self.run_sequence([
+#       {"webostv/button": {"entity_id": self.tv, "button": "MENU"}},  {"sleep": 2},
+#       {"webostv/button": {"entity_id": self.tv, "button": "UP"}},    {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 3},
+#       {"webostv/button": {"entity_id": self.tv, "button": "RIGHT"}}, {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 2.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "EXIT"}}
+#       ])
+  
+#   def tv_energy_save_med(self):
+#     self.run_sequence([
+#       {"webostv/button": {"entity_id": self.tv, "button": "MENU"}},  {"sleep": 2},
+#       {"webostv/button": {"entity_id": self.tv, "button": "UP"}},    {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 3},
+#       {"webostv/button": {"entity_id": self.tv, "button": "RIGHT"}}, {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 2.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "EXIT"}}
+#       ])
+  
+#   def tv_energy_save_max(self):
+#     self.run_sequence([
+#       {"webostv/button": {"entity_id": self.tv, "button": "MENU"}},  {"sleep": 2},
+#       {"webostv/button": {"entity_id": self.tv, "button": "UP"}},    {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 3},
+#       {"webostv/button": {"entity_id": self.tv, "button": "RIGHT"}}, {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 2.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "EXIT"}}
+#       ])
+
+#   def tv_energy_save_screen_off(self):
+#     self.run_sequence([
+#       {"webostv/button": {"entity_id": self.tv, "button": "MENU"}},  {"sleep": 2},
+#       {"webostv/button": {"entity_id": self.tv, "button": "UP"}},    {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 3},
+#       {"webostv/button": {"entity_id": self.tv, "button": "RIGHT"}}, {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}, {"sleep": 2.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "DOWN"}},  {"sleep": 0.5},
+#       {"webostv/button": {"entity_id": self.tv, "button": "ENTER"}}
+#       ])

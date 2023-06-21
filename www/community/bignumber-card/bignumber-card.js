@@ -1,4 +1,7 @@
 class BigNumberCard extends HTMLElement {
+  _DEFAULT_STYLE(){return 'var(--label-badge-blue)';}
+  _DEFAULT_COLOR(){return 'var(--primary-text-color)';}
+  
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -13,6 +16,12 @@ class BigNumberCard extends HTMLElement {
     const cardConfig = Object.assign({}, config);
     if (!cardConfig.scale) cardConfig.scale = "50px";
     if (!cardConfig.from) cardConfig.from = "left";
+    if (!cardConfig.opacity) cardConfig.opacity = "0.5";
+    if (!cardConfig.noneString) cardConfig.nonestring = null;
+    if (!cardConfig.noneCardClass) cardConfig.noneCardClass = null;
+    if (!cardConfig.noneValueClass) cardConfig.noneValueClass = null;
+    this.isNoneConfig = Boolean(cardConfig.noneString || cardConfig.noneCardClass || cardConfig.noneValueClass)
+
     const card = document.createElement('ha-card');
     const content = document.createElement('div');
     content.id = "value"
@@ -23,22 +32,24 @@ class BigNumberCard extends HTMLElement {
     style.textContent = `
       ha-card {
         text-align: center;
-        --bignumber-fill-color: var(--label-badge-blue);
+        --bignumber-color: ${this._getColor(null, cardConfig)};
+        --bignumber-fill-color: ${this._getStyle(null, cardConfig)};
         --bignumber-percent: 100%;
         --bignumber-direction: ${cardConfig.from};
         --base-unit: ${cardConfig.scale};
         padding: calc(var(--base-unit)*0.6) calc(var(--base-unit)*0.3);
-        background: linear-gradient(to var(--bignumber-direction), var(--paper-card-background-color) var(--bignumber-percent), var(--bignumber-fill-color) var(--bignumber-percent));
+        background: linear-gradient(to var(--bignumber-direction), var(--card-background-color) var(--bignumber-percent), var(--bignumber-fill-color) var(--bignumber-percent));
       }
       #value {
         font-size: calc(var(--base-unit) * 1.3);
         line-height: calc(var(--base-unit) * 1.3);
-        color: var(--primary-text-color);
+        color: var(--bignumber-color);
       }
+      #value small{opacity: ${cardConfig.opacity}}
       #title {
         font-size: calc(var(--base-unit) * 0.5);
         line-height: calc(var(--base-unit) * 0.5);
-        color: var(--primary-text-color);
+        color: var(--bignumber-color);
       }
     `;
     card.appendChild(content);
@@ -66,14 +77,29 @@ class BigNumberCard extends HTMLElement {
   }
 
   _computeSeverity(stateValue, sections) {
+    if (stateValue === undefined || stateValue === null) return;
     const numberValue = Number(stateValue);
-    let style;
-    sections.forEach(section => {
-      if (numberValue <= section.value && !style) {
-        style = section.style;
-      }
-    });
-    return style || 'var(--label-badge-blue)';
+    for (const section of sections) {
+      if (numberValue <= section.value) return section;
+    }
+  }
+
+  _getColor(entityState, config) {
+    if (config.severity) {
+      const severity = this._computeSeverity(entityState, config.severity);
+      if (severity && severity.color) return severity.color;
+    }
+    if (config.color) return config.color;
+    return this._DEFAULT_COLOR();
+  }
+
+  _getStyle(entityState, config) {
+    if (config.severity) {
+      const severity = this._computeSeverity(entityState, config.severity);
+      if (severity && severity.bnStyle) return severity.bnStyle;
+    }
+    if (config.bnStyle) return config.bnStyle;
+    return this._DEFAULT_STYLE();
   }
 
   _translatePercent(value, min, max) {
@@ -83,18 +109,39 @@ class BigNumberCard extends HTMLElement {
   set hass(hass) {
     const config = this._config;
     const root = this.shadowRoot;
-    const entityState = hass.states[config.entity].state;
+    const entityState = config.attribute 
+      ? hass.states[config.entity].attributes[config.attribute] 
+      : hass.states[config.entity].state;
     const measurement = hass.states[config.entity].attributes.unit_of_measurement || "";
 
     if (entityState !== this._entityState) {
       if (config.min !== undefined && config.max !== undefined) {
         root.querySelector("ha-card").style.setProperty('--bignumber-percent', `${this._translatePercent(entityState, config.min, config.max)}%`);
       }
-      if (config.severity) {
-        root.querySelector("ha-card").style.setProperty('--bignumber-fill-color', `${this._computeSeverity(entityState, config.severity)}`);
-      }
-      root.getElementById("value").textContent = `${entityState} ${measurement}`;
+      root.querySelector("ha-card").style.setProperty('--bignumber-fill-color', `${this._getStyle(entityState, config)}`);
+      root.querySelector("ha-card").style.setProperty('--bignumber-color', `${this._getColor(entityState, config)}`);
       this._entityState = entityState
+      let value = (config.round == null ? entityState : parseFloat(entityState).toFixed(config.round)) 
+      if (config.hideunit==true) 
+        { root.getElementById("value").textContent = `${value}`; }
+      else 
+        { root.getElementById("value").innerHTML = `${value}<small>${measurement}</small>`; }
+      if (this.isNoneConfig){
+        if (isNaN(value)) {
+          if (config.noneString) {
+            root.getElementById("value").textContent = config.noneString;
+          }
+          if (config.noneCardClass) {
+            root.querySelector("ha-card").classList.add(config.noneCardClass)
+          }
+          if (config.noneValueClass) {
+            root.getElementById("value").classList.add(config.noneValueClass)
+          }
+        } else {
+          root.querySelector("ha-card").classList.remove(config.noneCardClass)
+          root.getElementById("value").classList.remove(config.noneValueClass)
+        }
+      }  
     }
     root.lastChild.hass = hass;
   }
@@ -105,3 +152,12 @@ class BigNumberCard extends HTMLElement {
 }
 
 customElements.define('bignumber-card', BigNumberCard);
+
+// Configure the preview in the Lovelace card picker
+window.customCards = window.customCards || [];
+window.customCards.push({
+  type: 'bignumber-card',
+  name: 'Big number card',
+  preview: false,
+  description: 'A simple card to display big numbers for sensors. It also supports severity levels as background.'
+});

@@ -1,0 +1,24 @@
+platform: qnap
+host: !secret plexnas_ip
+port: !secret plexnas_port
+username: !secret plexnas_username
+password: !secret plexnas_password
+timeout: !secret plexnas_timeout
+ssl: !secret plexnas_ssl
+verify_ssl: !secret plexnas_verify_ssl
+monitored_conditions:
+  - status
+  - system_temp
+  - cpu_temp
+  - cpu_usage
+  - memory_free
+  - memory_used
+  - memory_percent_used
+  - network_link_status
+  - network_tx
+  - network_rx
+  - drive_smart_status
+  - drive_temp
+  - volume_size_free
+  - volume_size_used
+  - volume_percentage_used

@@ -31,7 +31,7 @@ zwscene.xml
 home-assistant.log
 home-assistant.log.1
 home-assistant.log.fault
-
+FLUME_TOKEN_FILE*
 
 # Ignore files created by IDE's
 .vscode

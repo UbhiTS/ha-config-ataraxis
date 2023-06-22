@@ -164,18 +164,18 @@ lovelace:
     lovelace-monitor: # Needs to contain a hyphen (-)
       mode: yaml
       filename: ui-monitor.yaml
-      title: Home
+      title: Dashboard
       icon: mdi:monitor-dashboard
       show_in_sidebar: true
       require_admin: true
     lovelace-tablet:
       mode: yaml
       filename: ui-tablet.yaml
-      title: Home
+      title: Mobile
       icon: mdi:tablet-dashboard
       show_in_sidebar: true
       require_admin: true
-
+    
 
 media_source:
 media_player:

@@ -1,0 +1,15 @@
+title: Alexa
+icon: mdi:music-circle
+cards:
+  - type: media-control
+    entity: media_player.kitchen_alexa
+  - type: media-control
+    entity: media_player.master_bedroom_alexa
+  - type: media-control
+    entity: media_player.master_bathroom_alexa
+  - type: media-control
+    entity: media_player.upper_big_bedroom_alexa
+  - type: media-control
+    entity: media_player.upper_small_bedroom_alexa
+  - type: media-control
+    entity: media_player.upper_guest_bedroom_alexa

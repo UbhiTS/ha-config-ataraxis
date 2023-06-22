@@ -1,0 +1,13 @@
+title: Home
+background: var(--background-image)
+views:
+  - !include lovelace-tablet/main.yaml
+  - !include lovelace-tablet/thermostats.yaml
+  - !include lovelace-tablet/lights_fans.yaml
+  - !include lovelace-tablet/doors_windows.yaml
+  - !include lovelace-tablet/cameras.yaml
+  - !include lovelace-tablet/floorplan.yaml
+  - !include lovelace-tablet/home.yaml
+  - !include lovelace-tablet/monitor.yaml
+  - !include lovelace-tablet/links.yaml
+

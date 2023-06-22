@@ -1,0 +1,13 @@
+title: Home
+background: var(--background-image)
+views:
+  - !include lovelace-monitor/main.yaml
+  - !include lovelace-monitor/thermostats.yaml
+  - !include lovelace-monitor/lights_fans.yaml
+  - !include lovelace-monitor/doors_windows.yaml
+  - !include lovelace-monitor/cameras.yaml
+  - !include lovelace-monitor/floorplan.yaml
+  - !include lovelace-monitor/home.yaml
+  - !include lovelace-monitor/monitor.yaml
+  - !include lovelace-monitor/links.yaml
+

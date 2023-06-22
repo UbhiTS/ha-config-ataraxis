@@ -1,0 +1,181 @@
+title: Home
+icon: mdi:home
+cards:
+
+  - type: entities
+    state_color: true
+    title: People
+    show_header_toggle: false
+    entities:
+      - device_tracker.funky_monkey_s_iphone
+      - device_tracker.ivavvays_iphone
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      state_color: true
+      title: Home Energy
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.home_energy
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      state_color: true
+      title: Solar Forecast
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.solar_forecast
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      state_color: true
+      title: Water (ACWD)
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.home_water
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      state_color: true
+      title: Living Room
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.living_room
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      state_color: true
+      title: Kitchen
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.kitchen
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      state_color: true
+      title: Master Bedroom
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.master_bedroom
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      state_color: true
+      title: Master Bathroom
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.master_bathroom
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      state_color: true
+      title: Upper Big Bedroom
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.upper_big_bedroom
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      state_color: true
+      title: Upper Small Bedroom
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.upper_small_bedroom
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      state_color: true
+      title: Upper Guest Bedroom
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.upper_guest_bedroom
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      state_color: true
+      title: Entertainment Room
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.entertainment_room
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      state_color: true
+      title: Welcome Room
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.welcome_room
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      state_color: true
+      title: Attic
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.attic
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      state_color: true
+      title: Entryway
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.entryway
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      state_color: true
+      title: Garage
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.garage
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      state_color: true
+      title: Backyard
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.backyard
+
+  - type: custom:auto-entities
+    card:
+      type: entities
+      state_color: true
+      title: Side Deck
+      show_header_toggle: false
+    filter:
+      include:
+        - group: group.side_deck

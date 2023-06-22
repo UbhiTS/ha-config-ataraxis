@@ -1,0 +1,43 @@
+title: Doors & Windows
+icon: mdi:door-open
+cards:
+  - type: entities
+    state_color: true
+    entities:
+      - binary_sensor.main_door
+      - cover.garage_door_big
+      - cover.garage_door_small
+      - binary_sensor.garage_laundry_door
+      - binary_sensor.welcome_laundry_door
+      - binary_sensor.kitchen_door
+      - binary_sensor.kitchen_window_left
+      - binary_sensor.kitchen_window_right
+      - binary_sensor.living_room_window_left
+      - binary_sensor.living_room_window_right
+      - binary_sensor.lower_common_bathroom_door
+  - type: entities
+    state_color: true
+    entities:
+      - binary_sensor.upper_big_bedroom_window_left
+      - binary_sensor.upper_big_bedroom_window_right
+      - binary_sensor.upper_big_bedroom_door
+      - binary_sensor.upper_small_bedroom_window
+      - binary_sensor.upper_small_bedroom_door
+      - binary_sensor.upper_guest_bedroom_door
+      - binary_sensor.upper_guest_bedroom_window
+      - binary_sensor.upper_common_bathroom_door
+      - binary_sensor.entertainment_room_window_left
+      - binary_sensor.entertainment_room_window_right
+  - type: entities
+    state_color: true
+    entities:
+      - binary_sensor.master_bedroom_door
+      - binary_sensor.master_bedroom_window_left
+      - binary_sensor.master_bedroom_window_right
+      - binary_sensor.master_bedroom_window_left_small
+      - binary_sensor.master_bedroom_window_right_small
+      - binary_sensor.master_bathroom_window
+      - binary_sensor.welcome_window_peep
+      - binary_sensor.welcome_window_front
+      - binary_sensor.welcome_window_left
+      - binary_sensor.welcome_window_right

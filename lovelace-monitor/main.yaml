@@ -6,20 +6,14 @@ cards:
   - type: vertical-stack
     cards:
 
-      - type: grid
-        columns: 3
-        square: false
+      - type: horizontal-stack
         cards:
-          - type: grid
-            columns: 1
-            square: false
+          - type: vertical-stack
             cards:
               - type: weather-forecast
                 title: "Weather"
                 entity: weather.openweathermap
-              - type: grid
-                columns: 2
-                square: false
+              - type: horizontal-stack
                 cards:
                   - type: tile
                     vertical: true
@@ -85,163 +79,168 @@ cards:
             CalEventIcon2: mdi:gift
             CalEventIcon3: mdi:octagram
 
-          - type: grid
-            columns: 1
-            square: false
-            cards:
-              - type: "custom:config-template-card"
-                entities:
-                  - sensor.ubhinas_smart_status_drive_0_1
-                  - sensor.ubhinas_smart_status_drive_0_2
-                  - sensor.plexnas_smart_status_drive_0_1
-                  - sensor.plexnas_smart_status_drive_0_2
-                card:
-                  type: grid  # HDD STATUS
-                  title: 'NAS HDD Status'
-                  columns: 2
-                  square: false
-                  cards:
-                    - type: tile
-                      vertical: true
-                      name: 'UbhiNAS HD1'
-                      icon: "${states['sensor.ubhinas_smart_status_drive_0_1'].state == 'OK' ? 'mdi:harddisk' : 'mdi:harddisk-remove'}"
-                      entity: sensor.ubhinas_smart_status_drive_0_1
-                      color: "${states['sensor.ubhinas_smart_status_drive_0_1'].state == 'OK' ? 'green' : 'red'}"
-                    - type: tile
-                      vertical: true
-                      name: 'UbhiNAS HD2'
-                      icon: "${states['sensor.ubhinas_smart_status_drive_0_2'].state == 'OK' ? 'mdi:harddisk' : 'mdi:harddisk-remove'}"
-                      entity: sensor.ubhinas_smart_status_drive_0_2
-                      color: "${states['sensor.ubhinas_smart_status_drive_0_2'].state == 'OK' ? 'green' : 'red'}"
-                    - type: tile
-                      vertical: true
-                      name: 'PlexNAS HD1'
-                      icon: "${states['sensor.plexnas_smart_status_drive_0_1'].state == 'OK' ? 'mdi:harddisk' : 'mdi:harddisk-remove'}"
-                      entity: sensor.plexnas_smart_status_drive_0_1
-                      color: "${states['sensor.plexnas_smart_status_drive_0_1'].state == 'OK' ? 'green' : 'red'}"
-                    - type: tile
-                      vertical: true
-                      name: 'PlexNAS HD2'
-                      icon: "${states['sensor.plexnas_smart_status_drive_0_2'].state == 'OK' ? 'mdi:harddisk' : 'mdi:harddisk-remove'}"
-                      entity: sensor.plexnas_smart_status_drive_0_2
-                      color: "${states['sensor.plexnas_smart_status_drive_0_2'].state == 'OK' ? 'green' : 'red'}"
-
-      - type: grid
-        columns: 4
-        square: false
-        cards:
-          - type: "custom:config-template-card" # HOUSE ENERGY PROFILE BARS
-            
+          - type: "custom:config-template-card"
             entities:
-              - sensor.solar_power
-              - sensor.grid_power
-              - sensor.grid_bar_target
-              - sensor.powerwall_power
-              - sensor.powerwall_power_target
-              - sensor.house_load
+              - sensor.ubhinas_smart_status_drive_0_1
+              - sensor.ubhinas_smart_status_drive_0_2
+              - sensor.plexnas_smart_status_drive_0_1
+              - sensor.plexnas_smart_status_drive_0_2
             card:
-              type: custom:bar-card
-              title: "Energy Profile"
-              columns: 4
-              height: 100px
-              width: 95%
-              decimal: 1
-              direction: up
-              positions:
-                icon: inside
-                name: 'off'
-                value: outside
-                indicator: 'off'
-              animation:
-                state: 'on'
-                speed: 5
-              entities:
-                - entity: sensor.solar_power
-                  name: "solar"
-                  target: "${states['sensor.solar_power'].state}"
-                  min: 0
-                  max: 8
-                  icon: mdi:weather-sunset
-                  severity:
-                    - color: 'yellow'
-                      from: 0
-                      to: 8
-                - entity: sensor.grid_power
-                  name: "grid"
-                  target: "${states['sensor.grid_power_target'].state}"
-                  min: 0
-                  max: 8
-                  icon: mdi:transmission-tower
-                  severity:
-                    - color: 'orange'
-                      from: 0
-                      to: 8
-                - entity: sensor.powerwall_power
-                  name: "${states['sensor.powerwall_power_name'].state}"
-                  target: "${states['sensor.powerwall_power_target'].state}"
-                  min: 0
-                  max: 8
-                  icon: mdi:car-battery
-                  severity:
-                    - color: 'green'
-                      from: 0
-                      to: 8
-                  positions:
-                    name: inside
-                - entity: sensor.house_load
-                  name: "load"
-                  target: "${states['sensor.house_load'].state}"
-                  min: 0
-                  max: 8
-                  icon: mdi:home
-                  severity:
-                    - color: 'red'
-                      from: 0
-                      to: 8 
-          - type: energy-solar-graph
-            #title: 'Solar Production'
-          - type: energy-usage-graph
-            #title: 'Energy Usage'
+              type: grid  # HDD STATUS
+              title: 'NAS HDD Status'
+              columns: 2
+              square: false
+              cards:
+                - type: tile
+                  vertical: true
+                  name: 'UbhiNAS HD1'
+                  icon: "${states['sensor.ubhinas_smart_status_drive_0_1'].state == 'OK' ? 'mdi:harddisk' : 'mdi:harddisk-remove'}"
+                  entity: sensor.ubhinas_smart_status_drive_0_1
+                  color: "${states['sensor.ubhinas_smart_status_drive_0_1'].state == 'OK' ? 'green' : 'red'}"
+                - type: tile
+                  vertical: true
+                  name: 'UbhiNAS HD2'
+                  icon: "${states['sensor.ubhinas_smart_status_drive_0_2'].state == 'OK' ? 'mdi:harddisk' : 'mdi:harddisk-remove'}"
+                  entity: sensor.ubhinas_smart_status_drive_0_2
+                  color: "${states['sensor.ubhinas_smart_status_drive_0_2'].state == 'OK' ? 'green' : 'red'}"
+                - type: tile
+                  vertical: true
+                  name: 'PlexNAS HD1'
+                  icon: "${states['sensor.plexnas_smart_status_drive_0_1'].state == 'OK' ? 'mdi:harddisk' : 'mdi:harddisk-remove'}"
+                  entity: sensor.plexnas_smart_status_drive_0_1
+                  color: "${states['sensor.plexnas_smart_status_drive_0_1'].state == 'OK' ? 'green' : 'red'}"
+                - type: tile
+                  vertical: true
+                  name: 'PlexNAS HD2'
+                  icon: "${states['sensor.plexnas_smart_status_drive_0_2'].state == 'OK' ? 'mdi:harddisk' : 'mdi:harddisk-remove'}"
+                  entity: sensor.plexnas_smart_status_drive_0_2
+                  color: "${states['sensor.plexnas_smart_status_drive_0_2'].state == 'OK' ? 'green' : 'red'}"
+
+      - type: horizontal-stack
+        cards:
           - type: energy-distribution
-      - type: grid
-        columns: 3
-        square: false
+          - type: vertical-stack
+            cards:
+              - type: "custom:config-template-card" # HOUSE ENERGY PROFILE BARS
+                entities:
+                  - sensor.solar_power
+                  - sensor.grid_power
+                  - sensor.grid_bar_target
+                  - sensor.powerwall_power
+                  - sensor.powerwall_power_target
+                  - sensor.house_load
+                card:
+                  type: custom:bar-card
+                  columns: 4
+                  height: 100px
+                  width: 95%
+                  decimal: 1
+                  direction: up
+                  positions:
+                    icon: inside
+                    name: 'off'
+                    value: outside
+                    indicator: 'off'
+                  animation:
+                    state: 'on'
+                    speed: 5
+                  entities:
+                    - entity: sensor.solar_power
+                      name: "solar"
+                      target: "${states['sensor.solar_power'].state}"
+                      min: 0
+                      max: 8
+                      icon: mdi:weather-sunset
+                      severity:
+                        - color: 'yellow'
+                          from: 0
+                          to: 8
+                    - entity: sensor.grid_power
+                      name: "grid"
+                      target: "${states['sensor.grid_power_target'].state}"
+                      min: 0
+                      max: 8
+                      icon: mdi:transmission-tower
+                      severity:
+                        - color: 'orange'
+                          from: 0
+                          to: 8
+                    - entity: sensor.powerwall_power
+                      name: "${states['sensor.powerwall_power_name'].state}"
+                      target: "${states['sensor.powerwall_power_target'].state}"
+                      min: 0
+                      max: 8
+                      icon: mdi:car-battery
+                      severity:
+                        - color: 'green'
+                          from: 0
+                          to: 8
+                      positions:
+                        name: inside
+                    - entity: sensor.house_load
+                      name: "load"
+                      target: "${states['sensor.house_load'].state}"
+                      min: 0
+                      max: 8
+                      icon: mdi:home
+                      severity:
+                        - color: 'red'
+                          from: 0
+                          to: 8 
+              - type: horizontal-stack
+                cards:
+                  - type: energy-solar-graph
+                    title: "Solar"
+                  - type: energy-usage-graph
+                    title: 'Energy Profile'
+          
+      - type: horizontal-stack
         cards:
           - type: energy-water-graph
             title: 'Water Consumption'
-          - type: gauge
-            entity: sensor.flume_sensor_home_current
-            name: "Current"
-            needle: true
-            min: 0
-            max: 5
-            segments:
-              - from: 0
-                color: '#43a047'
-              - from: 2
-                color: '#ffa600'
-              - from: 4
-                color: '#db4437'
-          - type: gauge
-            entity: sensor.flume_sensor_home_60_minutes
-            name: "Last Hour"
-            needle: true
-            min: 0
-            max: 15
-            segments:
-              - from: 0
-                color: '#43a047'
-              - from: 8
-                color: '#ffa600'
-              - from: 12
-                color: '#db4437'
+          - type: horizontal-stack
+            cards:
+              - type: gauge
+                entity: sensor.flume_sensor_home_current
+                name: "Current"
+                needle: true
+                min: 0
+                max: 5
+                segments:
+                  - from: 0
+                    color: '#43a047'
+                  - from: 2
+                    color: '#ffa600'
+                  - from: 4
+                    color: '#db4437'
+              - type: gauge
+                entity: sensor.flume_sensor_home_60_minutes
+                name: "Last Hour"
+                needle: true
+                min: 0
+                max: 15
+                segments:
+                  - from: 0
+                    color: '#43a047'
+                  - from: 8
+                    color: '#ffa600'
+                  - from: 12
+                    color: '#db4437'
+              - type: gauge
+                entity: sensor.flume_sensor_home_current_day
+                name: "Today"
+                needle: true
+                min: 0
+                max: 200
+                segments:
+                  - from: 0
+                    color: '#43a047'
+                  - from: 150
+                    color: '#ffa600'
+                  - from: 175
+                    color: '#db4437'
 
-
-
-
-      - type: grid
-        columns: 3
-        square: false
+      - type: horizontal-stack
         cards:
           - type: custom:mini-graph-card # INTERNET DATA USAGE
             name: Data Usage
@@ -383,7 +382,7 @@ cards:
           show_state: false
           show_icon: true
           show_name: true
-          columns: 3
+          columns: 5
         show_empty: false
         state_filter:
         - "on"

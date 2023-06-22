@@ -1,0 +1,123 @@
+title: Outdoor Cams
+icon: mdi:cctv
+cards:
+  - type: picture-entity
+    name: "Baby Monitor"
+    entity: camera.dlink_camera_02
+    camera_image: camera.dlink_camera_02
+    camera_view: "auto"
+    show_name: true
+    show_state: false
+  - type: picture-entity
+    name: "Living Room"
+    entity: camera.living_room_camera
+    camera_image: camera.living_room_camera
+    camera_view: "auto"
+    show_name: true
+    show_state: false
+  - type: picture-entity
+    name: "Welcome Room"
+    entity: camera.welcome_room_camera
+    camera_image: camera.welcome_room_camera
+    camera_view: "auto"
+    show_name: true
+    show_state: false
+  - type: picture-entity
+    name: "Upper Hallway"
+    entity: camera.hallway_camera
+    camera_image: camera.hallway_camera
+    camera_view: "auto"
+    show_name: true
+    show_state: false
+  - type: picture-entity
+    name: "Main Door"
+    entity: camera.main_door_camera
+    camera_image: camera.main_door_camera
+    camera_view: "auto"
+    aspect_ratio: "16x9"
+    show_name: true
+    show_state: false
+  - type: picture-entity
+    name: "Front Left"
+    entity: camera.front_left_camera
+    camera_image: camera.front_left_camera
+    camera_view: "auto"
+    show_name: true
+    show_state: false
+  - type: picture-entity
+    name: "Front Right"
+    entity: camera.front_right_camera
+    camera_image: camera.front_right_camera
+    camera_view: "auto"
+    show_name: true
+    show_state: false
+  - type: picture-entity
+    name: "Front Street Straight"
+    entity: camera.front_street_straight_camera
+    camera_image: camera.front_street_straight_camera
+    camera_view: "auto"
+    show_name: true
+    show_state: false
+  - type: picture-entity
+    name: "Front Street Right"
+    entity: camera.front_street_right_camera
+    camera_image: camera.front_street_right_camera
+    camera_view: "auto"
+    show_name: true
+    show_state: false
+  - type: picture-entity
+    name: "Backyard Left"
+    entity: camera.backyard_left_camera
+    camera_image: camera.backyard_left_camera
+    camera_view: "auto"
+    show_name: true
+    show_state: false
+  - type: picture-entity
+    name: "Backyard Right"
+    entity: camera.backyard_right_camera
+    camera_image: camera.backyard_right_camera
+    camera_view: "auto"
+    show_name: true
+    show_state: false
+  - type: picture-entity
+    name: "Garage Left"
+    entity: camera.garage_left_camera
+    camera_image: camera.garage_left_camera
+    camera_view: "auto"
+    show_name: true
+    show_state: false
+  - type: picture-entity
+    name: "Garage Right"
+    entity: camera.garage_right_camera
+    camera_image: camera.garage_right_camera
+    camera_view: "auto"
+    show_name: true
+    show_state: false
+  - type: picture-entity
+    name: "Veggie Garden Left"
+    entity: camera.veggie_garden_left_camera
+    camera_image: camera.veggie_garden_left_camera
+    camera_view: "auto"
+    show_name: true
+    show_state: false
+  - type: picture-entity
+    name: "Veggie Garden Right"
+    entity: camera.veggie_garden_right_camera
+    camera_image: camera.veggie_garden_right_camera
+    camera_view: "auto"
+    show_name: true
+    show_state: false
+  - type: picture-entity
+    name: "Side Deck"
+    entity: camera.side_deck_camera
+    camera_image: camera.side_deck_camera
+    camera_view: "auto"
+    show_name: true
+    show_state: false
+  - type: picture-entity
+    name: "Electrical Mains"
+    entity: camera.electrical_mains_camera
+    camera_image: camera.electrical_mains_camera
+    camera_view: "auto"
+    show_name: true
+    show_state: false

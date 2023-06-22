@@ -136,30 +136,46 @@ input_boolean:
 lovelace:
   mode: yaml
   resources:
-  - url: /hacsfiles/atomic_calendar/atomic_calendar.js
-    type: module
-  #- url: /hacsfiles/atomic-calendar-revive/atomic-calendar-revive.js
-  #  type: module
-  - url: /hacsfiles/bar-card/bar-card.js
-    type: module
-  - url: /hacsfiles/bignumber-card/bignumber-card.js
-    type: module
-  - url: /hacsfiles/config-template-card/config-template-card.js
-    type: module
-  - url: /hacsfiles/lovelace-auto-entities/auto-entities.js
-    type: module
-  - url: /hacsfiles/lovelace-layout-card/layout-card.js
-    type: module
-  - url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js
-    type: module
-  - url: /hacsfiles/simple-thermostat/simple-thermostat.js
-    type: module
-  - url: /hacsfiles/weather-card/weather-card.js
-    type: module
-  - url: /local/floorplan/floorplan-card.js?v=1.1.14
-    type: module
-  - url: https://fonts.googleapis.com/css2?family=Oxygen&family=Ubuntu:wght@300&display=swap
-    type: css
+    - url: /hacsfiles/atomic_calendar/atomic_calendar.js
+      type: module
+    #- url: /hacsfiles/atomic-calendar-revive/atomic-calendar-revive.js
+    #  type: module
+    - url: /hacsfiles/bar-card/bar-card.js
+      type: module
+    - url: /hacsfiles/bignumber-card/bignumber-card.js
+      type: module
+    - url: /hacsfiles/config-template-card/config-template-card.js
+      type: module
+    - url: /hacsfiles/lovelace-auto-entities/auto-entities.js
+      type: module
+    - url: /hacsfiles/lovelace-layout-card/layout-card.js
+      type: module
+    - url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js
+      type: module
+    - url: /hacsfiles/simple-thermostat/simple-thermostat.js
+      type: module
+    - url: /hacsfiles/weather-card/weather-card.js
+      type: module
+    - url: /local/floorplan/floorplan-card.js?v=1.1.14
+      type: module
+    - url: https://fonts.googleapis.com/css2?family=Oxygen&family=Ubuntu:wght@300&display=swap
+      type: css
+  dashboards:
+    lovelace-monitor: # Needs to contain a hyphen (-)
+      mode: yaml
+      filename: ui-monitor.yaml
+      title: Home
+      icon: mdi:monitor-dashboard
+      show_in_sidebar: true
+      require_admin: true
+    lovelace-tablet:
+      mode: yaml
+      filename: ui-tablet.yaml
+      title: Home
+      icon: mdi:tablet-dashboard
+      show_in_sidebar: true
+      require_admin: true
+
 
 media_source:
 media_player:

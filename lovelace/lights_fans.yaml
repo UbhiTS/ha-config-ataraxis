@@ -30,19 +30,22 @@ cards:
       - type: light
         icon: mdi:floor-lamp
         entity: light.master_bedroom_light_right
-      # - type: button
-      #   icon: mdi:fan
-      #   tap_action:
-      #     action: more-info
-      #   hold_action:
-      #     action: toggle
-      #   entity: fan.master_bedroom_fan
+      - type: button
+        icon: mdi:fan
+        #tap_action:
+        #  action: more-info
+        #hold_action:
+        #  action: toggle
+        entity: fan.master_bedroom_fan_dimmer
       - type: button
         icon: mdi:ceiling-fan-light
         entity: switch.upper_guest_bedroom_light_fan
       - type: button
         icon: mdi:ceiling-fan-light
         entity: switch.upper_small_bedroom_light_fan
+      - type: light
+        icon: mdi:floor-lamp-torchiere
+        entity: light.upper_small_bedroom_bed_light
 
     - type: horizontal-stack
       cards:

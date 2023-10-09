@@ -50,11 +50,13 @@ from .const import (
     CONF_OAUTH,
     CONF_OTPSECRET,
     CONF_PROXY_WARNING,
+    CONF_PUBLIC_URL,
     CONF_QUEUE_DELAY,
     CONF_SECURITYCODE,
     CONF_TOTP_REGISTER,
     DATA_ALEXAMEDIA,
     DEFAULT_EXTENDED_ENTITY_DISCOVERY,
+    DEFAULT_PUBLIC_URL,
     DEFAULT_QUEUE_DELAY,
     DOMAIN,
     ISSUE_URL,
@@ -342,6 +344,7 @@ class AlexaMediaFlowHandler(config_entries.ConfigFlow):
             {"config_flow_id": self.flow_id, "callback_url": str(callback_url)}
         )
         self.login._session.cookie_jar.clear()  # pylint: disable=protected-access
+        self.login.proxy_url = proxy_url
         return self.async_external_step(step_id="check_proxy", url=str(proxy_url))
 
     async def async_step_check_proxy(self, user_input=None):
@@ -574,6 +577,8 @@ class AlexaMediaFlowHandler(config_entries.ConfigFlow):
                 "refresh_token": login.refresh_token,
                 "expires_in": login.expires_in,
                 "mac_dms": login.mac_dms,
+                "code_verifier": login.code_verifier,
+                "authorization_code": login.authorization_code,
             }
             self.hass.data.setdefault(
                 DATA_ALEXAMEDIA,
@@ -797,6 +802,12 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                         CONF_QUEUE_DELAY, DEFAULT_QUEUE_DELAY
                     ),
                 ): vol.All(vol.Coerce(float), vol.Clamp(min=0)),
+                vol.Optional(
+                    CONF_PUBLIC_URL,
+                    default=self.config_entry.options.get(
+                        CONF_PUBLIC_URL, DEFAULT_PUBLIC_URL
+                    ),
+                ): str,
                 vol.Required(
                     CONF_EXTENDED_ENTITY_DISCOVERY,
                     default=self.config_entry.options.get(

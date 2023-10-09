@@ -28,20 +28,29 @@ class HomeController(hass.Hass):
     self.listen_state(self.internet_reset, self.bool_reset_internet)
     self.listen_state(self.vacuum_event_handler, self.vacuum_jhadoo_pocha)
     
-    self.run_every(self.internet_turn_on, "now", 15 * 60)
-    self.run_every(self.nas_hdd_error_alert, "now", 30 * 60, random_start = -5 * 60, random_end = 5 * 60)
-    self.run_every(self.solar_production_loss_alert, "now", 60 * 60, random_start = -10 * 60, random_end = 10 * 60)
-    
-    #self.run_daily(self.reset_energy_meter, time(11, 59, 59))
-    #self.run_hourly(self.play_music_entryway, time(datetime.now().hour, 0, 0))
-
     self.call_service("notify/alexa_media", data = {"type":"tts", "method":"speak"}, target = self.kitchen_alexa, message = """                
     <speak>
-        Hi, your Home Assistant is ready to rock and roll!
+       Hi, your Home Assistant is ready to rock and roll!
     </speak>
     """)
 
-    self.solar_production_loss_alert(None)
+    #self.run_daily(self.reset_energy_meter, time(11, 59, 59))
+    #self.run_hourly(self.play_music_entryway, time(datetime.now().hour, 0, 0))
+
+    # EVERY HOUR
+    self.run_every(self.solar_production_loss_alert, "now", 60 * 60, random_start = -5 * 60, random_end = 5 * 60)
+    
+    # EVERY 30 MINS
+    #self.run_every(self.nas_hdd_error_alert, "now", 30 * 60, random_start = -3 * 60, random_end = 3 * 60)
+
+    # EVERY 15 MINS
+    self.run_every(self.internet_turn_on, "now", 15 * 60, random_start = -2 * 60, random_end = 2 * 60)
+
+    # EVERY 5 MINS
+    self.run_every(self.flume_water_alert, "now", 5 * 60, random_start = -1 * 60, random_end = 1 * 60)
+    
+    #self.solar_production_loss_alert(None)
+    #self.flume_water_alert(None)
     
 
   def buzz_kitchen(self, entity, attribute, old, new, kwargs):
@@ -114,16 +123,16 @@ class HomeController(hass.Hass):
 
     if solar_forecast < 250: return
 
-    self.log("SOLAR PRODUCTION EVALUATION")
+    self.log("SOLAR PRODUCTION LOSS EVALUATION")
 
     solar_production = self.get_state("sensor.powerwall_solar_now")
-    try: solar_production = float(solar_production)
+    try: solar_production = float(solar_production) * 1000
     except ValueError: solar_production = 0
 
     delta = solar_forecast - solar_production
     
     if delta > 500:
-      self.log("SOLAR PRODUCTION LOSS ALERT: NET LOSS " + str(delta) + "W")
+      self.log("WARNING: SOLAR PRODUCTION LOSS ALERT, NET LOSS " + str(delta) + "W")
 
       self.call_service("notify/alexa_media", data = {"type":"tts", "method":"speak"}, target = self.kitchen_alexa, message = """
       <speak>
@@ -133,8 +142,41 @@ class HomeController(hass.Hass):
       </speak>
       """)
       for device in self.notification_devices:
-        self.call_service(device, title = 'SOLAR ALERT: WARNING', message = 'Warning. The solar production is significantly less than the anticipated forecast right now. Please inspect the system promptly!')
+        self.call_service(device, title = 'WARNING: SOLAR PRODUCTION', message = 'Warning. The solar production is significantly less than the anticipated forecast right now. Please inspect the system promptly!')
 
+
+  def flume_water_alert(self, kwargs):
+    
+    high_flow_alert = self.get_state("binary_sensor.flume_sensor_home_high_flow")
+    leak_detected_alert = self.get_state("binary_sensor.flume_sensor_home_leak_detected")
+
+    self.log("FLUME WATER SENSOR EVALUATION")
+
+    if high_flow_alert == "on":
+      self.log("EMERGENCY: WATER, HIGH FLOW")
+      self.call_service("notify/alexa_media", data = {"type":"tts", "method":"speak"}, target = self.kitchen_alexa, message = """
+      <speak>
+        <amazon:emotion name="excited" intensity="medium">
+          Emergency. High water flow was detected by the Flume sensor. Please take immediate corrective action!
+        </amazon:emotion>
+      </speak>
+      """)
+      for device in self.notification_devices:
+        self.call_service(device, title = 'EMERGENCY: WATER, HIGH FLOW', message = 'Emergency. High water flow was detected by the Flume sensor. Please take immediate corrective action!')
+
+    if leak_detected_alert == "on":
+      self.log("WARNING: WATER, LEAK DETECTED")
+      self.call_service("notify/alexa_media", data = {"type":"tts", "method":"speak"}, target = self.kitchen_alexa, message = """
+      <speak>
+        <amazon:emotion name="excited" intensity="medium">
+          Warning. A water leak has been detected by the Flume sensor. Please check the system promptly!
+        </amazon:emotion>
+      </speak>
+      """)
+      for device in self.notification_devices:
+        self.call_service(device, title = 'WARNING: WATER, LEAK DETECTED', message = 'Warning. A water leak has been detected by the Flume sensor. Please check the system promptly!')
+
+    
 
   # def reset_energy_meter(self, kwargs):
   #   date = datetime.now()

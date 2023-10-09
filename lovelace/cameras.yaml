@@ -2,13 +2,6 @@ title: Outdoor Cams
 icon: mdi:cctv
 cards:
   - type: picture-entity
-    name: "Baby Monitor"
-    entity: camera.dlink_camera_02
-    camera_image: camera.dlink_camera_02
-    camera_view: "auto"
-    show_name: true
-    show_state: false
-  - type: picture-entity
     name: "Living Room"
     entity: camera.living_room_camera
     camera_image: camera.living_room_camera
@@ -118,6 +111,13 @@ cards:
     name: "Electrical Mains"
     entity: camera.electrical_mains_camera
     camera_image: camera.electrical_mains_camera
+    camera_view: "auto"
+    show_name: true
+    show_state: false
+  - type: picture-entity
+    name: "DLink Camera 01"
+    entity: camera.dlink_camera_01
+    camera_image: camera.dlink_camera_01
     camera_view: "auto"
     show_name: true
     show_state: false

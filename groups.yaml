@@ -191,6 +191,7 @@ upper_small_bedroom:
     - binary_sensor.upper_small_bedroom_door
     - binary_sensor.upper_small_bedroom_window
     - switch.upper_small_bedroom_light_fan
+    - light.upper_small_bedroom_bed_light
     
 upper_guest_bedroom:
   name: Upper Guest Bedroom

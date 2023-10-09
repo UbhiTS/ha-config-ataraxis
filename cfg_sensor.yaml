@@ -2,8 +2,6 @@
 - !include sensors/day_month_sensors.yaml
 - !include sensors/energy_sensors.yaml
 # !include sensors/hvac_sensors.yaml
-- !include sensors/qnap_ubhinas_sensors.yaml
-- !include sensors/qnap_plexnas_sensors.yaml
 - !include sensors/system_sensors.yaml
 - !include sensors/wifi_sensors.yaml
 # !include sensors/xfinity_sensors.yaml

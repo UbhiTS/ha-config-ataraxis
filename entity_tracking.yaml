@@ -179,9 +179,18 @@ entities:
 
     - sensor.xfinity_usage
 
-    - sensor.hem_current
-    - sensor.hem_power
-    - sensor.hem_energy
+    - sensor.garage_home_energy_meter_gen5_electric_a_value
+    - sensor.garage_home_energy_meter_gen5_electric_a_value_1
+    - sensor.garage_home_energy_meter_gen5_electric_a_value_2
+    - sensor.garage_home_energy_meter_gen5_electric_kwh_value
+    - sensor.garage_home_energy_meter_gen5_electric_kwh_value_1
+    - sensor.garage_home_energy_meter_gen5_electric_kwh_value_2
+    - sensor.garage_home_energy_meter_gen5_electric_v_value
+    - sensor.garage_home_energy_meter_gen5_electric_v_value_1
+    - sensor.garage_home_energy_meter_gen5_electric_v_value_2
+    - sensor.garage_home_energy_meter_gen5_electric_w_value
+    - sensor.garage_home_energy_meter_gen5_electric_w_value_1
+    - sensor.garage_home_energy_meter_gen5_electric_w_value_2
 
     - sensor.solar_power
     - sensor.grid_power
@@ -202,6 +211,19 @@ entities:
     - sensor.power_production_now
     - sensor.power_highest_peak_time_today
     - sensor.power_highest_peak_time_tomorrow
+
+    - sensor.current_bill_electric_cost_to_date
+    - sensor.current_bill_electric_forecasted_cost
+    - sensor.current_bill_electric_forecasted_usage
+    - sensor.current_bill_electric_usage_to_date
+    - sensor.current_bill_gas_cost_to_date
+    - sensor.current_bill_gas_forecasted_cost
+    - sensor.current_bill_gas_forecasted_usage
+    - sensor.current_bill_gas_usage_to_date
+    - sensor.typical_monthly_electric_cost
+    - sensor.typical_monthly_electric_usage
+    - sensor.typical_monthly_gas_cost
+    - sensor.typical_monthly_gas_usage 
 
     - binary_sensor.grid_status
     - sensor.powerwall_battery_now
@@ -225,5 +247,3 @@ entities:
     - sensor.flume_sensor_home_current_week
     - binary_sensor.flume_sensor_home_high_flow
     - binary_sensor.flume_sensor_home_leak_detected
-    
-

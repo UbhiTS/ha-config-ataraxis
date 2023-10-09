@@ -23,10 +23,15 @@ class PerimeterLightsController(hass.Hass):
     self.run_daily(self.night, time(23, 15, 00))
 
     year = datetime.now().year
-    hds = hd.India(years=year) + hd.US(years=year) + hd.India(years=year + 1) + hd.US(years=year + 1)
-    self.holidays = sorted(hds.items())
+    hds_us = hd.US(years=year) + hd.US(years=year + 1)
+    hds_india = hd.India(years=year) + hd.India(years=year + 1)
+  
+    self.holidays_us = sorted(hds_us.items())
+    self.holidays_india = sorted(hds_india.items())
 
-    self.run_every(self.check_holidays, "now", 5 * 60)
+    #self.check_holidays(None)
+    #self.run_every(self.check_holidays, "now", 5 * 60)
+
     
 
   def sunset(self, kwargs):
@@ -39,7 +44,8 @@ class PerimeterLightsController(hass.Hass):
     self.turn_on("switch.backyard_mesh_lights")
     self.turn_on("switch.side_deck_light")
     self.turn_on("switch.kitchen_light")
-    self.turn_on("light.living_room_light")
+    self.turn_on("light.master_bedroom_light_left")
+    self.turn_on("light.master_bedroom_light_right")
 
 
   def sunrise(self, kwargs):
@@ -53,6 +59,8 @@ class PerimeterLightsController(hass.Hass):
     self.turn_off("switch.side_deck_light")
     self.turn_off("switch.kitchen_light")
     self.turn_off("light.living_room_light")
+    self.turn_off("light.master_bedroom_light_left")
+    self.turn_off("light.master_bedroom_light_right")
 
 
   def wind_down(self, kwargs):
@@ -78,23 +86,41 @@ class PerimeterLightsController(hass.Hass):
     
     self.log("FRONT LEDS: CHECKING HOLIDAYS (2 WEEKS AHEAD)")
 
-    holiday = 'default'
+    holiday = self.get_state("light.welcome_leds", attribute = "effect")
+    self.log(f"LED ON {holiday} PRESET")
 
     wled_playlists = self.get_state("select.welcome_leds_playlist", attribute='options')
     wled_presets = self.get_state("select.welcome_leds_preset", attribute='options')
 
-    for date, occasion in self.holidays:
-      if date.today() <= date <= (date.today() + timedelta(weeks=2)):
-        date = date.strftime('%d %b')
-        occasion = occasion.split("*")[0]
-        if occasion in wled_playlists:
-          self.log(f"FOUND WLED PLAYLIST FOR '{occasion}' ON '{date}'")
-          holiday = occasion
-          break
-        elif occasion in wled_presets:
-          self.log(f"FOUND WLED PRESET FOR '{occasion}' ON '{date}'")
-          holiday = occasion
-          break
+    if holiday == 'default':
+      for date, occasion in self.holidays_us:
+        if date.today() <= date <= (date.today() + timedelta(weeks=2)):
+          date = date.strftime('%d %b')
+          occasion = f"US {occasion.split('*')[0]}"
+          self.log(f"HOLIDAY '{occasion}' ON '{date}'")
+          if occasion in wled_playlists:
+            self.log(f"FOUND WLED PLAYLIST FOR '{occasion}' ON '{date}'")
+            holiday = occasion
+            break
+          elif occasion in wled_presets:
+            self.log(f"FOUND WLED PRESET FOR '{occasion}' ON '{date}'")
+            holiday = occasion
+            break
+
+    if holiday == 'default':
+      for date, occasion in self.holidays_india:
+        if date.today() <= date <= (date.today() + timedelta(weeks=2)):
+          date = date.strftime('%d %b')
+          occasion = f"INDIA {occasion.split('*')[0]}"
+          self.log(f"HOLIDAY '{occasion}' ON '{date}'")
+          if occasion in wled_playlists:
+            self.log(f"FOUND WLED PLAYLIST FOR '{occasion}' ON '{date}'")
+            holiday = occasion
+            break
+          elif occasion in wled_presets:
+            self.log(f"FOUND WLED PRESET FOR '{occasion}' ON '{date}'")
+            holiday = occasion
+            break
     
     if holiday in wled_playlists:
       self.call_service("select/select_option", entity_id="select.welcome_leds_playlist", option=holiday)
@@ -102,6 +128,7 @@ class PerimeterLightsController(hass.Hass):
     elif holiday in wled_presets:
       self.call_service("select/select_option", entity_id="select.welcome_leds_preset", option=holiday)
       self.log(f"SET WLED PRESET '{holiday}'")
-    else:
-      self.call_service("select/select_option", entity_id="select.welcome_leds_preset", option='default')
-      self.log(f"SET 'DEFAULT' PRESET")
+    #else:
+    #  self.call_service("select/select_option", entity_id="select.welcome_leds_preset", option=holiday)
+    #  self.log(f"SET {holiday} PRESET")
+

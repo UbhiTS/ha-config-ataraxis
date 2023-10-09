@@ -84,6 +84,7 @@ midnight:
   state-light-on-color: var(--active-color)
   state-remote-on-color: var(--active-color)
   state-switch-on-color: var(--active-color)
+  state-fan-on-color: var(--active-color)
   # Settins and colors of Mini Media Player
   mini-media-player-icon-color: var(--primary-color)
   mini-media-player-accent-color: var(--primary-color)

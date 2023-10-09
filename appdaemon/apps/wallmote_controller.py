@@ -58,6 +58,7 @@ class WallMoteController(hass.Hass):
             self.call_service("media_player/play_media", entity_id = self.kitchen_alexa, media_content_type = "sequence", media_content_id = "Alexa.Joke.Play")
         if new == "1":
             self.log("ALEXA: SIMMY SAMMY CALL")
+            self.call_service("media_player/volume_set", entity_id = self.upper_big_bedroom_alexa, volume_level='0.7')
             self.call_service("notify/alexa_media", data = {"type":"tts", "method":"speak"}, target = self.upper_big_bedroom_alexa, message = """
             <speak>
             <voice name="Aditi">

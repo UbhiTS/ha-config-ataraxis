@@ -192,12 +192,12 @@ cards:
                   - type: energy-solar-graph
                     title: "Solar"
                   - type: energy-usage-graph
-                    title: 'Energy Profile'
+                    title: 'Home Energy'
           
       - type: horizontal-stack
         cards:
           - type: energy-water-graph
-            title: 'Water Consumption'
+            title: 'Water Usage'
           - type: horizontal-stack
             cards:
               - type: gauge
@@ -393,16 +393,20 @@ cards:
           - light.living_room_light
           - light.master_bedroom_light_left
           - light.master_bedroom_light_right
+          - light.upper_small_bedroom_bed_light
           - switch.backyard_light_left
           - switch.backyard_light_right
           - switch.entryway_light
           - switch.kitchen_light
           - switch.side_deck_light
           - switch.welcome_room_light
+          - switch.home_theatre_living_room
           - switch.upper_small_bedroom_light_fan
           - switch.upper_guest_bedroom_light_fan
-          - switch.home_theatre_living_room
           - switch.entryway_outlet_switch
+          - switch.backyard_mesh_lights
+          - switch.entryway_festival_leds_01
+          - switch.entryway_festival_leds_02
           - binary_sensor.entertainment_room_window_left
           - binary_sensor.entertainment_room_window_right
           - binary_sensor.garage_laundry_door

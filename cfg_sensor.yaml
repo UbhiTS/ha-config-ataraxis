@@ -11,8 +11,3 @@
 # (included via rest: in configuration.yaml)
 
 - !include sensors/datetime_sensors.yaml
-# !include sensors/hvac_sensors.yaml
-# !include sensors/system_sensors.yaml
-# !include sensors/xfinity_sensors.yaml
-
-

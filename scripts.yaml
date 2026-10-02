@@ -1,0 +1,829 @@
+govee_office_mode:
+  alias: Govee Office Mode
+  description: Stop both music engines and apply the saved office DIY effects.
+  icon: mdi:desk
+  mode: restart
+  sequence:
+    - action: input_boolean.turn_off
+      target:
+        entity_id:
+          - input_boolean.govee_live_music
+          - input_boolean.govee_music_auto_cycle
+          - input_boolean.govee_live_music_pause_transitions
+    - action: script.turn_off
+      target:
+        entity_id: script.govee_music_mode
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.govee_room_brightness
+      data:
+        value: 50
+    - delay:
+        seconds: 1
+    - action: light.turn_on
+      target:
+        entity_id:
+          - light.glide_hexa
+          - light.govee_glide_y_lights
+      data:
+        effect: Main Colors
+        brightness_pct: 50
+    - action: light.turn_on
+      target:
+        entity_id: light.glide_hexa_ultra
+      data:
+        effect: Main Theme
+        brightness_pct: 50
+
+govee_start_live_music:
+  alias: Govee Start Live Music
+  description: Start the Windows audio-reactive per-panel renderer.
+  icon: mdi:waveform
+  mode: restart
+  sequence:
+    - action: input_boolean.turn_off
+      target:
+        entity_id:
+          - input_boolean.govee_music_auto_cycle
+          - input_boolean.govee_live_music_pause_transitions
+    - action: script.turn_off
+      target:
+        entity_id: script.govee_music_mode
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.govee_room_brightness
+      data:
+        value: 50
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.govee_live_music
+
+govee_live_music_randomize:
+  alias: Govee Live Music Randomize Now
+  description: Immediately choose new effects and variations for all three lights.
+  icon: mdi:dice-multiple
+  mode: restart
+  sequence:
+    - action: mqtt.publish
+      data:
+        topic: ataraxis/govee-music/set/randomize
+        payload: now
+
+govee_start_music_cycle:
+  alias: Govee Start Random Effects
+  description: Start randomized native Govee scenes while excluding all music modes.
+  icon: mdi:creation
+  mode: restart
+  sequence:
+    - action: input_boolean.turn_off
+      target:
+        entity_id:
+          - input_boolean.govee_live_music
+          - input_boolean.govee_live_music_pause_transitions
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.govee_room_brightness
+      data:
+        value: 50
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.govee_music_auto_cycle
+    - action: script.turn_on
+      target:
+        entity_id: script.govee_music_mode
+
+govee_music_mode:
+  alias: Govee Random Non-Music Effects
+  description: Cycle unique native scenes and DIY effects while excluding every music mode.
+  icon: mdi:creation
+  mode: restart
+  max_exceeded: silent
+  sequence:
+    - variables:
+        last_govee_hexa_effect: ""
+        last_govee_ultra_effect: ""
+        last_govee_y_effect: ""
+    - repeat:
+        while:
+          - condition: state
+            entity_id: input_boolean.govee_music_auto_cycle
+            state: "on"
+        sequence:
+          - variables:
+              govee_hexa_effect: >-
+                {% set available = state_attr('light.glide_hexa', 'effect_list') or [] %}
+                {% set music_names = [
+                  'calm', 'dynamic', 'energic', 'hopping', 'stacking',
+                  'rippling', 'swiping', 'rhythm', 'thump', 'separation',
+                  'sprouting', 'luminous', 'flowinglight'
+                ] %}
+                {% set ns = namespace(modes=[]) %}
+                {% for candidate in available %}
+                  {% set normalized = candidate | lower | replace(' ', '') %}
+                  {% if normalized | length > 0 and
+                    not normalized.startswith('music') and normalized not in music_names %}
+                    {% set ns.modes = ns.modes + [candidate] %}
+                  {% endif %}
+                {% endfor %}
+                {% set previous = last_govee_hexa_effect or
+                  state_attr('light.glide_hexa', 'effect') %}
+                {% set choices = ns.modes | reject('equalto', previous) | list %}
+                {% if choices | length > 0 %}
+                  {{ choices | random }}
+                {% elif ns.modes | length > 0 %}
+                  {{ ns.modes | random }}
+                {% else %}
+                  {{ previous }}
+                {% endif %}
+              govee_ultra_effect: >-
+                {% set available = state_attr('light.glide_hexa_ultra', 'effect_list') or [] %}
+                {% set music_names = [
+                  'calm', 'dynamic', 'energic', 'hopping', 'stacking',
+                  'rippling', 'swiping', 'rhythm', 'thump', 'separation',
+                  'sprouting', 'luminous', 'flowinglight'
+                ] %}
+                {% set ns = namespace(modes=[]) %}
+                {% for candidate in available %}
+                  {% set normalized = candidate | lower | replace(' ', '') %}
+                  {% if normalized | length > 0 and
+                    not normalized.startswith('music') and normalized not in music_names %}
+                    {% set ns.modes = ns.modes + [candidate] %}
+                  {% endif %}
+                {% endfor %}
+                {% set previous = last_govee_ultra_effect or
+                  state_attr('light.glide_hexa_ultra', 'effect') %}
+                {% set choices = ns.modes
+                  | reject('equalto', previous)
+                  | reject('equalto', govee_hexa_effect)
+                  | list %}
+                {% if choices | length == 0 %}
+                  {% set choices = ns.modes | reject('equalto', previous) | list %}
+                {% endif %}
+                {% if choices | length > 0 %}
+                  {{ choices | random }}
+                {% elif ns.modes | length > 0 %}
+                  {{ ns.modes | random }}
+                {% else %}
+                  {{ previous }}
+                {% endif %}
+          - variables:
+              govee_y_effect: >-
+                {% set available = state_attr('light.govee_glide_y_lights', 'effect_list') or [] %}
+                {% set music_names = [
+                  'calm', 'dynamic', 'energic', 'hopping', 'stacking',
+                  'rippling', 'swiping', 'rhythm', 'thump', 'separation',
+                  'sprouting', 'luminous', 'flowinglight'
+                ] %}
+                {% set ns = namespace(modes=[]) %}
+                {% for candidate in available %}
+                  {% set normalized = candidate | lower | replace(' ', '') %}
+                  {% if normalized | length > 0 and
+                    not normalized.startswith('music') and normalized not in music_names %}
+                    {% set ns.modes = ns.modes + [candidate] %}
+                  {% endif %}
+                {% endfor %}
+                {% set previous = last_govee_y_effect or
+                  state_attr('light.govee_glide_y_lights', 'effect') %}
+                {% set choices = ns.modes
+                  | reject('equalto', previous)
+                  | reject('equalto', govee_hexa_effect)
+                  | reject('equalto', govee_ultra_effect)
+                  | list %}
+                {% if choices | length == 0 %}
+                  {% set choices = ns.modes | reject('equalto', previous) | list %}
+                {% endif %}
+                {% if choices | length > 0 %}
+                  {{ choices | random }}
+                {% elif ns.modes | length > 0 %}
+                  {{ ns.modes | random }}
+                {% else %}
+                  {{ previous }}
+                {% endif %}
+          - action: light.turn_on
+            continue_on_error: true
+            target:
+              entity_id: light.glide_hexa
+            data:
+              effect: "{{ govee_hexa_effect }}"
+          - action: light.turn_on
+            continue_on_error: true
+            target:
+              entity_id: light.glide_hexa_ultra
+            data:
+              effect: "{{ govee_ultra_effect }}"
+          - action: light.turn_on
+            continue_on_error: true
+            target:
+              entity_id: light.govee_glide_y_lights
+            data:
+              effect: "{{ govee_y_effect }}"
+          - variables:
+              last_govee_hexa_effect: "{{ govee_hexa_effect }}"
+              last_govee_ultra_effect: "{{ govee_ultra_effect }}"
+              last_govee_y_effect: "{{ govee_y_effect }}"
+          - delay:
+              seconds: >-
+                {% set intervals = {
+                  '1 second': 1,
+                  '5 seconds': 5,
+                  '15 seconds': 15,
+                  '30 seconds': 30,
+                  '45 seconds': 45,
+                  '60 seconds': 60,
+                  '5 minutes': 300,
+                  '10 minutes': 600,
+                  '15 minutes': 900,
+                  '30 minutes': 1800,
+                  '60 minutes': 3600
+                } %}
+                {{ intervals.get(states('input_select.govee_music_cycle_interval'), 45) }}
+      continue_on_error: true
+    - action: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.govee_music_auto_cycle
+
+govee_lights_off:
+  alias: Govee Lights Off
+  description: Stop both music engines and turn off all three lights.
+  icon: mdi:lightbulb-group-off
+  mode: restart
+  sequence:
+    - action: input_boolean.turn_off
+      target:
+        entity_id:
+          - input_boolean.govee_live_music
+          - input_boolean.govee_music_auto_cycle
+          - input_boolean.govee_live_music_pause_transitions
+    - action: script.turn_off
+      target:
+        entity_id: script.govee_music_mode
+    - delay:
+        seconds: 1
+    - action: light.turn_off
+      target:
+        entity_id:
+          - light.glide_hexa
+          - light.glide_hexa_ultra
+          - light.govee_glide_y_lights
+
+climate_apply_zone_selection:
+  alias: Climate Apply Individual Zone Mode & Setpoint
+  description: Applies the selected mode (Off, Heat, Cool, Auto) and the corresponding setpoint (or Auto range [Heat Below, Cool Above]) to a specific thermostat.
+  icon: mdi:thermostat-cog
+  mode: parallel
+  fields:
+    zone:
+      description: Zone slug (e.g. master_bedroom, living_room, entertainment_room, upper_big_bedroom, upper_small_bedroom, upper_guest_bedroom, attic)
+  sequence:
+    - variables:
+        primary_climate: "{{ 'climate.thermostat_' ~ zone }}"
+        alt_climate: "{{ 'climate.' ~ zone ~ '_thermostat_' ~ zone ~ '_thermostat_thermostat' }}"
+        climate_entity: >-
+          {% if states(alt_climate) not in ['unknown', 'unavailable', 'none'] %}
+            {{ alt_climate }}
+          {% else %}
+            {{ primary_climate }}
+          {% endif %}
+        node_id: >-
+          {% set map = {
+            'master_bedroom': 182,
+            'living_room': 186,
+            'entertainment_room': 74,
+            'upper_big_bedroom': 77,
+            'upper_small_bedroom': 78,
+            'upper_guest_bedroom': 166,
+            'attic': 185
+          } %}
+          {{ map.get(zone, 0) | int }}
+        mode_select_entity: "{{ 'input_select.thermostat_' ~ zone ~ '_mode' }}"
+        cool_setpoint_entity: "{{ 'input_number.thermostat_' ~ zone ~ '_setpoint' }}"
+        heat_setpoint_entity: "{{ 'input_number.thermostat_' ~ zone ~ '_heat_setpoint' }}"
+        selected_mode: "{{ states(mode_select_entity) | lower }}"
+        cool_setpoint: "{{ states(cool_setpoint_entity) | float(73) | round(0) }}"
+        heat_setpoint: >-
+          {% if states(heat_setpoint_entity) not in ['unknown', 'unavailable'] %}
+            {{ states(heat_setpoint_entity) | float(68) | round(0) }}
+          {% else %}
+            {{ [cool_setpoint | float(73) - 4, 55] | max | round(0) }}
+          {% endif %}
+        hw_max_temp: "{{ state_attr(climate_entity, 'max_temp') | float(85) }}"
+        hw_heat_target: >-
+          {% if (hw_max_temp | float(85)) <= 45 %}
+            {{ (((heat_setpoint | float(68)) - 32) * 5 / 9) | round(1) }}
+          {% else %}
+            {{ heat_setpoint | float(68) | round(0) }}
+          {% endif %}
+        hw_cool_target: >-
+          {% if (hw_max_temp | float(85)) <= 45 %}
+            {{ (((cool_setpoint | float(73)) - 32) * 5 / 9) | round(1) }}
+          {% else %}
+            {{ cool_setpoint | float(73) | round(0) }}
+          {% endif %}
+        cur_temp: "{{ state_attr(climate_entity, 'current_temperature') | float(71) }}"
+        hw_modes: "{{ state_attr(climate_entity, 'hvac_modes') or ['off', 'heat', 'cool'] }}"
+    - choose:
+        - conditions:
+            - condition: template
+              value_template: "{{ selected_mode == 'off' }}"
+          sequence:
+            - action: mqtt.publish
+              continue_on_error: true
+              data:
+                topic: "zwave/_CLIENTS/ZWAVE_GATEWAY-Zwavejs2Mqtt/api/writeValue/set"
+                payload: "{\"args\": [{\"nodeId\": {{ node_id }}, \"commandClass\": 64, \"endpoint\": 1, \"property\": \"mode\"}, 0]}"
+            - action: climate.set_hvac_mode
+              continue_on_error: true
+              target:
+                entity_id: "{{ climate_entity }}"
+              data:
+                hvac_mode: "off"
+        - conditions:
+            - condition: template
+              value_template: "{{ selected_mode == 'heat' }}"
+          sequence:
+            - action: mqtt.publish
+              continue_on_error: true
+              data:
+                topic: "zwave/_CLIENTS/ZWAVE_GATEWAY-Zwavejs2Mqtt/api/writeValue/set"
+                payload: "{\"args\": [{\"nodeId\": {{ node_id }}, \"commandClass\": 64, \"endpoint\": 1, \"property\": \"mode\"}, 1]}"
+            - action: mqtt.publish
+              continue_on_error: true
+              data:
+                topic: "zwave/_CLIENTS/ZWAVE_GATEWAY-Zwavejs2Mqtt/api/writeValue/set"
+                payload: "{\"args\": [{\"nodeId\": {{ node_id }}, \"commandClass\": 67, \"endpoint\": 1, \"property\": \"setpoint\", \"propertyKey\": 1}, {{ hw_heat_target }}]}"
+            - action: climate.set_hvac_mode
+              continue_on_error: true
+              target:
+                entity_id: "{{ climate_entity }}"
+              data:
+                hvac_mode: "heat"
+            - delay:
+                milliseconds: 350
+            - action: climate.set_temperature
+              continue_on_error: true
+              target:
+                entity_id: "{{ climate_entity }}"
+              data:
+                hvac_mode: "heat"
+                temperature: "{{ hw_heat_target }}"
+        - conditions:
+            - condition: template
+              value_template: "{{ selected_mode == 'cool' }}"
+          sequence:
+            - action: mqtt.publish
+              continue_on_error: true
+              data:
+                topic: "zwave/_CLIENTS/ZWAVE_GATEWAY-Zwavejs2Mqtt/api/writeValue/set"
+                payload: "{\"args\": [{\"nodeId\": {{ node_id }}, \"commandClass\": 64, \"endpoint\": 1, \"property\": \"mode\"}, 2]}"
+            - action: mqtt.publish
+              continue_on_error: true
+              data:
+                topic: "zwave/_CLIENTS/ZWAVE_GATEWAY-Zwavejs2Mqtt/api/writeValue/set"
+                payload: "{\"args\": [{\"nodeId\": {{ node_id }}, \"commandClass\": 67, \"endpoint\": 1, \"property\": \"setpoint\", \"propertyKey\": 2}, {{ hw_cool_target }}]}"
+            - action: climate.set_hvac_mode
+              continue_on_error: true
+              target:
+                entity_id: "{{ climate_entity }}"
+              data:
+                hvac_mode: "cool"
+            - delay:
+                milliseconds: 350
+            - action: climate.set_temperature
+              continue_on_error: true
+              target:
+                entity_id: "{{ climate_entity }}"
+              data:
+                hvac_mode: "cool"
+                temperature: "{{ hw_cool_target }}"
+        - conditions:
+            - condition: template
+              value_template: "{{ selected_mode == 'auto' }}"
+          sequence:
+            - action: mqtt.publish
+              continue_on_error: true
+              data:
+                topic: "zwave/_CLIENTS/ZWAVE_GATEWAY-Zwavejs2Mqtt/api/writeValue/set"
+                payload: "{\"args\": [{\"nodeId\": {{ node_id }}, \"commandClass\": 67, \"endpoint\": 1, \"property\": \"setpoint\", \"propertyKey\": 1}, {{ hw_heat_target }}]}"
+            - action: mqtt.publish
+              continue_on_error: true
+              data:
+                topic: "zwave/_CLIENTS/ZWAVE_GATEWAY-Zwavejs2Mqtt/api/writeValue/set"
+                payload: "{\"args\": [{\"nodeId\": {{ node_id }}, \"commandClass\": 67, \"endpoint\": 1, \"property\": \"setpoint\", \"propertyKey\": 2}, {{ hw_cool_target }}]}"
+            - action: mqtt.publish
+              continue_on_error: true
+              data:
+                topic: "zwave/_CLIENTS/ZWAVE_GATEWAY-Zwavejs2Mqtt/api/writeValue/set"
+                payload: "{\"args\": [{\"nodeId\": {{ node_id }}, \"commandClass\": 64, \"endpoint\": 1, \"property\": \"mode\"}, 3]}"
+            - action: climate.set_hvac_mode
+              continue_on_error: true
+              target:
+                entity_id: "{{ climate_entity }}"
+              data:
+                hvac_mode: "auto"
+            - delay:
+                milliseconds: 350
+            - action: climate.set_temperature
+              continue_on_error: true
+              target:
+                entity_id: "{{ climate_entity }}"
+              data:
+                hvac_mode: "auto"
+                target_temp_low: "{{ hw_heat_target }}"
+                target_temp_high: "{{ hw_cool_target }}"
+
+
+climate_smart_mode:
+  alias: Climate Smart Mode & Power Control
+  description: Sets individual thermostat mode selector (Off, Heat, Cool, Auto, or Toggle) and applies the mode + setpoint to hardware.
+  icon: mdi:thermostat-auto
+  mode: parallel
+  fields:
+    entity_id:
+      description: Target climate entity (e.g. climate.thermostat_master_bedroom)
+    climate_entity:
+      description: Target climate entity (alias)
+    mode:
+      description: Desired mode (off, heat, cool, auto, toggle)
+    target_mode:
+      description: Desired mode (alias)
+  sequence:
+    - variables:
+        raw_entity: "{{ entity_id if entity_id is defined and entity_id else climate_entity }}"
+        zone: >-
+          {{ raw_entity
+             | replace('climate.thermostat_', '')
+             | replace('climate.', '')
+             | regex_replace('_thermostat_.*$', '') }}
+        primary_climate: "{{ 'climate.thermostat_' ~ zone }}"
+        alt_climate: "{{ 'climate.' ~ zone ~ '_thermostat_' ~ zone ~ '_thermostat_thermostat' }}"
+        resolved_entity: >-
+          {% if states(alt_climate) not in ['unknown', 'unavailable', 'none'] %}
+            {{ alt_climate }}
+          {% else %}
+            {{ primary_climate }}
+          {% endif %}
+        mode_select_entity: "{{ 'input_select.thermostat_' ~ zone ~ '_mode' }}"
+        setpoint_entity: "{{ 'input_number.thermostat_' ~ zone ~ '_setpoint' }}"
+        req_mode: "{{ (mode if mode is defined and mode else target_mode) | lower }}"
+        cur_ui_mode: "{{ states(mode_select_entity) | lower }}"
+        cur_temp: "{{ state_attr(resolved_entity, 'current_temperature') | float(71) }}"
+        next_ui_option: >-
+          {% if req_mode == 'off' %}
+            Off
+          {% elif req_mode == 'heat' %}
+            Heat
+          {% elif req_mode == 'cool' %}
+            Cool
+          {% elif req_mode == 'auto' %}
+            Auto
+          {% elif req_mode == 'toggle' %}
+            {% if cur_ui_mode != 'off' and states(resolved_entity) != 'off' %}
+              Off
+            {% else %}
+              Auto
+            {% endif %}
+          {% else %}
+            Auto
+          {% endif %}
+    - if:
+        - condition: template
+          value_template: "{{ next_ui_option in ['Heat', 'Cool', 'Auto'] and states(setpoint_entity) in ['unknown', 'unavailable'] }}"
+      then:
+        - action: input_number.set_value
+          target:
+            entity_id: "{{ setpoint_entity }}"
+          data:
+            value: >-
+              {% if state_attr(resolved_entity, 'temperature') is not none %}
+                {{ state_attr(resolved_entity, 'temperature') | float(71) | round(0) }}
+              {% elif next_ui_option == 'Heat' %}
+                69
+              {% elif next_ui_option == 'Cool' %}
+                72
+              {% else %}
+                71
+              {% endif %}
+    - action: input_select.select_option
+      target:
+        entity_id: "{{ mode_select_entity }}"
+      data:
+        option: "{{ next_ui_option }}"
+    - action: script.climate_apply_zone_selection
+      data:
+        zone: "{{ zone }}"
+
+climate_smart_fan_mode:
+  alias: Climate Smart Fan Mode Control
+  description: Sets individual thermostat fan mode (auto or on) on both UI helper and Z-Wave hardware.
+  icon: mdi:fan
+  mode: parallel
+  fields:
+    entity_id:
+      description: Target climate entity (e.g. climate.thermostat_living_room)
+    climate_entity:
+      description: Target climate entity (alias)
+    fan_mode:
+      description: Desired fan mode (auto, on, toggle)
+  sequence:
+    - variables:
+        raw_entity: "{{ entity_id if entity_id is defined and entity_id else climate_entity }}"
+        zone: >-
+          {{ raw_entity
+             | replace('climate.thermostat_', '')
+             | replace('climate.', '')
+             | regex_replace('_thermostat_.*$', '') }}
+        primary_climate: "{{ 'climate.thermostat_' ~ zone }}"
+        alt_climate: "{{ 'climate.' ~ zone ~ '_thermostat_' ~ zone ~ '_thermostat_thermostat' }}"
+        resolved_entity: >-
+          {% if states(alt_climate) not in ['unknown', 'unavailable', 'none'] %}
+            {{ alt_climate }}
+          {% else %}
+            {{ primary_climate }}
+          {% endif %}
+        node_id: >-
+          {% set map = {
+            'master_bedroom': 182,
+            'living_room': 186,
+            'entertainment_room': 74,
+            'upper_big_bedroom': 77,
+            'upper_small_bedroom': 78,
+            'upper_guest_bedroom': 166,
+            'attic': 185
+          } %}
+          {{ map.get(zone, 0) | int }}
+        fan_select_entity: "{{ 'input_select.thermostat_' ~ zone ~ '_fan_mode' }}"
+        req_fan: "{{ (fan_mode if fan_mode is defined and fan_mode else 'auto') | lower }}"
+        cur_fan: >-
+          {% if states(fan_select_entity) not in ['unknown', 'unavailable', 'none'] %}
+            {{ states(fan_select_entity) | lower }}
+          {% else %}
+            {{ (state_attr(resolved_entity, 'fan_mode') or 'auto') | lower }}
+          {% endif %}
+        hw_fan_mode: >-
+          {% if req_fan in ['on', 'high', 'low'] %}
+            on
+          {% elif req_fan == 'toggle' %}
+            {{ 'on' if cur_fan != 'on' else 'auto' }}
+          {% else %}
+            auto
+          {% endif %}
+        hw_fan_int: "{{ 1 if hw_fan_mode == 'on' else 0 }}"
+        ui_fan_option: "{{ 'On' if hw_fan_mode == 'on' else 'Auto' }}"
+    - action: input_select.select_option
+      continue_on_error: true
+      target:
+        entity_id: "{{ fan_select_entity }}"
+      data:
+        option: "{{ ui_fan_option }}"
+    - action: mqtt.publish
+      continue_on_error: true
+      data:
+        topic: "zwave/_CLIENTS/ZWAVE_GATEWAY-Zwavejs2Mqtt/api/writeValue/set"
+        payload: "{\"args\": [{\"nodeId\": {{ node_id }}, \"commandClass\": 68, \"endpoint\": 0, \"property\": \"mode\"}, {{ hw_fan_int }}]}"
+    - action: climate.set_fan_mode
+      continue_on_error: true
+      target:
+        entity_id: "{{ resolved_entity }}"
+      data:
+        fan_mode: "{{ hw_fan_mode }}"
+
+climate_smart_step:
+  alias: Climate Smart Temperature Stepper
+  description: Steps the individual thermostat's setpoint temperature up or down (or sets an exact temperature) based on its active mode.
+  icon: mdi:thermometer-plus
+  mode: parallel
+  fields:
+    entity_id:
+      description: Target climate entity
+    climate_entity:
+      description: Target climate entity (alias)
+    step:
+      description: Temperature delta (e.g. 1 or -1)
+    temperature:
+      description: Optional exact target temperature in F
+  sequence:
+    - variables:
+        raw_entity: "{{ entity_id if entity_id is defined and entity_id else climate_entity }}"
+        zone: >-
+          {{ raw_entity
+             | replace('climate.thermostat_', '')
+             | replace('climate.', '')
+             | regex_replace('_thermostat_.*$', '') }}
+        primary_climate: "{{ 'climate.thermostat_' ~ zone }}"
+        alt_climate: "{{ 'climate.' ~ zone ~ '_thermostat_' ~ zone ~ '_thermostat_thermostat' }}"
+        resolved_entity: >-
+          {% if states(alt_climate) not in ['unknown', 'unavailable', 'none'] %}
+            {{ alt_climate }}
+          {% else %}
+            {{ primary_climate }}
+          {% endif %}
+        mode_select_entity: "{{ 'input_select.thermostat_' ~ zone ~ '_mode' }}"
+        setpoint_entity: "{{ 'input_number.thermostat_' ~ zone ~ '_setpoint' }}"
+        cur_temp: "{{ state_attr(resolved_entity, 'current_temperature') | float(71) }}"
+        base_target: >-
+          {% if states(setpoint_entity) not in ['unknown', 'unavailable'] %}
+            {{ states(setpoint_entity) | float(71) }}
+          {% elif state_attr(resolved_entity, 'temperature') is not none %}
+            {{ state_attr(resolved_entity, 'temperature') | float(71) }}
+          {% else %}
+            {{ cur_temp | round(0) }}
+          {% endif %}
+        new_target: >-
+          {% if temperature is defined and temperature is not none %}
+            {{ [[temperature | float(71) | round(0), 55] | max, 85] | min }}
+          {% else %}
+            {{ [[(base_target | float + (step | float(0))) | round(0), 55] | max, 85] | min }}
+          {% endif %}
+    - if:
+        - condition: template
+          value_template: "{{ states(mode_select_entity) == 'Off' }}"
+      then:
+        - action: input_select.select_option
+          target:
+            entity_id: "{{ mode_select_entity }}"
+          data:
+            option: "Auto"
+    - action: input_number.set_value
+      target:
+        entity_id: "{{ setpoint_entity }}"
+      data:
+        value: "{{ new_target }}"
+    - action: script.climate_apply_zone_selection
+      data:
+        zone: "{{ zone }}"
+
+
+climate_all_zones_preset:
+  alias: Climate Whole-Home Preset
+  description: Sets all 7 zone thermostats (including Attic) to Off, Cool, Heat, Auto, or Sleep preset and synchronizes their individual selectors and setpoints.
+  icon: mdi:home-thermometer
+  mode: restart
+  fields:
+    preset_mode:
+      description: off, cool, heat, auto, or sleep
+    preset:
+      description: Alias for preset_mode
+    target_temp:
+      description: Target temperature in F
+  sequence:
+    - variables:
+        req_preset: "{{ (preset_mode if preset_mode is defined and preset_mode else preset) | lower }}"
+        resolved_option: >-
+          {% if req_preset == 'off' %}
+            Off
+          {% elif req_preset == 'heat' %}
+            Heat
+          {% elif req_preset in ['cool', 'sleep'] %}
+            Cool
+          {% else %}
+            Auto
+          {% endif %}
+        resolved_temp: >-
+          {% if target_temp is defined and target_temp is not none %}
+            {{ target_temp | float(71) | round(0) }}
+          {% elif req_preset == 'sleep' %}
+            67
+          {% elif req_preset == 'heat' %}
+            69
+          {% elif req_preset == 'cool' %}
+            72
+          {% else %}
+            73
+          {% endif %}
+        zone_slugs:
+          - master_bedroom
+          - living_room
+          - entertainment_room
+          - upper_big_bedroom
+          - upper_small_bedroom
+          - upper_guest_bedroom
+          - attic
+    - repeat:
+        for_each: "{{ zone_slugs }}"
+        sequence:
+          - if:
+              - condition: template
+                value_template: "{{ resolved_option == 'Heat' }}"
+            then:
+              - action: input_number.set_value
+                continue_on_error: true
+                target:
+                  entity_id: "{{ 'input_number.thermostat_' ~ repeat.item ~ '_heat_setpoint' }}"
+                data:
+                  value: "{{ resolved_temp }}"
+          - if:
+              - condition: template
+                value_template: "{{ resolved_option == 'Cool' }}"
+            then:
+              - action: input_number.set_value
+                continue_on_error: true
+                target:
+                  entity_id: "{{ 'input_number.thermostat_' ~ repeat.item ~ '_setpoint' }}"
+                data:
+                  value: "{{ resolved_temp }}"
+          - if:
+              - condition: template
+                value_template: "{{ resolved_option == 'Auto' }}"
+            then:
+              - action: input_number.set_value
+                continue_on_error: true
+                target:
+                  entity_id: "{{ 'input_number.thermostat_' ~ repeat.item ~ '_heat_setpoint' }}"
+                data:
+                  value: 68
+              - action: input_number.set_value
+                continue_on_error: true
+                target:
+                  entity_id: "{{ 'input_number.thermostat_' ~ repeat.item ~ '_setpoint' }}"
+                data:
+                  value: "{{ resolved_temp }}"
+          - action: input_select.select_option
+            continue_on_error: true
+            target:
+              entity_id: "{{ 'input_select.thermostat_' ~ repeat.item ~ '_mode' }}"
+            data:
+              option: "{{ resolved_option }}"
+          - action: script.climate_apply_zone_selection
+            continue_on_error: true
+            data:
+              zone: "{{ repeat.item }}"
+
+moto_garage_bay:
+  alias: "Moto Bay (Small Garage) Ride In/Out"
+  description: "1-Tap toggle for cover.garage_door_small (Motorcycles) + auto-illuminate Entryway & Welcome Room after sunset."
+  icon: mdi:motorbike
+  mode: single
+  sequence:
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: cover.garage_door_small
+              state:
+                - "closed"
+                - "closing"
+          sequence:
+            - action: cover.open_cover
+              target:
+                entity_id: cover.garage_door_small
+            - if:
+                - condition: state
+                  entity_id: sun.sun
+                  state: "below_horizon"
+              then:
+                - action: switch.turn_on
+                  continue_on_error: true
+                  target:
+                    entity_id:
+                      - switch.entryway_light
+                      - switch.welcome_room_light
+      default:
+        - action: cover.close_cover
+          target:
+            entity_id: cover.garage_door_small
+
+close_all_garages:
+  alias: "Close Both Garage Bays"
+  description: "Immediately close both Moto Bay (cover.garage_door_small) and Big Garage (cover.garage_door_big)."
+  icon: mdi:garage-lock
+  mode: single
+  sequence:
+    - action: cover.close_cover
+      continue_on_error: true
+      target:
+        entity_id:
+          - cover.garage_door_small
+          - cover.garage_door_big
+
+goodnight_lockdown:
+  alias: "Goodnight House Lockdown"
+  description: "Close both garage doors, turn off all downstairs/outdoor lights, and set all 7 HVAC zones to Sleep (67°F)."
+  icon: mdi:shield-moon-outline
+  mode: single
+  sequence:
+    - action: cover.close_cover
+      continue_on_error: true
+      target:
+        entity_id:
+          - cover.garage_door_small
+          - cover.garage_door_big
+    - action: homeassistant.turn_off
+      continue_on_error: true
+      target:
+        entity_id:
+          - light.living_room_light
+          - switch.kitchen_light
+          - switch.welcome_room_light
+          - switch.entryway_light
+          - switch.side_deck_light
+          - switch.backyard_light_left
+          - switch.backyard_light_right
+          - switch.backyard_mesh_lights
+          - switch.backyard_gym_lights
+          - switch.entryway_festival_leds_01
+          - switch.entryway_festival_leds_02
+    - action: script.climate_all_zones_preset
+      continue_on_error: true
+      data:
+        preset_mode: "sleep"
+        target_temp: 67
+

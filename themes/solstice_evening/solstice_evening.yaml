@@ -1,0 +1,195 @@
+Solstice Evening:
+  # ════════════════════════════════════════════════════════════════════════════
+  #  SOLSTICE EVENING — High-Performance Responsive Twilight Theme
+  #  Zero-Blur GPU-Accelerated Surfaces · Compact Laptop & Mobile Density
+  # ════════════════════════════════════════════════════════════════════════════
+  modes:
+    dark:
+      background-image: "radial-gradient(ellipse at 50% 0%, #232f46 0%, #171f30 60%, #111726 100%)"
+      primary-background-color: "#141b29"
+      secondary-background-color: "#1c2436"
+      app-header-background-color: "#161d2b"
+      ha-card-background: "#1e2638"
+      app-theme-color: "#141b29"
+    light:
+      background-image: "radial-gradient(ellipse at 50% 0%, #232f46 0%, #171f30 60%, #111726 100%)"
+      primary-background-color: "#141b29"
+      secondary-background-color: "#1c2436"
+      app-header-background-color: "#161d2b"
+      ha-card-background: "#1e2638"
+      app-theme-color: "#141b29"
+
+  # ── Global Canvas & System-First High-Speed Typography ──
+  lovelace-background: var(--background-image)
+  primary-font-family: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+  paper-font-common-base_-_font-family: var(--primary-font-family)
+  paper-font-common-expensive-kerning_-_font-family: var(--primary-font-family)
+  paper-font-common-code_-_font-family: "ui-monospace, 'SFMono-Regular', Menlo, Monaco, Consolas, monospace"
+  ha-font-family-body: var(--primary-font-family)
+  ha-font-family-heading: var(--primary-font-family)
+  ha-font-family-code: "ui-monospace, 'SFMono-Regular', Menlo, Monaco, Consolas, monospace"
+
+  # ── Core Palette ──
+  primary-color: "#38bdf8"
+  accent-color: "#f59e0b"
+  dark-primary-color: "#0284c7"
+  light-primary-color: "#7dd3fc"
+  divider-color: "rgba(148, 163, 184, 0.12)"
+  outline-color: "rgba(148, 163, 184, 0.12)"
+
+  # ── Text Hierarchy ──
+  primary-text-color: "#f1f5f9"
+  secondary-text-color: "#94a3b8"
+  ha-color-text-primary: "#f1f5f9"
+  ha-color-text-secondary: "#94a3b8"
+  text-primary-color: "#f1f5f9"
+  disabled-text-color: "rgba(148, 163, 184, 0.45)"
+  text-dark-color: "#f1f5f9"
+
+  # ── Semantic & Accent Colors ──
+  red-color: "#fb7185"
+  pink-color: "#f472b6"
+  purple-color: "#a78bfa"
+  indigo-color: "#818cf8"
+  blue-color: "#38bdf8"
+  light-blue-color: "#7dd3fc"
+  cyan-color: "#22d3ee"
+  teal-color: "#2dd4bf"
+  green-color: "#34d399"
+  light-green-color: "#6ee7b7"
+  yellow-color: "#fbbf24"
+  amber-color: "#f59e0b"
+  orange-color: "#fb923c"
+  deep-orange-color: "#f97316"
+  brown-color: "#bcaaa4"
+  grey-color: "#64748b"
+  blue-grey-color: "#94a3b8"
+
+  # ── RGB Equivalents for Mushroom & Native Alpha Blends ──
+  rgb-primary-color: "56, 189, 248"
+  rgb-accent-color: "245, 158, 11"
+  rgb-red-color: "251, 113, 133"
+  rgb-pink-color: "244, 114, 182"
+  rgb-purple-color: "167, 139, 250"
+  rgb-indigo-color: "129, 140, 248"
+  rgb-blue-color: "56, 189, 248"
+  rgb-cyan-color: "34, 211, 238"
+  rgb-teal-color: "45, 212, 191"
+  rgb-green-color: "52, 211, 153"
+  rgb-yellow-color: "251, 191, 36"
+  rgb-amber-color: "245, 158, 11"
+  rgb-orange-color: "251, 146, 60"
+  rgb-grey-color: "100, 116, 139"
+  rgb-primary-text-color: "241, 245, 249"
+  rgb-secondary-text-color: "148, 163, 184"
+  rgb-card-background-color: "30, 38, 56"
+
+  # ── States & Icons ──
+  state-icon-color: "#94a3b8"
+  state-icon-active-color: "#fbbf24"
+  state-icon-unavailable-color: "rgba(148, 163, 184, 0.35)"
+  state-inactive-color: "#64748b"
+  state-active-color: "#fbbf24"
+  state-light-active-color: "#fbbf24"
+  state-switch-active-color: "#38bdf8"
+  state-fan-active-color: "#22d3ee"
+  state-climate-cool-color: "#38bdf8"
+  state-climate-heat-color: "#fb923c"
+  state-climate-auto-color: "#34d399"
+  state-binary_sensor-active-color: "#fb7185"
+  state-cover-open-color: "#fb7185"
+  state-cover-closed-color: "#34d399"
+  state-person-home-color: "#34d399"
+
+  # ── Sidebar & Header Navigation ──
+  sidebar-background-color: "#151c2b"
+  sidebar-icon-color: "#94a3b8"
+  sidebar-text-color: "#cbd5e1"
+  sidebar-selected-background-color: "rgba(56, 189, 248, 0.14)"
+  sidebar-selected-icon-color: "#38bdf8"
+  sidebar-selected-text-color: "#f8fafc"
+  app-header-text-color: "#f1f5f9"
+  app-header-edit-background-color: "#1e2638"
+
+  # ── High-Speed Opaque Cards (Zero GPU Blur Overhead) ──
+  card-background-color: "#1e2638"
+  paper-card-background-color: "#1e2638"
+  ha-card-border-radius: "10px"
+  ha-card-features-border-radius: "8px"
+  ha-card-border-width: "1px"
+  ha-card-border-color: "rgba(148, 163, 184, 0.14)"
+  ha-card-backdrop-filter: "none"
+  ha-card-box-shadow: "0 2px 8px rgba(6, 10, 18, 0.32)"
+
+  # ── Compact Mushroom Tokens for Laptop & Phone Fit ──
+  mush-spacing: "8px"
+  mush-card-primary-font-size: "13.5px"
+  mush-card-secondary-font-size: "11.5px"
+  mush-card-primary-font-weight: "600"
+  mush-card-secondary-font-weight: "500"
+  mush-card-primary-line-height: "1.28"
+  mush-card-secondary-line-height: "1.25"
+  mush-chip-border-radius: "8px"
+  mush-chip-height: "30px"
+  mush-chip-padding: "0 10px"
+  mush-chip-font-size: "11.5px"
+  mush-chip-font-weight: "600"
+  mush-chip-background: "#232c40"
+  mush-chip-box-shadow: "0 1px 4px rgba(6, 10, 18, 0.25)"
+  mush-control-border-radius: "8px"
+  mush-control-height: "34px"
+  mush-icon-border-radius: "8px"
+  mush-icon-size: "36px"
+  mush-title-padding: "8px 4px 4px"
+  mush-title-font-size: "16px"
+  mush-title-font-weight: "700"
+  mush-subtitle-font-size: "12px"
+  mush-subtitle-font-weight: "500"
+
+  # ── Controls, Sliders & Switches ──
+  switch-checked-track-color: "#38bdf8"
+  switch-checked-button-color: "#ffffff"
+  switch-unchecked-track-color: "rgba(100, 116, 139, 0.45)"
+  switch-unchecked-button-color: "#cbd5e1"
+  paper-slider-knob-color: "#ffffff"
+  paper-slider-knob-start-color: "#ffffff"
+  paper-slider-pin-color: "#38bdf8"
+  paper-slider-active-color: "#38bdf8"
+  paper-slider-container-color: "rgba(148, 163, 184, 0.2)"
+  ha-slider-background: "none !important"
+
+  # ── Dialogs, Modals & Overlays ──
+  ha-dialog-surface-background: "#1c2436"
+  paper-dialog-background-color: "#1c2436"
+  more-info-header-background: "#161d2b"
+  mdc-theme-surface: "#1e2638"
+  material-background-color: "#1e2638"
+  code-editor-background-color: "#131926"
+  markdown-code-background-color: "rgba(15, 23, 42, 0.65)"
+
+  # ── Energy Dashboard Colors ──
+  energy-solar-color: "#fbbf24"
+  energy-grid-consumption-color: "#38bdf8"
+  energy-grid-return-color: "#a78bfa"
+  energy-battery-in-color: "#34d399"
+  energy-battery-out-color: "#2dd4bf"
+  energy-gas-color: "#fb923c"
+  energy-water-color: "#22d3ee"
+
+  # ── Lightweight Global Card-Mod Rules (No Blur) ──
+  card-mod-theme: "Solstice Evening"
+  card-mod-card-yaml: |
+    .: |
+      ha-card {
+        background: var(--ha-card-background);
+        border-radius: var(--ha-card-border-radius);
+        border: 1px solid rgba(148, 163, 184, 0.14);
+        box-shadow: var(--ha-card-box-shadow);
+      }
+      :host(mushroom-title-card) ha-card,
+      :host(hui-heading-card) ha-card,
+      :host(mushroom-chips-card) ha-card {
+        background: none !important;
+        border: none !important;
+        box-shadow: none !important;
+      }

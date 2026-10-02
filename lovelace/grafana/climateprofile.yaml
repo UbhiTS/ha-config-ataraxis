@@ -1,7 +1,0 @@
-title: Climate Profile
-
-icon: mdi:weather-partly-cloudy
-panel: true
-cards:
-  - type: iframe
-    url: https://grafana.ubhits.com/d/ee75s0i3s1vy8a/climate-profile?orgId=1&&timezone=browser&kiosk

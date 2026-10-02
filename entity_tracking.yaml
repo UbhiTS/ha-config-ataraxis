@@ -29,7 +29,7 @@ entities:
     - cover.garage_door_small
 
     # Lights and Fans
-    - fan.master_bedroom_fan
+    - fan.master_bedroom_fan_dimmer
     - light.living_room_light
     - light.master_bedroom_light_left
     - light.master_bedroom_light_right
@@ -42,8 +42,7 @@ entities:
     - switch.kitchen_light
     - switch.side_deck_light
     - switch.welcome_room_light
-    - switch.upper_big_bedroom_bed_light
-    - switch.upper_big_bedroom_lava_lamp
+    - switch.master_bedroom_fan_master_bedroom_fan_switch
     - switch.upper_small_bedroom_light_fan
     - switch.upper_guest_bedroom_light_fan
 

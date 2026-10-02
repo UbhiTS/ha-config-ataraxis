@@ -5559,26 +5559,26 @@
      id="climate.thermostat_master_bedroom" />
   <g
      transform="translate(720.54075,-907.96617)"
-     id="fan.master_bedroom_fan"
+     id="fan.master_bedroom_fan_dimmer"
      style="fill:#e5e7eb;fill-opacity:1">
     <g
        style="fill:#e5e7eb;fill-opacity:1"
        id="shape1404-1397">
       <path
          style="opacity:1;fill:#e5e7eb;fill-opacity:1;stroke:none;stroke-width:0.75;stroke-linecap:butt"
-         id="fan.master_bedroom_fan_path"
+         id="master_bedroom_fan_icon_path"
          class="st24"
          d="m 12.79,1114.61 c -0.7,0 -1.28,0.57 -1.28,1.28 0,0.7 0.58,1.28 1.28,1.28 0.7,0 1.28,-0.58 1.28,-1.28 0,-0.71 -0.58,-1.28 -1.28,-1.28 z m 0.64,-11.51 c 5.75,0 5.9,4.56 2.88,6.07 -1.27,0.63 -1.83,1.97 -2.07,3.16 0.61,0.26 1.15,0.65 1.56,1.17 4.73,-2.56 9.82,-1.55 9.82,3.03 0,5.75 -4.57,5.88 -6.08,2.85 -0.64,-1.27 -1.99,-1.83 -3.18,-2.07 -0.26,0.61 -0.65,1.14 -1.17,1.57 2.55,4.72 1.54,9.8 -3.04,9.8 -5.76,0 -5.87,-4.58 -2.85,-6.09 1.25,-0.63 1.81,-1.96 2.07,-3.13 -0.63,-0.26 -1.18,-0.67 -1.59,-1.18 -4.72,2.53 -9.78,1.53 -9.78,-3.03 0,-5.76 4.55,-5.9 6.06,-2.87 0.64,1.27 1.98,1.82 3.17,2.06 0.25,-0.61 0.66,-1.15 1.18,-1.56 -2.54,-4.72 -1.53,-9.78 3.02,-9.78 z" />
     </g>
   </g>
   <g
      transform="translate(755.79075,-907.96617)"
-     id="switch.master_bedroom_fan_light">
+     id="switch.master_bedroom_fan_master_bedroom_fan_switch">
     <g
        id="shape1406-1400">
       <path
          style="fill:#475569;stroke:none;stroke-width:0.75;stroke-linecap:butt"
-         id="light.master_bedroom_fan_light"
+         id="master_bedroom_fan_switch_icon"
          d="m 15.75,1104.34 c 4.74,0 8.59,3.85 8.59,8.59 0,3.18 -1.73,5.95 -4.29,7.44 v 2.58 c 0,0.79 -0.65,1.43 -1.44,1.43 h -5.72 c -0.79,0 -1.44,-0.64 -1.44,-1.43 v -2.58 c -2.56,-1.49 -4.29,-4.26 -4.29,-7.44 0,-4.74 3.85,-8.59 8.59,-8.59 z m 2.86,21.47 v 1.44 c 0,0.78 -0.64,1.43 -1.43,1.43 h -2.86 c -0.79,0 -1.43,-0.65 -1.43,-1.43 v -1.44 z m 8.59,-14.31 h 4.3 v 2.86 h -4.3 z m -27.2,0 h 4.3 v 2.86 H 0 Z m 17.18,-14.32 v 4.29 h -2.86 v -4.29 z m -11.57,3.58 3.05,3.06 -2.03,2.02 -3.05,-3.03 z m 17.23,3.05 3.03,-3.05 2.05,2.05 -3.05,3.03 z" />
     </g>
   </g>
@@ -5877,7 +5877,7 @@
     <g
        style="font-size:12px;overflow:visible;opacity:1;color-interpolation-filters:sRGB;fill:#e5e7eb;fill-rule:evenodd;stroke:#4b5563;stroke-width:0;stroke-linecap:square;stroke-miterlimit:3;stroke-dasharray:none;stroke-opacity:1"
        transform="matrix(0.86826395,1.355493e-4,4.0061094e-4,0.95619256,-31.849373,-52.542952)"
-       id="binary_sensor.master_bedroom_door-8">
+       id="lower_common_bathroom_door_group">
       <path
          d="m -3,1129.43 h 48 v -7.5 H -3 Z"
          class="st25"
@@ -6450,7 +6450,7 @@
      x="943.37952"
      height="52.906879"
      width="10.088176"
-     id="binary_sensor.garage_side_door"
+     id="missing.binary_sensor.garage_side_door"
      style="fill:#e5e7eb;fill-opacity:1;stroke-width:0.750001" />
   <rect
      y="603.13452"
@@ -26824,7 +26824,7 @@
      style="font-size:12px;overflow:visible;fill:none;fill-rule:evenodd;stroke-linecap:square;stroke-miterlimit:3">
     <path
        style="fill:#e5e7eb;stroke:none;stroke-width:1.84454;stroke-linecap:butt"
-       id="climate.upper_guest_bedroom_heating_temperature"
+       id="upper_guest_bedroom_heating_temperature_icon"
        class="st27"
        d="m 17.36,989.34 h 4.97 v 2.34 h -4.97 z m 0,4.67 h 4.97 v 2.33 h -4.97 z m 0,4.66 h 4.97 v 2.33 h -4.04 l -0.93,-1.02 z m 4.97,4.66 v 2.33 h -2.49 c 0,-0.78 -0.1,-1.61 -0.36,-2.33 z m -4.97,2.33 c 0,3.25 -2.73,5.82 -6.2,5.82 -3.41,0 -6.2,-2.57 -6.2,-5.82 0,-1.9 0.98,-3.6 2.48,-4.66 v -9.32 c 0,-1.95 1.66,-3.5 3.72,-3.5 2.07,0 3.72,1.55 3.72,3.5 v 9.32 c 1.5,1.06 2.48,2.76 2.48,4.66 z M 9.92,995.17 v 7.19 c -1.44,0.48 -2.48,1.79 -2.48,3.3 0,1.94 1.66,3.49 3.72,3.49 2.07,0 3.72,-1.55 3.72,-3.49 0,-1.51 -1.03,-2.82 -2.48,-3.3 v -7.19 z m -4.96,-5.83 v 2.34 H 0 v -2.34 z m 0,4.67 v 2.33 H 0 v -2.33 z m 0,4.66 v 1.31 L 4.03,1001 H 0 v -2.33 z M 0,1003.33 h 2.84 c -0.2,0.72 -0.36,1.55 -0.36,2.33 H 0 Z" />
   </g>
@@ -26834,7 +26834,7 @@
      style="font-size:12px;overflow:visible;fill:none;fill-rule:evenodd;stroke-linecap:square;stroke-miterlimit:3">
     <path
        style="fill:#e5e7eb;stroke:none;stroke-width:1.84454;stroke-linecap:butt"
-       id="climate.upper_small_bedroom_heating_temperature"
+       id="upper_small_bedroom_heating_temperature_icon"
        class="st27"
        d="m 17.36,989.34 h 4.97 v 2.34 h -4.97 z m 0,4.67 h 4.97 v 2.33 h -4.97 z m 0,4.66 h 4.97 v 2.33 h -4.04 l -0.93,-1.02 z m 4.97,4.66 v 2.33 h -2.49 c 0,-0.78 -0.1,-1.61 -0.36,-2.33 z m -4.97,2.33 c 0,3.25 -2.73,5.82 -6.2,5.82 -3.41,0 -6.2,-2.57 -6.2,-5.82 0,-1.9 0.98,-3.6 2.48,-4.66 v -9.32 c 0,-1.95 1.66,-3.5 3.72,-3.5 2.07,0 3.72,1.55 3.72,3.5 v 9.32 c 1.5,1.06 2.48,2.76 2.48,4.66 z M 9.92,995.17 v 7.19 c -1.44,0.48 -2.48,1.79 -2.48,3.3 0,1.94 1.66,3.49 3.72,3.49 2.07,0 3.72,-1.55 3.72,-3.49 0,-1.51 -1.03,-2.82 -2.48,-3.3 v -7.19 z m -4.96,-5.83 v 2.34 H 0 v -2.34 z m 0,4.67 v 2.33 H 0 v -2.33 z m 0,4.66 v 1.31 L 4.03,1001 H 0 v -2.33 z M 0,1003.33 h 2.84 c -0.2,0.72 -0.36,1.55 -0.36,2.33 H 0 Z" />
   </g>
@@ -26844,7 +26844,7 @@
      style="font-size:12px;overflow:visible;fill:none;fill-rule:evenodd;stroke-linecap:square;stroke-miterlimit:3">
     <path
        style="fill:#e5e7eb;stroke:none;stroke-width:1.84454;stroke-linecap:butt"
-       id="climate.entertainment_room_heating_temperature"
+       id="entertainment_room_heating_temperature_icon"
        class="st27"
        d="m 17.36,989.34 h 4.97 v 2.34 h -4.97 z m 0,4.67 h 4.97 v 2.33 h -4.97 z m 0,4.66 h 4.97 v 2.33 h -4.04 l -0.93,-1.02 z m 4.97,4.66 v 2.33 h -2.49 c 0,-0.78 -0.1,-1.61 -0.36,-2.33 z m -4.97,2.33 c 0,3.25 -2.73,5.82 -6.2,5.82 -3.41,0 -6.2,-2.57 -6.2,-5.82 0,-1.9 0.98,-3.6 2.48,-4.66 v -9.32 c 0,-1.95 1.66,-3.5 3.72,-3.5 2.07,0 3.72,1.55 3.72,3.5 v 9.32 c 1.5,1.06 2.48,2.76 2.48,4.66 z M 9.92,995.17 v 7.19 c -1.44,0.48 -2.48,1.79 -2.48,3.3 0,1.94 1.66,3.49 3.72,3.49 2.07,0 3.72,-1.55 3.72,-3.49 0,-1.51 -1.03,-2.82 -2.48,-3.3 v -7.19 z m -4.96,-5.83 v 2.34 H 0 v -2.34 z m 0,4.67 v 2.33 H 0 v -2.33 z m 0,4.66 v 1.31 L 4.03,1001 H 0 v -2.33 z M 0,1003.33 h 2.84 c -0.2,0.72 -0.36,1.55 -0.36,2.33 H 0 Z" />
   </g>
@@ -28037,7 +28037,7 @@
      style="font-size:12px;overflow:visible;fill:none;fill-rule:evenodd;stroke-linecap:square;stroke-miterlimit:3">
     <path
        style="fill:#e5e7eb;stroke:none;stroke-width:1.84454;stroke-linecap:butt"
-       id="climate.upper_big_bedroom_heating_temperature"
+       id="upper_big_bedroom_heating_temperature_icon"
        class="st27"
        d="m 17.36,989.34 h 4.97 v 2.34 h -4.97 z m 0,4.67 h 4.97 v 2.33 h -4.97 z m 0,4.66 h 4.97 v 2.33 h -4.04 l -0.93,-1.02 z m 4.97,4.66 v 2.33 h -2.49 c 0,-0.78 -0.1,-1.61 -0.36,-2.33 z m -4.97,2.33 c 0,3.25 -2.73,5.82 -6.2,5.82 -3.41,0 -6.2,-2.57 -6.2,-5.82 0,-1.9 0.98,-3.6 2.48,-4.66 v -9.32 c 0,-1.95 1.66,-3.5 3.72,-3.5 2.07,0 3.72,1.55 3.72,3.5 v 9.32 c 1.5,1.06 2.48,2.76 2.48,4.66 z M 9.92,995.17 v 7.19 c -1.44,0.48 -2.48,1.79 -2.48,3.3 0,1.94 1.66,3.49 3.72,3.49 2.07,0 3.72,-1.55 3.72,-3.49 0,-1.51 -1.03,-2.82 -2.48,-3.3 v -7.19 z m -4.96,-5.83 v 2.34 H 0 v -2.34 z m 0,4.67 v 2.33 H 0 v -2.33 z m 0,4.66 v 1.31 L 4.03,1001 H 0 v -2.33 z M 0,1003.33 h 2.84 c -0.2,0.72 -0.36,1.55 -0.36,2.33 H 0 Z" />
   </g>
@@ -28117,7 +28117,7 @@
      style="fill:#475569"
      d="m 1435.5282,739.00257 c 4.74,0 8.59,3.85 8.59,8.59 0,3.18 -1.73,5.95 -4.29,7.44 v 2.58 c 0,0.79 -0.65,1.43 -1.44,1.43 h -5.72 c -0.79,0 -1.44,-0.64 -1.44,-1.43 v -2.58 c -2.56,-1.49 -4.29,-4.26 -4.29,-7.44 0,-4.74 3.85,-8.59 8.59,-8.59 z m 2.86,21.47 v 1.44 c 0,0.78 -0.64,1.43 -1.43,1.43 h -2.86 c -0.79,0 -1.43,-0.65 -1.43,-1.43 v -1.44 z m 8.59,-14.31 h 4.3 v 2.86 h -4.3 z m -27.2,0 h 4.3 v 2.86 h -4.3 z m 17.18,-14.32 v 4.29 h -2.86 v -4.29 z m -11.57,3.58 3.05,3.06 -2.03,2.02 -3.05,-3.03 z m 17.23,3.05 3.03,-3.05 2.05,2.05 -3.05,3.03 z" />
   <path
-     id="switch.upper_big_bedroom_bed_light"
+     id="missing.switch.upper_big_bedroom_bed_light"
      style="fill:#475569"
      d="m 1273.6476,739.06473 c 4.74,0 8.59,3.85 8.59,8.59 0,3.18 -1.73,5.95 -4.29,7.44 v 2.58 c 0,0.79 -0.65,1.43 -1.44,1.43 h -5.72 c -0.79,0 -1.44,-0.64 -1.44,-1.43 v -2.58 c -2.56,-1.49 -4.29,-4.26 -4.29,-7.44 0,-4.74 3.85,-8.59 8.59,-8.59 z m 2.86,21.47 v 1.44 c 0,0.78 -0.64,1.43 -1.43,1.43 h -2.86 c -0.79,0 -1.43,-0.65 -1.43,-1.43 v -1.44 z m 8.59,-14.31 h 4.3 v 2.86 h -4.3 z m -27.2,0 h 4.3 v 2.86 h -4.3 z m 17.18,-14.32 v 4.29 h -2.86 v -4.29 z m -11.57,3.58 3.05,3.06 -2.03,2.02 -3.05,-3.03 z m 17.23,3.05 3.03,-3.05 2.05,2.05 -3.05,3.03 z" />
   <path

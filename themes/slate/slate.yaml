@@ -1,91 +1,106 @@
 slate:
-  # Main colors
-  primary-color: '#2980b9'
-  accent-color: '#b58e31'
-  dark-primary-color: '#2980b9'
-  light-primary-color: '#2980b9'
-  # Text colors
-  primary-text-color: '#FFFFFF'
-  text-primary-color: 'var(--primary-text-color)'
-  secondary-text-color: '#b58e31'
-  disabled-text-color: '#777777'
-  label-badge-border-color: 'green'
-  # Sidebar
-  sidebar-icon-color: '#777777'
-  # Background colors
-  primary-background-color: '#222222'
-  secondary-background-color: '#222222'
-  divider-color: 'rgba(0, 0, 0, .12)'
-  table-row-background-color: '#292929'
-  table-row-alternative-background-color: '#292929'
-  # Nav Menu
-  paper-listbox-color: '#777777'
-  paper-listbox-background-color: '#141414'
-  paper-grey-50: 'var(--primary-text-color)'
-  paper-grey-200: '#222222'
-  # Paper card
-  paper-card-header-color: '#2980b9'
-  paper-card-background-color: '#292929'
-  paper-dialog-background-color: '#292929'
-  paper-item-icon-color: 'var(--primary-text-color)'
-  paper-item-icon-active-color: '#b58e31'
-  paper-item-icon_-_color: 'green'
-  paper-item-selected_-_background-color: '#292929'
-  paper-tabs-selection-bar-color: 'green'
-  # Labels
-  label-badge-red: 'var(--primary-color)'
-  label-badge-text-color: 'var(--primary-text-color)'
-  label-badge-background-color: '#222222'
-  # Switches
-  paper-toggle-button-checked-button-color: '#2980b9'
-  paper-toggle-button-checked-bar-color: '#2980b9'
-  paper-toggle-button-checked-ink-color: '#2980b9'
-  paper-toggle-button-unchecked-button-color: 'var(--disabled-text-color)'
-  paper-toggle-button-unchecked-bar-color: 'var(--disabled-text-color)'
-  paper-toggle-button-unchecked-ink-color: 'var(--disabled-text-color)'
-  switch-checked-color: 'var(--paper-toggle-button-checked-button-color)'
-  switch-unchecked-color: 'var(--disabled-text-color)'
-  switch-unchecked-button-color: 'var(--disabled-text-color)'
-  switch-unchecked-track-color: 'var(--disabled-text-color)'
-  # Sliders
-  paper-slider-knob-color: '#2980b9'
-  paper-slider-knob-start-color: '#2980b9'
-  paper-slider-pin-color: '#2980b9'
-  paper-slider-active-color: '#2980b9'
-  paper-slider-container-color: 'linear-gradient(var(--primary-background-color), var(--secondary-background-color)) no-repeat'
-  paper-slider-secondary-color: 'var(--secondary-background-color)'
-  paper-slider-disabled-active-color: 'var(--disabled-text-color)'
-  paper-slider-disabled-secondary-color: 'var(--disabled-text-color)'
-  # Google colors
-  google-red-500: '#b93829'
-  google-green-500: '#2980b9'
-  # Changes to fix history/logbook menus
-  lumo-primary-text-color: '#2980b9'
-  lumo-secondary-text-color: '#2980b9'
-  lumo-primary-color: '#2980b9'
-  # Calendar day numbers
-  lumo-body-text-color: '#b58e31'
-  # Calendar/Date-Picker Background
-  lumo-base-color: '#222222'
-  # Month/Year header
-  lumo-header-text-color: 'var(--lumo-body-text-color)'
-  # DayOfWeek Header
-  lumo-tertiary-text-color: 'var(--lumo-body-text-color)'
-  lumo-shade: '#222222'
-  lumo-shade-90pct: 'rgba(34, 34, 34, .9)'
-  lumo-shade-80pct: 'rgba(34, 34, 34, .8)'
-  lumo-shade-70pct: 'rgba(34, 34, 34, .7)'
-  lumo-shade-60pct: 'rgba(34, 34, 34, .6)'
-  lumo-shade-50pct: 'rgba(34, 34, 34, .5)'
-  lumo-shade-40pct: 'rgba(34, 34, 34, .4)'
-  lumo-shade-30pct: 'rgba(34, 34, 34, .3)'
-  lumo-shade-20pct: 'rgba(34, 34, 34, .2)'
-  lumo-shade-10pct: 'rgba(34, 34, 34, .1)'
-  lumo-shade-5pct: 'rgba(34, 34, 34, .05)'
-  lumo-tint-5pct: '#222222'
-  # fix for device configuration screen
-  card-background-color: "var(--paper-card-background-color)"
-  # Fix for Person Device Chooser - thanks to vajonam!
-  material-background-color: "var(--paper-listbox-background-color)"
-  material-secondary-background-color: '#222222'
-  material-body-text-color: '#FFFFFF'
+  # ════════════════════════════════════════════════════════════════════════════
+  #  SLATE (Upgraded to Solstice Evening Soft-UI Twilight Palette)
+  # ════════════════════════════════════════════════════════════════════════════
+  modes:
+    dark:
+      background-image: "center / cover no-repeat fixed url('/local/solstice/evening_horizon.svg')"
+      primary-background-color: "#1b2232"
+      secondary-background-color: "#222a3d"
+      app-header-background-color: "rgba(25, 31, 46, 0.72)"
+      ha-card-background: "linear-gradient(145deg, rgba(41, 50, 72, 0.78) 0%, rgba(31, 38, 56, 0.84) 100%)"
+      app-theme-color: "#1b2232"
+    light:
+      background-image: "center / cover no-repeat fixed url('/local/solstice/evening_horizon.svg')"
+      primary-background-color: "#1b2232"
+      secondary-background-color: "#222a3d"
+      app-header-background-color: "rgba(25, 31, 46, 0.72)"
+      ha-card-background: "linear-gradient(145deg, rgba(41, 50, 72, 0.78) 0%, rgba(31, 38, 56, 0.84) 100%)"
+      app-theme-color: "#1b2232"
+
+  lovelace-background: var(--background-image)
+  primary-font-family: "'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+  paper-font-common-base_-_font-family: var(--primary-font-family)
+  ha-font-family-body: var(--primary-font-family)
+  ha-font-family-heading: "'Space Grotesk', 'Plus Jakarta Sans', sans-serif"
+
+  primary-color: "#38bdf8"
+  accent-color: "#f59e0b"
+  dark-primary-color: "#0284c7"
+  light-primary-color: "#7dd3fc"
+  divider-color: "rgba(148, 163, 184, 0.12)"
+
+  primary-text-color: "#f1f5f9"
+  secondary-text-color: "#94a3b8"
+  ha-color-text-primary: "#f1f5f9"
+  ha-color-text-secondary: "#94a3b8"
+  text-primary-color: "#f1f5f9"
+  disabled-text-color: "rgba(148, 163, 184, 0.45)"
+
+  red-color: "#fb7185"
+  pink-color: "#f472b6"
+  purple-color: "#a78bfa"
+  indigo-color: "#818cf8"
+  blue-color: "#38bdf8"
+  light-blue-color: "#7dd3fc"
+  cyan-color: "#22d3ee"
+  teal-color: "#2dd4bf"
+  green-color: "#34d399"
+  yellow-color: "#fbbf24"
+  amber-color: "#f59e0b"
+  orange-color: "#fb923c"
+  deep-orange-color: "#f97316"
+  grey-color: "#64748b"
+
+  rgb-primary-color: "56, 189, 248"
+  rgb-accent-color: "245, 158, 11"
+  rgb-red-color: "251, 113, 133"
+  rgb-purple-color: "167, 139, 250"
+  rgb-indigo-color: "129, 140, 248"
+  rgb-blue-color: "56, 189, 248"
+  rgb-cyan-color: "34, 211, 238"
+  rgb-teal-color: "45, 212, 191"
+  rgb-green-color: "52, 211, 153"
+  rgb-yellow-color: "251, 191, 36"
+  rgb-amber-color: "245, 158, 11"
+  rgb-orange-color: "251, 146, 60"
+  rgb-card-background-color: "34, 42, 61"
+
+  state-icon-color: "#94a3b8"
+  state-icon-active-color: "#fbbf24"
+  state-icon-unavailable-color: "rgba(148, 163, 184, 0.35)"
+
+  sidebar-background-color: "rgba(24, 30, 44, 0.85)"
+  sidebar-icon-color: "#94a3b8"
+  sidebar-text-color: "#cbd5e1"
+  sidebar-selected-background-color: "rgba(56, 189, 248, 0.14)"
+  sidebar-selected-icon-color: "#38bdf8"
+  sidebar-selected-text-color: "#f8fafc"
+
+  card-background-color: "#232b3e"
+  paper-card-background-color: "rgba(36, 44, 64, 0.78)"
+  ha-card-border-radius: "8px"
+  ha-card-border-width: "1px"
+  ha-card-border-color: "rgba(255, 255, 255, 0.08)"
+  ha-card-backdrop-filter: "blur(24px) saturate(145%)"
+  ha-card-box-shadow: "inset 0 1px 0 0 rgba(255, 255, 255, 0.12), inset 0 0 0 1px rgba(255, 255, 255, 0.03), 0 12px 28px -8px rgba(9, 13, 22, 0.48), 0 4px 12px -2px rgba(9, 13, 22, 0.28)"
+
+  mush-spacing: "12px"
+  mush-card-primary-font-size: "15px"
+  mush-card-secondary-font-size: "12.5px"
+  mush-card-primary-font-weight: "600"
+  mush-card-secondary-font-weight: "500"
+  mush-chip-border-radius: "6px"
+  mush-chip-height: "36px"
+  mush-chip-padding: "0 12px"
+  mush-chip-background: "rgba(36, 45, 66, 0.82)"
+  mush-control-border-radius: "6px"
+  mush-icon-border-radius: "8px"
+
+  switch-checked-track-color: "#38bdf8"
+  switch-checked-button-color: "#ffffff"
+  switch-unchecked-track-color: "rgba(100, 116, 139, 0.45)"
+  switch-unchecked-button-color: "#cbd5e1"
+  paper-slider-knob-color: "#ffffff"
+  paper-slider-active-color: "#38bdf8"
+  ha-slider-background: "none !important"

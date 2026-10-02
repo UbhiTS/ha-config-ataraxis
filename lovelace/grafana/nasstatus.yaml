@@ -1,8 +1,0 @@
-title: NAS Status
-
-icon: mdi:nas
-panel: true
-cards:
-  - type: iframe
-    url: https://grafana.ubhits.com/d/ae751mokonhfkf/nas-status?orgId=1&timezone=browser&kiosk
-    aspect_ratio: 75%

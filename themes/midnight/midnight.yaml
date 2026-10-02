@@ -136,7 +136,6 @@ midnight:
   weather-icon-sunny: url("/local/waves/sunny.svg")
   weather-icon-windy: url("/local/waves/windy.svg")
   weather-icon-windy-variant: url("/local/waves/windy-variant.svg")
-  weather-icon-exceptional: url("/local/waves/exceptional.svg")
   # Shadown
   ha-card-box-shadow: "3px 3px 13px -6px rgba(0,0,0,1)"
   # HACS

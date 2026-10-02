@@ -1,0 +1,398 @@
+- id: govee_office_mode_on_start
+  alias: Govee Office Mode On Start
+  description: Restore the saved 50 percent office scene after Home Assistant and Govee are ready.
+  mode: single
+  triggers:
+    - trigger: homeassistant
+      event: start
+  actions:
+    - wait_template: >-
+        {{ states('light.glide_hexa') not in ['unknown', 'unavailable'] and
+           states('light.glide_hexa_ultra') not in ['unknown', 'unavailable'] and
+           states('light.govee_glide_y_lights') not in ['unknown', 'unavailable'] }}
+      timeout: '00:03:00'
+      continue_on_timeout: false
+    - action: script.govee_office_mode
+
+- id: govee_music_auto_cycle
+  alias: Govee Random Effect Cycle
+  description: Start, stop, or reschedule the non-music native scene loop.
+  mode: restart
+  triggers:
+    - trigger: state
+      entity_id: input_boolean.govee_music_auto_cycle
+      id: enabled
+    - trigger: state
+      entity_id: input_select.govee_music_cycle_interval
+      id: interval
+  actions:
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.govee_music_auto_cycle
+              state: "on"
+          sequence:
+            - action: input_boolean.turn_off
+              target:
+                entity_id: input_boolean.govee_live_music
+            - if:
+                - condition: template
+                  value_template: "{{ trigger.id == 'enabled' }}"
+              then:
+                - action: input_number.set_value
+                  target:
+                    entity_id: input_number.govee_room_brightness
+                  data:
+                    value: 50
+                - action: light.turn_on
+                  target:
+                    entity_id:
+                      - light.glide_hexa
+                      - light.glide_hexa_ultra
+                      - light.govee_glide_y_lights
+                  data:
+                    brightness_pct: 50
+            - action: script.turn_on
+              target:
+                entity_id: script.govee_music_mode
+      default:
+        - action: script.turn_off
+          target:
+            entity_id: script.govee_music_mode
+
+- id: govee_live_music_bridge_sync
+  alias: Govee Live Music Bridge Sync
+  description: Synchronize Home Assistant live-music controls to the Windows bridge.
+  mode: restart
+  triggers:
+    - trigger: homeassistant
+      event: start
+      id: startup
+    - trigger: state
+      entity_id: input_boolean.govee_live_music
+      id: enabled
+    - trigger: state
+      entity_id: input_boolean.govee_live_music_pause_transitions
+      id: paused
+    - trigger: state
+      entity_id: input_select.govee_live_palette
+      id: palette
+  actions:
+    - if:
+        - condition: state
+          entity_id: input_boolean.govee_live_music
+          state: "on"
+      then:
+        - action: input_boolean.turn_off
+          target:
+            entity_id: input_boolean.govee_music_auto_cycle
+        - action: script.turn_off
+          target:
+            entity_id: script.govee_music_mode
+        - if:
+            - condition: template
+              value_template: "{{ trigger.id == 'enabled' }}"
+          then:
+            - action: input_number.set_value
+              target:
+                entity_id: input_number.govee_room_brightness
+              data:
+                value: 50
+            - action: light.turn_on
+              target:
+                entity_id:
+                  - light.glide_hexa
+                  - light.glide_hexa_ultra
+                  - light.govee_glide_y_lights
+              data:
+                brightness_pct: 50
+    - action: mqtt.publish
+      data:
+        topic: ataraxis/govee-music/set/enabled
+        payload: >-
+          {{ 'ON' if is_state('input_boolean.govee_live_music', 'on') else 'OFF' }}
+        retain: true
+    - action: mqtt.publish
+      data:
+        topic: ataraxis/govee-music/set/paused
+        payload: >-
+          {{ 'ON' if is_state('input_boolean.govee_live_music_pause_transitions', 'on') else 'OFF' }}
+        retain: true
+    - action: mqtt.publish
+      data:
+        topic: ataraxis/govee-music/set/palette
+        payload: "{{ states('input_select.govee_live_palette') }}"
+        retain: true
+    - action: mqtt.publish
+      data:
+        topic: ataraxis/govee-music/set/brightness
+        payload: "{{ states('input_number.govee_room_brightness') | int(50) }}"
+        retain: true
+
+- id: govee_room_brightness_sync
+  alias: Govee Room Brightness Sync
+  description: Apply the shared room brightness to each currently-on Govee fixture.
+  mode: restart
+  triggers:
+    - trigger: state
+      entity_id: input_number.govee_room_brightness
+  actions:
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: input_boolean.govee_live_music
+              state: "on"
+          sequence:
+            - action: mqtt.publish
+              data:
+                topic: ataraxis/govee-music/set/brightness
+                payload: "{{ states('input_number.govee_room_brightness') | int(50) }}"
+                retain: true
+      default:
+        - repeat:
+            for_each:
+              - light.glide_hexa
+              - light.glide_hexa_ultra
+              - light.govee_glide_y_lights
+            sequence:
+              - choose:
+                  - conditions: "{{ is_state(repeat.item, 'on') }}"
+                    sequence:
+                      - action: light.turn_on
+                        target:
+                          entity_id: "{{ repeat.item }}"
+                        data:
+                          brightness_pct: >-
+                            {{ states('input_number.govee_room_brightness') | int(50) }}
+
+- id: govee_live_audio_source_sync
+  alias: Govee Live Audio Source Sync
+  description: Retain the selected Windows playback endpoint for native-agent restarts.
+  mode: restart
+  triggers:
+    - trigger: homeassistant
+      event: start
+    - trigger: state
+      entity_id: select.ataraxis_govee_music_agent_audio_source
+  actions:
+    - wait_template: >-
+        {{ states('select.ataraxis_govee_music_agent_audio_source') not in
+           ['unknown', 'unavailable', 'none', ''] }}
+      timeout: '00:02:00'
+      continue_on_timeout: false
+    - action: mqtt.publish
+      data:
+        topic: ataraxis/govee-music/set/audio-device
+        payload: "{{ states('select.ataraxis_govee_music_agent_audio_source') }}"
+        retain: true
+
+- id: thermostat_hardware_to_ui_sync
+  alias: Thermostat Hardware & AppDaemon Live Sync to UI
+  description: Strictly one-way sync from physical Z-Wave thermostat / AppDaemon / MQTT changes to the UI mode, fan mode, and setpoint helpers. Never writes back to the thermostat.
+  mode: queued
+  max: 15
+  triggers:
+    - trigger: homeassistant
+      event: start
+      id: startup
+    - trigger: state
+      entity_id:
+        - climate.thermostat_master_bedroom
+        - climate.thermostat_living_room
+        - climate.thermostat_entertainment_room
+        - climate.thermostat_upper_big_bedroom
+        - climate.thermostat_upper_small_bedroom
+        - climate.thermostat_upper_guest_bedroom
+        - climate.thermostat_attic
+      id: live_change
+  actions:
+    - if:
+        - condition: template
+          value_template: "{{ trigger.id == 'startup' }}"
+      then:
+        - delay:
+            seconds: 10
+    - variables:
+        zones_to_sync: >-
+          {% if trigger.id == 'live_change' and trigger.entity_id is defined %}
+            {{ [trigger.entity_id | replace('climate.thermostat_', '')] }}
+          {% else %}
+            {{ ['master_bedroom', 'living_room', 'entertainment_room', 'upper_big_bedroom', 'upper_small_bedroom', 'upper_guest_bedroom', 'attic'] }}
+          {% endif %}
+    - repeat:
+        for_each: "{{ zones_to_sync }}"
+        sequence:
+          - variables:
+              z: "{{ repeat.item }}"
+              c_ent: "{{ 'climate.thermostat_' ~ z }}"
+              m_ent: "{{ 'input_select.thermostat_' ~ z ~ '_mode' }}"
+              f_ent: "{{ 'input_select.thermostat_' ~ z ~ '_fan_mode' }}"
+              cool_ent: "{{ 'input_number.thermostat_' ~ z ~ '_setpoint' }}"
+              heat_ent: "{{ 'input_number.thermostat_' ~ z ~ '_heat_setpoint' }}"
+              hw_state: "{{ states(c_ent) | lower }}"
+              hw_fan: "{{ (state_attr(c_ent, 'fan_mode') or 'auto') | lower }}"
+              hw_low: "{{ state_attr(c_ent, 'target_temp_low') }}"
+              hw_high: "{{ state_attr(c_ent, 'target_temp_high') }}"
+              cur_ui_mode: "{{ states(m_ent) }}"
+              next_ui_mode: >-
+                {% if hw_state == 'off' %}
+                  Off
+                {% elif hw_state in ['auto', 'heat_cool'] %}
+                  Auto
+                {% elif hw_state == 'heat' %}
+                  Heat
+                {% elif hw_state == 'cool' %}
+                  Cool
+                {% else %}
+                  {{ cur_ui_mode }}
+                {% endif %}
+              next_ui_fan: "{{ 'On' if 'on' in hw_fan or 'low' == hw_fan else 'Auto' }}"
+          - if:
+              - condition: template
+                value_template: "{{ hw_low is not none and (hw_low | float(0)) >= 50 and (hw_low | float(0)) <= 85 and (states(heat_ent) | float(0) | round(0)) != (hw_low | float(0) | round(0)) }}"
+            then:
+              - action: input_number.set_value
+                continue_on_error: true
+                target:
+                  entity_id: "{{ heat_ent }}"
+                data:
+                  value: "{{ hw_low | float(68) | round(0) }}"
+          - if:
+              - condition: template
+                value_template: "{{ hw_high is not none and (hw_high | float(0)) >= 50 and (hw_high | float(0)) <= 85 and (states(cool_ent) | float(0) | round(0)) != (hw_high | float(0) | round(0)) }}"
+            then:
+              - action: input_number.set_value
+                continue_on_error: true
+                target:
+                  entity_id: "{{ cool_ent }}"
+                data:
+                  value: "{{ hw_high | float(73) | round(0) }}"
+          - if:
+              - condition: template
+                value_template: "{{ next_ui_mode in ['Off', 'Heat', 'Cool', 'Auto'] and states(m_ent) != next_ui_mode }}"
+            then:
+              - action: input_select.select_option
+                continue_on_error: true
+                target:
+                  entity_id: "{{ m_ent }}"
+                data:
+                  option: "{{ next_ui_mode }}"
+          - if:
+              - condition: template
+                value_template: "{{ next_ui_fan in ['Auto', 'On'] and states(f_ent) != next_ui_fan }}"
+            then:
+              - action: input_select.select_option
+                continue_on_error: true
+                target:
+                  entity_id: "{{ f_ent }}"
+                data:
+                  option: "{{ next_ui_fan }}"
+
+- id: ios_companion_and_notification_garage_actions
+  alias: "iOS Widget, Watch, CarPlay & Notification Garage Actions"
+  description: "Executes 1-tap Garage & Lockdown actions from iPhone Widgets, Apple Watch, CarPlay, or Lock Screen notifications."
+  mode: parallel
+  triggers:
+    - trigger: event
+      event_type: ios.action_fired
+      id: ios_action
+    - trigger: event
+      event_type: mobile_app_notification_action
+      id: notif_action
+  actions:
+    - variables:
+        act: >-
+          {{ trigger.event.data.actionName if trigger.id == 'ios_action' else trigger.event.data.action }}
+    - choose:
+        - conditions:
+            - condition: template
+              value_template: "{{ act in ['Moto Bay Toggle', 'ACTION_OPEN_MOTO_BAY'] }}"
+          sequence:
+            - action: script.moto_garage_bay
+        - conditions:
+            - condition: template
+              value_template: "{{ act in ['Big Garage Toggle', 'ACTION_OPEN_BIG_GARAGE'] }}"
+          sequence:
+            - action: cover.toggle
+              target:
+                entity_id: cover.garage_door_big
+        - conditions:
+            - condition: template
+              value_template: "{{ act in ['Close All Garages', 'ACTION_CLOSE_ALL_GARAGES'] }}"
+          sequence:
+            - action: script.close_all_garages
+        - conditions:
+            - condition: template
+              value_template: "{{ act in ['Goodnight Lockdown', 'ACTION_GOODNIGHT_LOCKDOWN'] }}"
+          sequence:
+            - action: script.goodnight_lockdown
+
+- id: moto_arrival_actionable_prompt
+  alias: "Motorcycle / Home Arrival Lock-Screen Garage Prompt"
+  description: "Pushes an instant 1-tap Lock Screen & Watch banner when arriving home while Moto Bay is closed."
+  mode: single
+  triggers:
+    - trigger: state
+      entity_id: device_tracker.funky_monkey_s_iphone
+      from: "not_home"
+      to: "home"
+  conditions:
+    - condition: state
+      entity_id: cover.garage_door_small
+      state: "closed"
+  actions:
+    - action: notify.mobile_app_funky_monkey_s_iphone
+      continue_on_error: true
+      data:
+        title: "🏍️ Welcome Home — Open Moto Bay?"
+        message: "Tap directly from Lock Screen or Apple Watch to open Garage Door Small (Motorcycles)."
+        data:
+          push:
+            interruption-level: time-sensitive
+          actions:
+            - action: ACTION_OPEN_MOTO_BAY
+              title: "🏍️ Open Moto Bay"
+              authenticationRequired: false
+            - action: ACTION_OPEN_BIG_GARAGE
+              title: "🚗 Open Big Garage"
+              authenticationRequired: false
+
+- id: garage_door_forgotten_open_guard
+  alias: "Garage Bay Forgotten Open Guard (15m & 10:30 PM)"
+  description: "Alerts iPhone with a 1-tap Close All button if either garage door is left open for 15 minutes or past 10:30 PM."
+  mode: single
+  triggers:
+    - trigger: state
+      entity_id:
+        - cover.garage_door_small
+        - cover.garage_door_big
+      to: "open"
+      for: "00:15:00"
+    - trigger: time
+      at: "22:30:00"
+  conditions:
+    - condition: or
+      conditions:
+        - condition: state
+          entity_id: cover.garage_door_small
+          state: "open"
+        - condition: state
+          entity_id: cover.garage_door_big
+          state: "open"
+  actions:
+    - action: notify.mobile_app_funky_monkey_s_iphone
+      continue_on_error: true
+      data:
+        title: "⚠️ Garage Bay Still Open"
+        message: >-
+          {% set small = is_state('cover.garage_door_small', 'open') %}
+          {% set big = is_state('cover.garage_door_big', 'open') %}
+          {{ 'Moto Bay (Small) & Big Garage are' if (small and big) else ('Moto Bay (Small Garage) is' if small else 'Big Garage Door is') }} currently OPEN.
+        data:
+          push:
+            interruption-level: time-sensitive
+          actions:
+            - action: ACTION_CLOSE_ALL_GARAGES
+              title: "🔒 Close All Garages Now"
+              authenticationRequired: false
+              destructive: true

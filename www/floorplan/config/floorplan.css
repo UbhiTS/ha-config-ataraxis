@@ -1,48 +1,44 @@
-/* ══════════════════════════════════════════
-   Floorplan v2 — Dark Mode + Glow Theme
-   ══════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════════════
+   SOLSTICE EVENING — Floorplan Architectural Soft-UI & Ambient Glow CSS
+   ══════════════════════════════════════════════════════════════════════ */
 
 #floorplan {
-  padding: 10px;
+  padding: 16px;
 }
 
-/* ── Base Text ── */
-
+/* ── Base Typography (Plus Jakarta Sans & JetBrains Mono) ── */
 svg tspan {
   fill: #cbd5e1;
-  font-family: 'Segoe UI', 'Oxygen', 'Ubuntu', sans-serif;
-  font-weight: 300;
-  letter-spacing: 0.3px;
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.4px;
 }
 
-/* ── SVG Shapes ── */
-
+/* ── SVG Geometry & Smooth Vectors ── */
 svg, svg * {
   vector-effect: non-scaling-stroke !important;
   pointer-events: all !important;
 }
 
-/* ── Hover — cool blue highlight ── */
-
+/* ── Interactive Hover — Twilight Sky Highlight ── */
 .ha-entity {
-  transition: filter 0.25s ease, stroke 0.25s ease, fill 0.3s ease;
+  transition: filter 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+              stroke 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+              fill 0.32s cubic-bezier(0.22, 1, 0.36, 1);
   cursor: pointer;
 }
 
 .ha-entity:hover {
-  stroke: #60a5fa !important;
-  stroke-width: 1.5px !important;
-  stroke-opacity: 0.9 !important;
-  filter: drop-shadow(0 0 6px rgba(96, 165, 250, 0.5)) !important;
+  stroke: #38bdf8 !important;
+  stroke-width: 1.6px !important;
+  stroke-opacity: 0.95 !important;
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.65))
+          drop-shadow(0 0 18px rgba(56, 189, 248, 0.3)) !important;
 }
 
-
-/* ══════════════════════════════════════════
-   3. ACTIVE ROOM LIGHTING
-   When a light is ON, the element glows warm amber
-   ══════════════════════════════════════════ */
-
-/* Apply to the element AND all children (fixes <g> groups with inline fills) */
+/* ══════════════════════════════════════════════════════════════════════
+   ACTIVE ROOM LIGHTING — Warm Horizon Sunset Gold (#fbbf24)
+   ══════════════════════════════════════════════════════════════════════ */
 .red,
 .red path,
 .red g,
@@ -53,11 +49,11 @@ svg, svg * {
 }
 
 .red {
-  filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.6))
-          drop-shadow(0 0 20px rgba(251, 191, 36, 0.25)) !important;
+  filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.65))
+          drop-shadow(0 0 26px rgba(245, 158, 11, 0.32)) !important;
 }
 
-/* Inactive / Off / Closed — dim slate, blends into the dark background */
+/* Inactive read-only — Soft Evening Slate */
 .light-blue,
 .light-blue path,
 .light-blue g,
@@ -71,98 +67,141 @@ svg, svg * {
   filter: none !important;
 }
 
+/* Available controls that are currently OFF — Soft Alabaster Silver */
+.entity-off,
+.entity-off path,
+.entity-off g,
+.entity-off circle,
+.entity-off rect,
+.entity-off ellipse,
+.entity-off polygon {
+  fill: #cbd5e1 !important;
+  fill-opacity: 0.88 !important;
+  filter: none !important;
+  transition: fill 0.4s ease, filter 0.4s ease;
+}
 
-/* ══════════════════════════════════════════
-   Thermostat state colors
-   ══════════════════════════════════════════ */
+/* Unavailable / unknown — Soft Dusk Rose */
+.entity-unavailable,
+.entity-unavailable path,
+.entity-unavailable g,
+.entity-unavailable circle,
+.entity-unavailable rect,
+.entity-unavailable ellipse,
+.entity-unavailable polygon,
+.entity-unavailable text,
+.entity-unavailable tspan,
+svg text[id].entity-unavailable tspan {
+  fill: #fb7185 !important;
+  fill-opacity: 0.65 !important;
+  filter: none !important;
+  animation: none !important;
+  transition: fill 0.4s ease, filter 0.4s ease;
+}
 
-/* Cooling — icy blue glow */
+.entity-unavailable line,
+.entity-unavailable polyline {
+  stroke: #fb7185 !important;
+  stroke-opacity: 0.65 !important;
+  filter: none !important;
+  animation: none !important;
+}
+
+.ha-entity.entity-unavailable:hover {
+  stroke: #fb7185 !important;
+  stroke-width: 1.5px !important;
+  stroke-opacity: 0.9 !important;
+  filter: none !important;
+}
+
+/* Drawn devices with no live Home Assistant entity */
+[id="missing.binary_sensor.garage_side_door"],
+[id="missing.switch.upper_big_bedroom_bed_light"] {
+  fill: #fb7185 !important;
+  fill-opacity: 0.65 !important;
+  filter: none !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   CLIMATE & HVAC STATE COLORS
+   ══════════════════════════════════════════════════════════════════════ */
+/* Cooling — Twilight Sky Cyan */
 .blue, .blue path, .blue g {
   fill: #38bdf8 !important;
   transition: fill 0.4s ease;
 }
 .blue {
-  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.5))
-          drop-shadow(0 0 16px rgba(56, 189, 248, 0.2)) !important;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.55))
+          drop-shadow(0 0 20px rgba(56, 189, 248, 0.25)) !important;
 }
 
-/* Heat+Cool — warm orange glow */
+/* Heat+Cool — Warm Sunset Coral-Orange */
 .orange, .orange path, .orange g {
   fill: #fb923c !important;
   transition: fill 0.4s ease;
 }
 .orange {
-  filter: drop-shadow(0 0 8px rgba(251, 146, 60, 0.5))
-          drop-shadow(0 0 16px rgba(251, 146, 60, 0.2)) !important;
+  filter: drop-shadow(0 0 10px rgba(251, 146, 60, 0.55))
+          drop-shadow(0 0 20px rgba(251, 146, 60, 0.25)) !important;
 }
 
 /* Text elements */
 .black {
-  fill: #e2e8f0 !important;
+  fill: #f1f5f9 !important;
 }
 
-
-/* ══════════════════════════════════════════
-   4. PULSING ANIMATIONS
-   Open doors/windows pulse to draw attention
-   ══════════════════════════════════════════ */
-
-/* Binary sensors — doors/windows OPEN: red pulse */
+/* ══════════════════════════════════════════════════════════════════════
+   PERIMETER PULSING ANIMATIONS
+   ══════════════════════════════════════════════════════════════════════ */
 .binary-sensor-on {
-  fill: #ef4444 !important;
-  filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.6)) !important;
+  fill: #fb7185 !important;
+  filter: drop-shadow(0 0 8px rgba(251, 113, 133, 0.68)) !important;
   animation: pulse-alert 2s ease-in-out infinite;
 }
 
 @keyframes pulse-alert {
   0%, 100% {
-    filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.4));
+    filter: drop-shadow(0 0 5px rgba(251, 113, 133, 0.45));
     opacity: 1;
   }
   50% {
-    filter: drop-shadow(0 0 12px rgba(239, 68, 68, 0.8));
+    filter: drop-shadow(0 0 14px rgba(251, 113, 133, 0.9));
     opacity: 0.85;
   }
 }
 
-/* Binary sensors — doors/windows CLOSED: barely visible */
 .binary-sensor-off {
   fill: #475569 !important;
   filter: none !important;
   transition: fill 0.6s ease, filter 0.6s ease;
 }
 
-/* Garage doors OPEN: pulsing red */
-/* (shares .red class, but the pulse is on binary-sensor-on) */
-
-/* Camera idle — subtle indigo pulse */
+/* Camera idle — Soft Twilight Indigo Cone */
 .camera-idle {
-  fill: #6366f1 !important;
-  fill-opacity: 0.12 !important;
-  stroke: #818cf8 !important;
-  stroke-width: 0.5px !important;
-  stroke-opacity: 0.5 !important;
-  animation: pulse-camera 3s ease-in-out infinite;
+  fill: #818cf8 !important;
+  fill-opacity: 0.14 !important;
+  stroke: #a78bfa !important;
+  stroke-width: 0.6px !important;
+  stroke-opacity: 0.55 !important;
+  animation: pulse-camera 3.5s ease-in-out infinite;
 }
 
 @keyframes pulse-camera {
   0%, 100% {
-    stroke-opacity: 0.3;
+    stroke-opacity: 0.35;
     fill-opacity: 0.08;
   }
   50% {
-    stroke-opacity: 0.7;
-    fill-opacity: 0.18;
+    stroke-opacity: 0.75;
+    fill-opacity: 0.2;
   }
 }
 
-
-/* ══════════════════════════════════════════
-   Fan — spinning animation
-   ══════════════════════════════════════════ */
-
+/* ══════════════════════════════════════════════════════════════════════
+   FAN SPINNING ANIMATION
+   ══════════════════════════════════════════════════════════════════════ */
 .spinning {
-  animation: spin 2.5s linear infinite;
+  animation: spin 2.4s linear infinite;
   transform-origin: 50% 50%;
   transform-box: fill-box;
 }
@@ -172,15 +211,13 @@ svg, svg * {
   to   { transform: rotate(360deg); }
 }
 
-
-/* ══════════════════════════════════════════
-   Light states (explicit classes)
-   ══════════════════════════════════════════ */
-
+/* ══════════════════════════════════════════════════════════════════════
+   EXPLICIT LIGHT STATES
+   ══════════════════════════════════════════════════════════════════════ */
 .light-on {
   fill: #fbbf24 !important;
-  filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.65))
-          drop-shadow(0 0 22px rgba(251, 191, 36, 0.3)) !important;
+  filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.68))
+          drop-shadow(0 0 24px rgba(245, 158, 11, 0.32)) !important;
   transition: fill 0.4s ease, filter 0.4s ease;
 }
 
@@ -190,164 +227,133 @@ svg, svg * {
   transition: fill 0.5s ease, filter 0.5s ease;
 }
 
-
-/* ══════════════════════════════════════════
-   6. MODERN TEXT STYLING
-   Sensor readouts with glow
-   ══════════════════════════════════════════ */
-
-/* All text elements — light and clean */
+/* ══════════════════════════════════════════════════════════════════════
+   TELEMETRY READOUT TYPOGRAPHY
+   ══════════════════════════════════════════════════════════════════════ */
 svg text {
-  font-family: 'Segoe UI', 'Oxygen', 'Ubuntu', sans-serif;
-  font-weight: 300;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  font-weight: 500;
 }
 
-/* Temperature readouts, power, speed — brighter */
 svg text[id^="sensor."] tspan,
 svg text[id^="climate."] tspan {
-  fill: #f1f5f9 !important;
-  font-weight: 400;
-  letter-spacing: 0.5px;
+  fill: #f8fafc !important;
+  font-family: 'JetBrains Mono', 'Plus Jakarta Sans', monospace !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.4px;
 }
 
-
-/* ══════════════════════════════════════════
-   Doorbell
-   ══════════════════════════════════════════ */
-
+/* ══════════════════════════════════════════════════════════════════════
+   DOORBELL & MEDIA
+   ══════════════════════════════════════════════════════════════════════ */
 .doorbell-off {
-  fill: #4b5563 !important;
+  fill: #475569 !important;
 }
 
 .doorbell-on {
-  fill: #fcd34d !important;
-  filter: drop-shadow(0 0 8px rgba(252, 211, 77, 0.6)) !important;
+  fill: #fbbf24 !important;
+  filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.7)) !important;
   animation: pulse-doorbell 1s ease-in-out infinite;
 }
 
 @keyframes pulse-doorbell {
-  0%, 100% { filter: drop-shadow(0 0 6px rgba(252, 211, 77, 0.4)); }
-  50%      { filter: drop-shadow(0 0 14px rgba(252, 211, 77, 0.9)); }
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.45)); }
+  50%      { filter: drop-shadow(0 0 16px rgba(251, 191, 36, 0.95)); }
 }
-
-
-/* ══════════════════════════════════════════
-   Temperature backgrounds
-   ══════════════════════════════════════════ */
 
 .temp-very-low-background {
   fill: #1e3a5f !important;
-  fill-opacity: 0.5 !important;
+  fill-opacity: 0.45 !important;
 }
 
 .temp-below-average-background {
-  fill: #1a3a2a !important;
-  fill-opacity: 0.5 !important;
+  fill: #134e4a !important;
+  fill-opacity: 0.45 !important;
 }
 
 .temp-average-background {
-  fill: #1a3322 !important;
-  fill-opacity: 0.5 !important;
+  fill: #065f46 !important;
+  fill-opacity: 0.45 !important;
 }
 
 .temp-very-high-background {
-  fill: #5f1e1e !important;
-  fill-opacity: 0.5 !important;
+  fill: #7f1d1d !important;
+  fill-opacity: 0.45 !important;
 }
 
-
-/* ══════════════════════════════════════════
-   Media player
-   ══════════════════════════════════════════ */
-
 .squeezebox-off {
-  fill: #4b5563 !important;
+  fill: #475569 !important;
 }
 
 .squeezebox-on {
-  fill: #14b8a6 !important;
-  filter: drop-shadow(0 0 6px rgba(20, 184, 166, 0.5)) !important;
+  fill: #2dd4bf !important;
+  filter: drop-shadow(0 0 8px rgba(45, 212, 191, 0.55)) !important;
 }
-
-
-/* ══════════════════════════════════════════
-   Motion / Alarm / Buttons
-   ══════════════════════════════════════════ */
 
 .last-motion {
   stroke: #a78bfa !important;
-  stroke-width: 1px !important;
-  stroke-opacity: 0.7 !important;
+  stroke-width: 1.2px !important;
+  stroke-opacity: 0.75 !important;
   animation: pulse-camera 3s ease-in-out infinite;
 }
 
 .alarm-disarmed {
-  fill: #22c55e !important;
-  filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.4)) !important;
+  fill: #34d399 !important;
+  filter: drop-shadow(0 0 6px rgba(52, 211, 153, 0.45)) !important;
 }
 
 .alarm-armed {
-  fill: #eab308 !important;
-  filter: drop-shadow(0 0 4px rgba(234, 179, 8, 0.4)) !important;
+  fill: #fbbf24 !important;
+  filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.45)) !important;
 }
 
 .background-on {
-  fill: #10b981 !important;
+  fill: #34d399 !important;
 }
 
 .background-off {
-  fill: #4b5563 !important;
+  fill: #475569 !important;
 }
 
 .background-on tspan {
   fill: #ffffff !important;
 }
 
-
-/* ══════════════════════════════════════════
-   Bootstrap alerts (compatibility)
-   ══════════════════════════════════════════ */
-
-.success-text        { fill: #4ade80 !important; }
+.success-text        { fill: #34d399 !important; }
 .success-background,
 .success-text-background {
-  fill: #14532d !important;
-  fill-opacity: 0.7 !important;
-  stroke: #166534 !important;
+  fill: #064e3b !important;
+  fill-opacity: 0.72 !important;
+  stroke: #059669 !important;
   stroke-width: 0.75px !important;
 }
 
-.info-text           { fill: #60a5fa !important; }
+.info-text           { fill: #38bdf8 !important; }
 .info-background,
 .info-text-background {
-  fill: #1e3a5f !important;
-  fill-opacity: 0.7 !important;
-  stroke: #1e40af !important;
+  fill: #0c4a6e !important;
+  fill-opacity: 0.72 !important;
+  stroke: #0284c7 !important;
   stroke-width: 0.75px !important;
 }
 
 .warning-text        { fill: #fbbf24 !important; }
 .warning-background,
 .warning-text-background {
-  fill: #4a3728 !important;
-  fill-opacity: 0.7 !important;
-  stroke: #92400e !important;
+  fill: #78350f !important;
+  fill-opacity: 0.72 !important;
+  stroke: #d97706 !important;
   stroke-width: 0.75px !important;
 }
 
-.danger-text         { fill: #f87171 !important; }
+.danger-text         { fill: #fb7185 !important; }
 .danger-background,
 .danger-text-background {
-  fill: #5f1e1e !important;
-  fill-opacity: 0.7 !important;
-  stroke: #991b1b !important;
+  fill: #881337 !important;
+  fill-opacity: 0.72 !important;
+  stroke: #e11d48 !important;
   stroke-width: 0.75px !important;
 }
 
-
-/* ══════════════════════════════════════════
-   Utility
-   ══════════════════════════════════════════ */
-
-.red2  { fill: #f87171 !important; }
-.red3  { fill: #fca5a5 !important; }
+.red2  { fill: #fb7185 !important; }
+.red3  { fill: #fda4af !important; }

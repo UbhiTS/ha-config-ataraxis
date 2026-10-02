@@ -1,295 +1,313 @@
 title: Climate
-icon: mdi:thermometer
-panel: true
+path: climate
+icon: mdi:thermostat
+type: custom:grid-layout
+layout:
+  grid-template-columns: 1fr
+  grid-gap: 10px
+  margin: 8px 12px 16px 12px
+  mediaquery:
+    "(max-width: 640px)":
+      grid-gap: 8px
+      margin: 6px 8px 14px 8px
 cards:
-  - type: vertical-stack
+  # ════════════════════════════════════════════════════════════════════════════
+  #  COMPACT CLIMATE STATUS & MASTER PRESET BAR
+  # ════════════════════════════════════════════════════════════════════════════
+  - type: custom:mushroom-chips-card
+    alignment: justify
+    chips:
+      - type: template
+        icon: mdi:home-thermometer-outline
+        icon_color: cyan
+        content: >-
+          {% set temps = [
+            states('sensor.thermostat_living_room_temperature') | float(0),
+            states('sensor.thermostat_master_bedroom_temperature') | float(0),
+            states('sensor.thermostat_upper_big_bedroom_temperature') | float(0),
+            states('sensor.thermostat_upper_small_bedroom_temperature') | float(0),
+            states('sensor.thermostat_upper_guest_bedroom_temperature') | float(0),
+            states('sensor.thermostat_entertainment_room_temperature') | float(0)
+          ] | reject('le', 0) | list %}
+          Avg {{ (temps | sum / (temps | count if temps | count > 0 else 1)) | round(1) }}°F
+      - type: weather
+        entity: weather.home
+        show_temperature: true
+        show_conditions: true
+      - type: template
+        icon: mdi:thermostat-auto
+        icon_color: green
+        content: "All Auto (68°–73°)"
+        tap_action:
+          action: call-service
+          service: script.climate_all_zones_preset
+          data:
+            preset_mode: auto
+            target_temp: 73
+      - type: template
+        icon: mdi:snowflake
+        icon_color: blue
+        content: "All Cool 72°"
+        tap_action:
+          action: call-service
+          service: script.climate_all_zones_preset
+          data:
+            preset_mode: cool
+            target_temp: 72
+      - type: template
+        icon: mdi:fire
+        icon_color: orange
+        content: "All Heat 69°"
+        tap_action:
+          action: call-service
+          service: script.climate_all_zones_preset
+          data:
+            preset_mode: heat
+            target_temp: 69
+      - type: template
+        icon: mdi:weather-night
+        icon_color: indigo
+        content: "Sleep 67°"
+        tap_action:
+          action: call-service
+          service: script.climate_all_zones_preset
+          data:
+            preset_mode: sleep
+            target_temp: 67
+      - type: template
+        icon: mdi:power-standby
+        icon_color: red
+        content: "All Off"
+        tap_action:
+          action: call-service
+          service: script.climate_all_zones_preset
+          data:
+            preset_mode: "off"
+
+  # ════════════════════════════════════════════════════════════════════════════
+  #  7-ZONE INTERACTIVE THERMOSTAT MATRIX (3-COL LAPTOP / 2-COL TABLET / 1-COL PHONE)
+  # ════════════════════════════════════════════════════════════════════════════
+  - type: custom:layout-card
+    layout_type: custom:grid-layout
+    layout:
+      grid-template-columns: repeat(3, minmax(0, 1fr))
+      grid-gap: 10px
+      margin: 0
+      mediaquery:
+        "(max-width: 1180px)":
+          grid-template-columns: repeat(2, minmax(0, 1fr))
+        "(max-width: 680px)":
+          grid-template-columns: 1fr
     cards:
-
-      # ════════════════════════════════════════════════════════════
-      #  STATUS CHIPS — quick temp overview
-      # ════════════════════════════════════════════════════════════
-      - type: custom:mushroom-chips-card
-        alignment: center
-        chips:
-          - type: template
-            icon: mdi:home-thermometer
-            icon_color: cyan
-            content: >-
-              {% set temps = [
-                state_attr('climate.thermostat_living_room','current_temperature') | float(0),
-                state_attr('climate.thermostat_master_bedroom','current_temperature') | float(0),
-                state_attr('climate.thermostat_entertainment_room','current_temperature') | float(0),
-                state_attr('climate.thermostat_upper_big_bedroom','current_temperature') | float(0),
-                state_attr('climate.thermostat_upper_small_bedroom','current_temperature') | float(0),
-                state_attr('climate.thermostat_upper_guest_bedroom','current_temperature') | float(0)
-              ] | reject('eq', 0) | list %}
-              Avg {{ (temps | sum / temps | count) | round(0) }}°F
-          - type: template
-            icon: mdi:thermometer-chevron-up
-            icon_color: red
-            content: >-
-              {% set temps = {
-                'Master': state_attr('climate.thermostat_master_bedroom','current_temperature') | float(0),
-                'Living': state_attr('climate.thermostat_living_room','current_temperature') | float(0),
-                'Entertain': state_attr('climate.thermostat_entertainment_room','current_temperature') | float(0),
-                'Big BR': state_attr('climate.thermostat_upper_big_bedroom','current_temperature') | float(0),
-                'Small BR': state_attr('climate.thermostat_upper_small_bedroom','current_temperature') | float(0),
-                'Guest': state_attr('climate.thermostat_upper_guest_bedroom','current_temperature') | float(0),
-                'Attic': state_attr('climate.thermostat_attic','current_temperature') | float(0)
-              } %}
-              {% set max_val = temps.values() | max %}
-              {% for name, val in temps.items() if val == max_val %}
-              Warmest: {{ name }} {{ val | round(0) }}°F
-              {% endfor %}
-          - type: template
-            icon: mdi:thermometer-chevron-down
-            icon_color: blue
-            content: >-
-              {% set temps = {
-                'Master': state_attr('climate.thermostat_master_bedroom','current_temperature') | float(0),
-                'Living': state_attr('climate.thermostat_living_room','current_temperature') | float(0),
-                'Entertain': state_attr('climate.thermostat_entertainment_room','current_temperature') | float(0),
-                'Big BR': state_attr('climate.thermostat_upper_big_bedroom','current_temperature') | float(0),
-                'Small BR': state_attr('climate.thermostat_upper_small_bedroom','current_temperature') | float(0),
-                'Guest': state_attr('climate.thermostat_upper_guest_bedroom','current_temperature') | float(0),
-                'Attic': state_attr('climate.thermostat_attic','current_temperature') | float(0)
-              } %}
-              {% set min_val = temps.values() | reject('eq', 0) | min %}
-              {% for name, val in temps.items() if val == min_val %}
-              Coolest: {{ name }} {{ val | round(0) }}°F
-              {% endfor %}
-          - type: weather
-            entity: weather.openweathermap
-            show_conditions: true
-            show_temperature: true
-
-      # ════════════════════════════════════════════════════════════
-      #  THERMOSTAT CONTROLS — 2-column grid
-      # ════════════════════════════════════════════════════════════
-      - type: custom:layout-card
-        layout_type: custom:grid-layout
-        layout:
-          grid-template-columns: 1fr 1fr
-          grid-gap: 12px
-          mediaquery:
-            "(max-width: 800px)":
-              grid-template-columns: 1fr
+      # ── 1. LIVING ROOM ──
+      - type: vertical-stack
         cards:
-          - type: custom:mushroom-climate-card
-            entity: climate.thermostat_master_bedroom
-            show_temperature_control: true
-            collapsible_controls: false
-            name: Master Bedroom
-            icon: mdi:bed-king
-            card_mod:
-              style: |
-                ha-card {
-                  border-radius: 16px !important;
-                  border: 1px solid rgba(255,255,255,0.06) !important;
-                }
-                mushroom-shape-icon {
-                  {% set t = state_attr('climate.thermostat_master_bedroom','current_temperature') | float(0) %}
-                  --icon-color: {% if t < 65 %}var(--blue-color){% elif t < 73 %}var(--green-color){% elif t < 77 %}var(--orange-color){% else %}var(--red-color){% endif %} !important;
-                  --shape-color: {% if t < 65 %}rgba(var(--rgb-blue-color),0.2){% elif t < 73 %}rgba(var(--rgb-green-color),0.2){% elif t < 77 %}rgba(var(--rgb-orange-color),0.2){% else %}rgba(var(--rgb-red-color),0.2){% endif %} !important;
-                }
-
-          - type: custom:mushroom-climate-card
+          - type: custom:mushroom-template-card
             entity: climate.thermostat_living_room
-            show_temperature_control: true
-            collapsible_controls: false
-            name: Living Room
-            icon: mdi:sofa
-            card_mod:
-              style: |
-                ha-card {
-                  border-radius: 16px !important;
-                  border: 1px solid rgba(255,255,255,0.06) !important;
-                }
-                mushroom-shape-icon {
-                  {% set t = state_attr('climate.thermostat_living_room','current_temperature') | float(0) %}
-                  --icon-color: {% if t < 65 %}var(--blue-color){% elif t < 73 %}var(--green-color){% elif t < 77 %}var(--orange-color){% else %}var(--red-color){% endif %} !important;
-                  --shape-color: {% if t < 65 %}rgba(var(--rgb-blue-color),0.2){% elif t < 73 %}rgba(var(--rgb-green-color),0.2){% elif t < 77 %}rgba(var(--rgb-orange-color),0.2){% else %}rgba(var(--rgb-red-color),0.2){% endif %} !important;
-                }
+            primary: Living Room
+            secondary: >-
+              {% set t = states('sensor.thermostat_living_room_temperature') | float(state_attr('climate.thermostat_living_room', 'current_temperature') | float(0)) | round(0) %}
+              {% set h = states('sensor.thermostat_living_room_humidity') | float(0) | round(0) %}
+              {% set m = states('input_select.thermostat_living_room_mode') | lower %}
+              {% set f = states('input_select.thermostat_living_room_fan_mode') | default('Auto') %}
+              {% set lo = states('input_number.thermostat_living_room_heat_setpoint') | float(68) | round(0) %}
+              {% set hi = states('input_number.thermostat_living_room_setpoint') | float(73) | round(0) %}
+              {{ t }}°F · {{ h }}% RH · {% if m == 'auto' %}Auto {{ lo }}°–{{ hi }}°F{% elif m == 'heat' %}Heat {{ lo }}°F{% elif m == 'cool' %}Cool {{ hi }}°F{% else %}Off{% endif %} · Fan {{ f }}
+            icon: mdi:sofa-outline
+            icon_color: >-
+              {% set m = states('input_select.thermostat_living_room_mode') | lower %}
+              {{ 'blue' if m == 'cool' else ('orange' if m == 'heat' else ('green' if m == 'auto' else 'disabled')) }}
+            tap_action:
+              action: more-info
+          - type: custom:thermostat-range-bar
+            entity: climate.thermostat_living_room
+            min: 55
+            max: 85
+            step: 1
+            min_gap: 2
 
-          - type: custom:mushroom-climate-card
-            entity: climate.thermostat_entertainment_room
-            show_temperature_control: true
-            collapsible_controls: false
-            name: Entertainment Room
-            icon: mdi:television
-            card_mod:
-              style: |
-                ha-card {
-                  border-radius: 16px !important;
-                  border: 1px solid rgba(255,255,255,0.06) !important;
-                }
-                mushroom-shape-icon {
-                  {% set t = state_attr('climate.thermostat_entertainment_room','current_temperature') | float(0) %}
-                  --icon-color: {% if t < 65 %}var(--blue-color){% elif t < 73 %}var(--green-color){% elif t < 77 %}var(--orange-color){% else %}var(--red-color){% endif %} !important;
-                  --shape-color: {% if t < 65 %}rgba(var(--rgb-blue-color),0.2){% elif t < 73 %}rgba(var(--rgb-green-color),0.2){% elif t < 77 %}rgba(var(--rgb-orange-color),0.2){% else %}rgba(var(--rgb-red-color),0.2){% endif %} !important;
-                }
+      # ── 2. MASTER SUITE ──
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-template-card
+            entity: climate.thermostat_master_bedroom
+            primary: Master Suite
+            secondary: >-
+              {% set t = states('sensor.thermostat_master_bedroom_temperature') | float(state_attr('climate.thermostat_master_bedroom', 'current_temperature') | float(0)) | round(0) %}
+              {% set h = states('sensor.thermostat_master_bedroom_humidity') | float(0) | round(0) %}
+              {% set m = states('input_select.thermostat_master_bedroom_mode') | lower %}
+              {% set f = states('input_select.thermostat_master_bedroom_fan_mode') | default('Auto') %}
+              {% set lo = states('input_number.thermostat_master_bedroom_heat_setpoint') | float(68) | round(0) %}
+              {% set hi = states('input_number.thermostat_master_bedroom_setpoint') | float(73) | round(0) %}
+              {{ t }}°F · {{ h }}% RH · {% if m == 'auto' %}Auto {{ lo }}°–{{ hi }}°F{% elif m == 'heat' %}Heat {{ lo }}°F{% elif m == 'cool' %}Cool {{ hi }}°F{% else %}Off{% endif %} · Fan {{ f }}
+            icon: mdi:bed-king-outline
+            icon_color: >-
+              {% set m = states('input_select.thermostat_master_bedroom_mode') | lower %}
+              {{ 'blue' if m == 'cool' else ('orange' if m == 'heat' else ('green' if m == 'auto' else 'disabled')) }}
+            tap_action:
+              action: more-info
+          - type: custom:thermostat-range-bar
+            entity: climate.thermostat_master_bedroom
+            min: 55
+            max: 85
+            step: 1
+            min_gap: 2
 
-          - type: custom:mushroom-climate-card
+      # ── 3. UPPER BIG BEDROOM ──
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-template-card
             entity: climate.thermostat_upper_big_bedroom
-            show_temperature_control: true
-            collapsible_controls: false
-            name: Upper Big Bedroom
-            icon: mdi:bed
-            card_mod:
-              style: |
-                ha-card {
-                  border-radius: 16px !important;
-                  border: 1px solid rgba(255,255,255,0.06) !important;
-                }
-                mushroom-shape-icon {
-                  {% set t = state_attr('climate.thermostat_upper_big_bedroom','current_temperature') | float(0) %}
-                  --icon-color: {% if t < 65 %}var(--blue-color){% elif t < 73 %}var(--green-color){% elif t < 77 %}var(--orange-color){% else %}var(--red-color){% endif %} !important;
-                  --shape-color: {% if t < 65 %}rgba(var(--rgb-blue-color),0.2){% elif t < 73 %}rgba(var(--rgb-green-color),0.2){% elif t < 77 %}rgba(var(--rgb-orange-color),0.2){% else %}rgba(var(--rgb-red-color),0.2){% endif %} !important;
-                }
+            primary: Upper Big Bedroom
+            secondary: >-
+              {% set t = states('sensor.thermostat_upper_big_bedroom_temperature') | float(state_attr('climate.thermostat_upper_big_bedroom', 'current_temperature') | float(0)) | round(0) %}
+              {% set h = states('sensor.thermostat_upper_big_bedroom_humidity') | float(0) | round(0) %}
+              {% set m = states('input_select.thermostat_upper_big_bedroom_mode') | lower %}
+              {% set f = states('input_select.thermostat_upper_big_bedroom_fan_mode') | default('Auto') %}
+              {% set lo = states('input_number.thermostat_upper_big_bedroom_heat_setpoint') | float(68) | round(0) %}
+              {% set hi = states('input_number.thermostat_upper_big_bedroom_setpoint') | float(73) | round(0) %}
+              {{ t }}°F · {{ h }}% RH · {% if m == 'auto' %}Auto {{ lo }}°–{{ hi }}°F{% elif m == 'heat' %}Heat {{ lo }}°F{% elif m == 'cool' %}Cool {{ hi }}°F{% else %}Off{% endif %} · Fan {{ f }}
+            icon: mdi:bed-double-outline
+            icon_color: >-
+              {% set m = states('input_select.thermostat_upper_big_bedroom_mode') | lower %}
+              {{ 'blue' if m == 'cool' else ('orange' if m == 'heat' else ('green' if m == 'auto' else 'disabled')) }}
+            tap_action:
+              action: more-info
+          - type: custom:thermostat-range-bar
+            entity: climate.thermostat_upper_big_bedroom
+            min: 55
+            max: 85
+            step: 1
+            min_gap: 2
 
-          - type: custom:mushroom-climate-card
+      # ── 4. UPPER SMALL BEDROOM ──
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-template-card
             entity: climate.thermostat_upper_small_bedroom
-            show_temperature_control: true
-            collapsible_controls: false
-            name: Upper Small Bedroom
-            icon: mdi:bed
-            card_mod:
-              style: |
-                ha-card {
-                  border-radius: 16px !important;
-                  border: 1px solid rgba(255,255,255,0.06) !important;
-                }
-                mushroom-shape-icon {
-                  {% set t = state_attr('climate.thermostat_upper_small_bedroom','current_temperature') | float(0) %}
-                  --icon-color: {% if t < 65 %}var(--blue-color){% elif t < 73 %}var(--green-color){% elif t < 77 %}var(--orange-color){% else %}var(--red-color){% endif %} !important;
-                  --shape-color: {% if t < 65 %}rgba(var(--rgb-blue-color),0.2){% elif t < 73 %}rgba(var(--rgb-green-color),0.2){% elif t < 77 %}rgba(var(--rgb-orange-color),0.2){% else %}rgba(var(--rgb-red-color),0.2){% endif %} !important;
-                }
+            primary: Upper Small Bedroom
+            secondary: >-
+              {% set t = states('sensor.thermostat_upper_small_bedroom_temperature') | float(state_attr('climate.thermostat_upper_small_bedroom', 'current_temperature') | float(0)) | round(0) %}
+              {% set h = states('sensor.thermostat_upper_small_bedroom_humidity') | float(0) | round(0) %}
+              {% set m = states('input_select.thermostat_upper_small_bedroom_mode') | lower %}
+              {% set f = states('input_select.thermostat_upper_small_bedroom_fan_mode') | default('Auto') %}
+              {% set lo = states('input_number.thermostat_upper_small_bedroom_heat_setpoint') | float(68) | round(0) %}
+              {% set hi = states('input_number.thermostat_upper_small_bedroom_setpoint') | float(73) | round(0) %}
+              {{ t }}°F · {{ h }}% RH · {% if m == 'auto' %}Auto {{ lo }}°–{{ hi }}°F{% elif m == 'heat' %}Heat {{ lo }}°F{% elif m == 'cool' %}Cool {{ hi }}°F{% else %}Off{% endif %} · Fan {{ f }}
+            icon: mdi:bed-single-outline
+            icon_color: >-
+              {% set m = states('input_select.thermostat_upper_small_bedroom_mode') | lower %}
+              {{ 'blue' if m == 'cool' else ('orange' if m == 'heat' else ('green' if m == 'auto' else 'disabled')) }}
+            tap_action:
+              action: more-info
+          - type: custom:thermostat-range-bar
+            entity: climate.thermostat_upper_small_bedroom
+            min: 55
+            max: 85
+            step: 1
+            min_gap: 2
 
-          - type: custom:mushroom-climate-card
+      # ── 5. UPPER GUEST BEDROOM ──
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-template-card
             entity: climate.thermostat_upper_guest_bedroom
-            show_temperature_control: true
-            collapsible_controls: false
-            name: Upper Guest Bedroom
-            icon: mdi:bed-outline
-            card_mod:
-              style: |
-                ha-card {
-                  border-radius: 16px !important;
-                  border: 1px solid rgba(255,255,255,0.06) !important;
-                }
-                mushroom-shape-icon {
-                  {% set t = state_attr('climate.thermostat_upper_guest_bedroom','current_temperature') | float(0) %}
-                  --icon-color: {% if t < 65 %}var(--blue-color){% elif t < 73 %}var(--green-color){% elif t < 77 %}var(--orange-color){% else %}var(--red-color){% endif %} !important;
-                  --shape-color: {% if t < 65 %}rgba(var(--rgb-blue-color),0.2){% elif t < 73 %}rgba(var(--rgb-green-color),0.2){% elif t < 77 %}rgba(var(--rgb-orange-color),0.2){% else %}rgba(var(--rgb-red-color),0.2){% endif %} !important;
-                }
+            primary: Upper Guest Bedroom
+            secondary: >-
+              {% set t = states('sensor.thermostat_upper_guest_bedroom_temperature') | float(state_attr('climate.thermostat_upper_guest_bedroom', 'current_temperature') | float(0)) | round(0) %}
+              {% set h = states('sensor.thermostat_upper_guest_bedroom_humidity') | float(0) | round(0) %}
+              {% set m = states('input_select.thermostat_upper_guest_bedroom_mode') | lower %}
+              {% set f = states('input_select.thermostat_upper_guest_bedroom_fan_mode') | default('Auto') %}
+              {% set lo = states('input_number.thermostat_upper_guest_bedroom_heat_setpoint') | float(68) | round(0) %}
+              {% set hi = states('input_number.thermostat_upper_guest_bedroom_setpoint') | float(73) | round(0) %}
+              {{ t }}°F · {{ h }}% RH · {% if m == 'auto' %}Auto {{ lo }}°–{{ hi }}°F{% elif m == 'heat' %}Heat {{ lo }}°F{% elif m == 'cool' %}Cool {{ hi }}°F{% else %}Off{% endif %} · Fan {{ f }}
+            icon: mdi:bed-queen-outline
+            icon_color: >-
+              {% set m = states('input_select.thermostat_upper_guest_bedroom_mode') | lower %}
+              {{ 'blue' if m == 'cool' else ('orange' if m == 'heat' else ('green' if m == 'auto' else 'disabled')) }}
+            tap_action:
+              action: more-info
+          - type: custom:thermostat-range-bar
+            entity: climate.thermostat_upper_guest_bedroom
+            min: 55
+            max: 85
+            step: 1
+            min_gap: 2
 
-          - type: custom:mushroom-climate-card
+      # ── 6. ENTERTAINMENT ROOM (LOWER LEVEL) ──
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-template-card
+            entity: climate.thermostat_entertainment_room
+            primary: Entertainment Room
+            secondary: >-
+              {% set t = states('sensor.thermostat_entertainment_room_temperature') | float(state_attr('climate.thermostat_entertainment_room', 'current_temperature') | float(0)) | round(0) %}
+              {% set h = states('sensor.thermostat_entertainment_room_humidity') | float(0) | round(0) %}
+              {% set m = states('input_select.thermostat_entertainment_room_mode') | lower %}
+              {% set f = states('input_select.thermostat_entertainment_room_fan_mode') | default('Auto') %}
+              {% set lo = states('input_number.thermostat_entertainment_room_heat_setpoint') | float(68) | round(0) %}
+              {% set hi = states('input_number.thermostat_entertainment_room_setpoint') | float(73) | round(0) %}
+              {{ t }}°F · {{ h }}% RH · {% if m == 'auto' %}Auto {{ lo }}°–{{ hi }}°F{% elif m == 'heat' %}Heat {{ lo }}°F{% elif m == 'cool' %}Cool {{ hi }}°F{% else %}Off{% endif %} · Fan {{ f }}
+            icon: mdi:television-ambient-light
+            icon_color: >-
+              {% set m = states('input_select.thermostat_entertainment_room_mode') | lower %}
+              {{ 'blue' if m == 'cool' else ('orange' if m == 'heat' else ('green' if m == 'auto' else 'disabled')) }}
+            tap_action:
+              action: more-info
+          - type: custom:thermostat-range-bar
+            entity: climate.thermostat_entertainment_room
+            min: 55
+            max: 85
+            step: 1
+            min_gap: 2
+
+      # ── 7. ATTIC THERMAL BUFFER ──
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-template-card
             entity: climate.thermostat_attic
-            show_temperature_control: true
-            collapsible_controls: false
-            name: Attic
+            primary: Attic Thermal Zone
+            secondary: >-
+              {% set t = state_attr('climate.thermostat_attic', 'current_temperature') | float(0) | round(0) %}
+              {% set h = states('sensor.thermostat_attic_humidity') | float(0) | round(0) %}
+              {% set m = states('input_select.thermostat_attic_mode') | lower %}
+              {% set f = states('input_select.thermostat_attic_fan_mode') | default('Auto') %}
+              {% set lo = states('input_number.thermostat_attic_heat_setpoint') | float(68) | round(0) %}
+              {% set hi = states('input_number.thermostat_attic_setpoint') | float(74) | round(0) %}
+              {{ t }}°F · {{ h }}% RH · {% if m == 'auto' %}Auto {{ lo }}°–{{ hi }}°F{% elif m == 'heat' %}Heat {{ lo }}°F{% elif m == 'cool' %}Cool {{ hi }}°F{% else %}Off{% endif %} · Fan {{ f }}
             icon: mdi:home-roof
-            card_mod:
-              style: |
-                ha-card {
-                  border-radius: 16px !important;
-                  border: 1px solid rgba(255,255,255,0.06) !important;
-                }
-                mushroom-shape-icon {
-                  {% set t = state_attr('climate.thermostat_attic','current_temperature') | float(0) %}
-                  --icon-color: {% if t < 65 %}var(--blue-color){% elif t < 73 %}var(--green-color){% elif t < 77 %}var(--orange-color){% else %}var(--red-color){% endif %} !important;
-                  --shape-color: {% if t < 65 %}rgba(var(--rgb-blue-color),0.2){% elif t < 73 %}rgba(var(--rgb-green-color),0.2){% elif t < 77 %}rgba(var(--rgb-orange-color),0.2){% else %}rgba(var(--rgb-red-color),0.2){% endif %} !important;
-                }
+            icon_color: >-
+              {% set m = states('input_select.thermostat_attic_mode') | lower %}
+              {{ 'blue' if m == 'cool' else ('orange' if m == 'heat' else ('green' if m == 'auto' else 'disabled')) }}
+            tap_action:
+              action: more-info
+          - type: custom:thermostat-range-bar
+            entity: climate.thermostat_attic
+            min: 55
+            max: 85
+            step: 1
+            min_gap: 2
 
-      # ════════════════════════════════════════════════════════════
-      #  TEMPERATURE TRENDS — 24h comparison
-      # ════════════════════════════════════════════════════════════
-      - type: custom:mini-graph-card
-        name: Temperature Trends (24h)
-        icon: mdi:chart-line
-        hours_to_show: 24
-        points_per_hour: 2
-        line_width: 2
-        animate: true
-        show:
-          legend: true
-          fill: false
-          labels: true
-        entities:
-          - entity: climate.thermostat_living_room
-            attribute: current_temperature
-            name: Living Room
-            color: '#38bdf8'
-          - entity: climate.thermostat_master_bedroom
-            attribute: current_temperature
-            name: Master BR
-            color: '#fb923c'
-          - entity: climate.thermostat_entertainment_room
-            attribute: current_temperature
-            name: Entertainment
-            color: '#c084fc'
-          - entity: climate.thermostat_upper_big_bedroom
-            attribute: current_temperature
-            name: Upper Big BR
-            color: '#f87171'
-          - entity: climate.thermostat_upper_small_bedroom
-            attribute: current_temperature
-            name: Upper Small BR
-            color: '#4ade80'
-          - entity: climate.thermostat_upper_guest_bedroom
-            attribute: current_temperature
-            name: Guest BR
-            color: '#fbbf24'
-          - entity: climate.thermostat_attic
-            attribute: current_temperature
-            name: Attic
-            color: '#f97316'
-        card_mod:
-          style: |
-            ha-card {
-              border-radius: 16px !important;
-              border: 1px solid rgba(255,255,255,0.06) !important;
-            }
-
-      # ════════════════════════════════════════════════════════════
-      #  HUMIDITY TRENDS — 24h comparison
-      # ════════════════════════════════════════════════════════════
-      - type: custom:mini-graph-card
-        name: Humidity Trends (24h)
-        icon: mdi:water-percent
-        hours_to_show: 24
-        points_per_hour: 2
-        line_width: 2
-        animate: true
-        show:
-          legend: true
-          fill: false
-          labels: true
-        entities:
-          - entity: sensor.thermostat_living_room_humidity
-            name: Living Room
-            color: '#38bdf8'
-          - entity: sensor.thermostat_master_bedroom_humidity
-            name: Master BR
-            color: '#fb923c'
-          - entity: sensor.thermostat_entertainment_room_humidity
-            name: Entertainment
-            color: '#c084fc'
-          - entity: sensor.thermostat_upper_big_bedroom_humidity
-            name: Upper Big BR
-            color: '#f87171'
-          - entity: sensor.thermostat_upper_small_bedroom_humidity
-            name: Upper Small BR
-            color: '#4ade80'
-          - entity: sensor.thermostat_upper_guest_bedroom_humidity
-            name: Guest BR
-            color: '#fbbf24'
-          - entity: sensor.thermostat_attic_humidity
-            name: Attic
-            color: '#f97316'
-        card_mod:
-          style: |
-            ha-card {
-              border-radius: 16px !important;
-              border: 1px solid rgba(255,255,255,0.06) !important;
-            }
+      # ── 8. MASTER BEDROOM CEILING FAN & HVAC EFFICIENCY STATUS ──
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-fan-card
+            entity: fan.master_bedroom_fan_dimmer
+            name: Master Suite Ceiling Fan
+            icon: mdi:ceiling-fan
+            show_percentage_control: true
+            collapsible_controls: false
+          - type: custom:mushroom-template-card
+            primary: Window & Door HVAC Guard
+            secondary: >-
+              {% set w_open = ['binary_sensor.living_room_window_left', 'binary_sensor.living_room_window_right', 'binary_sensor.kitchen_window_left', 'binary_sensor.kitchen_window_right', 'binary_sensor.welcome_window_front', 'binary_sensor.welcome_window_left', 'binary_sensor.welcome_window_right', 'binary_sensor.entryway_window_peep', 'binary_sensor.master_bedroom_window_left', 'binary_sensor.master_bedroom_window_right', 'binary_sensor.master_bedroom_window_left_small', 'binary_sensor.master_bedroom_window_right_small', 'binary_sensor.upper_big_bedroom_window_left', 'binary_sensor.upper_big_bedroom_window_right', 'binary_sensor.upper_small_bedroom_window', 'binary_sensor.upper_guest_bedroom_window', 'binary_sensor.lower_guest_bedroom_window', 'binary_sensor.entertainment_window_left', 'binary_sensor.entertainment_window_right'] | select('is_state', 'on') | list | count %}
+              {% if w_open == 0 %}All 19 windows closed — optimal thermal seal{% else %}{{ w_open }} window(s) open — check Security tab{% endif %}
+            icon: >-
+              {% set w_open = ['binary_sensor.living_room_window_left', 'binary_sensor.living_room_window_right', 'binary_sensor.kitchen_window_left', 'binary_sensor.kitchen_window_right', 'binary_sensor.welcome_window_front', 'binary_sensor.welcome_window_left', 'binary_sensor.welcome_window_right', 'binary_sensor.entryway_window_peep', 'binary_sensor.master_bedroom_window_left', 'binary_sensor.master_bedroom_window_right', 'binary_sensor.master_bedroom_window_left_small', 'binary_sensor.master_bedroom_window_right_small', 'binary_sensor.upper_big_bedroom_window_left', 'binary_sensor.upper_big_bedroom_window_right', 'binary_sensor.upper_small_bedroom_window', 'binary_sensor.upper_guest_bedroom_window', 'binary_sensor.lower_guest_bedroom_window', 'binary_sensor.entertainment_window_left', 'binary_sensor.entertainment_window_right'] | select('is_state', 'on') | list | count %}
+              {{ 'mdi:window-closed-variant' if w_open == 0 else 'mdi:window-open-variant' }}
+            icon_color: >-
+              {% set w_open = ['binary_sensor.living_room_window_left', 'binary_sensor.living_room_window_right', 'binary_sensor.kitchen_window_left', 'binary_sensor.kitchen_window_right', 'binary_sensor.welcome_window_front', 'binary_sensor.welcome_window_left', 'binary_sensor.welcome_window_right', 'binary_sensor.entryway_window_peep', 'binary_sensor.master_bedroom_window_left', 'binary_sensor.master_bedroom_window_right', 'binary_sensor.master_bedroom_window_left_small', 'binary_sensor.master_bedroom_window_right_small', 'binary_sensor.upper_big_bedroom_window_left', 'binary_sensor.upper_big_bedroom_window_right', 'binary_sensor.upper_small_bedroom_window', 'binary_sensor.upper_guest_bedroom_window', 'binary_sensor.lower_guest_bedroom_window', 'binary_sensor.entertainment_window_left', 'binary_sensor.entertainment_window_right'] | select('is_state', 'on') | list | count %}
+              {{ 'green' if w_open == 0 else 'amber' }}
+            tap_action:
+              action: navigate
+              navigation_path: /lovelace/security

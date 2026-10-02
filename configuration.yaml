@@ -1,5 +1,32 @@
 homeassistant:
-  
+  customize:
+    cover.garage_door_small:
+      friendly_name: "Moto Bay (Small Garage)"
+      device_class: garage
+      icon: mdi:motorbike
+    cover.garage_door_big:
+      friendly_name: "Big Garage Door"
+      device_class: garage
+      icon: mdi:garage
+    sensor.garage_door_small_battery_level:
+      friendly_name: "Moto Bay Tilt Sensor Battery"
+      device_class: battery
+    sensor.garage_battery_level:
+      friendly_name: "Big Garage Tilt Sensor Battery"
+      device_class: battery
+    sensor.battery_level:
+      friendly_name: "Master Bedroom Window Right Battery"
+      device_class: battery
+    sensor.battery_level_2:
+      friendly_name: "Master Bedroom Window Left Small Battery"
+      device_class: battery
+    sensor.battery_level_3:
+      friendly_name: "Kitchen Window Left Battery"
+      device_class: battery
+    sensor.nodeid_166_battery_level:
+      friendly_name: "Upper Guest Bedroom Thermostat Battery"
+      device_class: battery
+
   customize_glob:
     "binary_sensor.*door":
       device_class: door
@@ -21,7 +48,9 @@ homeassistant:
       device_class: motion
     "switch.*light_fan":
       icon: mdi:ceiling-fan-light
-    
+    "sensor.*battery_level*":
+      device_class: battery
+
 
 # Enables configuration UI
 config:
@@ -37,6 +66,68 @@ energy:
 #hassio:
 
 ios:
+  actions:
+    - name: Moto Bay Toggle
+      background_color: "#0ea5e9"
+      label:
+        text: "Moto Bay (Open/Close)"
+        color: "#ffffff"
+      icon:
+        icon: motorbike
+        color: "#ffffff"
+      show_in_carplay: true
+      show_in_watch: true
+    - name: Big Garage Toggle
+      background_color: "#10b981"
+      label:
+        text: "Big Garage (Open/Close)"
+        color: "#ffffff"
+      icon:
+        icon: garage
+        color: "#ffffff"
+      show_in_carplay: true
+      show_in_watch: true
+    - name: Close All Garages
+      background_color: "#ef4444"
+      label:
+        text: "Lockdown Both Garages"
+        color: "#ffffff"
+      icon:
+        icon: garage-lock
+        color: "#ffffff"
+      show_in_carplay: true
+      show_in_watch: true
+    - name: Goodnight Lockdown
+      background_color: "#6366f1"
+      label:
+        text: "Goodnight House Lockdown"
+        color: "#ffffff"
+      icon:
+        icon: shield-moon-outline
+        color: "#ffffff"
+      show_in_carplay: false
+      show_in_watch: true
+
+homekit:
+  - name: Solstice Moto & Home Bridge
+    port: 21064
+    filter:
+      include_entities:
+        - cover.garage_door_small
+        - cover.garage_door_big
+        - script.moto_garage_bay
+        - script.close_all_garages
+        - script.goodnight_lockdown
+        - switch.entryway_light
+        - switch.welcome_room_light
+        - light.living_room_light
+    entity_config:
+      cover.garage_door_small:
+        name: "Motorcycle Garage"
+      cover.garage_door_big:
+        name: "Big Garage"
+      script.moto_garage_bay:
+        name: "Moto Ride Bay"
 
 # Track the sun
 sun:
@@ -56,7 +147,7 @@ emulated_hue:
   entities:
     light.living_room_light:
       hidden: false
-    fan.master_bedroom_fan:
+    fan.master_bedroom_fan_dimmer:
       hidden: false
     switch.kitchen_light:
       hidden: false
@@ -89,12 +180,6 @@ geo_location:
     feed_type: 'past_week_significant_earthquakes'
 
 history:
-  include: !include entity_tracking.yaml
-
-http:
-  use_x_forwarded_for: true
-  trusted_proxies: !secret http_trusted_proxies
-
 
 influxdb:
   tags:
@@ -109,10 +194,288 @@ input_boolean:
     name: 'Buzz Home'
     initial: off
     icon: mdi:bullhorn-outline
+  govee_music_auto_cycle:
+    name: 'Govee Random Effect Cycle'
+    initial: off
+    icon: mdi:music-note-plus
+  govee_live_music:
+    name: 'Govee Live Music'
+    initial: off
+    icon: mdi:waveform
+  govee_live_music_pause_transitions:
+    name: 'Pause Live Music Transitions'
+    initial: off
+    icon: mdi:motion-pause
   reset_internet:
     name: 'Reset Internet'
     initial: off
     icon: mdi:wifi-star
+
+input_select:
+  govee_live_palette:
+    name: 'Govee Live Palette'
+    icon: mdi:palette-outline
+    options:
+      - 'High Energy'
+      - 'Neon Club'
+      - 'Pastel Dream'
+      - 'Sunset Heat'
+      - 'Ocean Drive'
+      - 'Aurora'
+      - 'Ambient'
+    initial: 'High Energy'
+  govee_music_cycle_interval:
+    name: 'Govee Variation Interval'
+    icon: mdi:timer-cog-outline
+    options:
+      - '45 seconds'
+      - '1 second'
+      - '5 seconds'
+      - '15 seconds'
+      - '30 seconds'
+      - '60 seconds'
+      - '5 minutes'
+      - '10 minutes'
+      - '15 minutes'
+      - '30 minutes'
+      - '60 minutes'
+  thermostat_master_bedroom_mode:
+    name: 'Master Bedroom HVAC Mode'
+    icon: mdi:thermostat
+    options:
+      - 'Off'
+      - 'Heat'
+      - 'Cool'
+      - 'Auto'
+  thermostat_living_room_mode:
+    name: 'Living Room HVAC Mode'
+    icon: mdi:thermostat
+    options:
+      - 'Off'
+      - 'Heat'
+      - 'Cool'
+      - 'Auto'
+  thermostat_entertainment_room_mode:
+    name: 'Entertainment Room HVAC Mode'
+    icon: mdi:thermostat
+    options:
+      - 'Off'
+      - 'Heat'
+      - 'Cool'
+      - 'Auto'
+  thermostat_upper_big_bedroom_mode:
+    name: 'Upper Big Bedroom HVAC Mode'
+    icon: mdi:thermostat
+    options:
+      - 'Off'
+      - 'Heat'
+      - 'Cool'
+      - 'Auto'
+  thermostat_upper_small_bedroom_mode:
+    name: 'Upper Small Bedroom HVAC Mode'
+    icon: mdi:thermostat
+    options:
+      - 'Off'
+      - 'Heat'
+      - 'Cool'
+      - 'Auto'
+  thermostat_upper_guest_bedroom_mode:
+    name: 'Upper Guest Bedroom HVAC Mode'
+    icon: mdi:thermostat
+    options:
+      - 'Off'
+      - 'Heat'
+      - 'Cool'
+      - 'Auto'
+  thermostat_attic_mode:
+    name: 'Attic HVAC Mode'
+    icon: mdi:thermostat
+    options:
+      - 'Off'
+      - 'Heat'
+      - 'Cool'
+      - 'Auto'
+  thermostat_master_bedroom_fan_mode:
+    name: 'Master Bedroom Fan Mode'
+    icon: mdi:fan
+    initial: 'Auto'
+    options:
+      - 'Auto'
+      - 'On'
+  thermostat_living_room_fan_mode:
+    name: 'Living Room Fan Mode'
+    icon: mdi:fan
+    initial: 'Auto'
+    options:
+      - 'Auto'
+      - 'On'
+  thermostat_entertainment_room_fan_mode:
+    name: 'Entertainment Room Fan Mode'
+    icon: mdi:fan
+    initial: 'Auto'
+    options:
+      - 'Auto'
+      - 'On'
+  thermostat_upper_big_bedroom_fan_mode:
+    name: 'Upper Big Bedroom Fan Mode'
+    icon: mdi:fan
+    initial: 'Auto'
+    options:
+      - 'Auto'
+      - 'On'
+  thermostat_upper_small_bedroom_fan_mode:
+    name: 'Upper Small Bedroom Fan Mode'
+    icon: mdi:fan
+    initial: 'Auto'
+    options:
+      - 'Auto'
+      - 'On'
+  thermostat_upper_guest_bedroom_fan_mode:
+    name: 'Upper Guest Bedroom Fan Mode'
+    icon: mdi:fan
+    initial: 'Auto'
+    options:
+      - 'Auto'
+      - 'On'
+  thermostat_attic_fan_mode:
+    name: 'Attic Fan Mode'
+    icon: mdi:fan
+    initial: 'Auto'
+    options:
+      - 'Auto'
+      - 'On'
+
+input_number:
+  govee_room_brightness:
+    name: 'Govee Room Brightness'
+    icon: mdi:brightness-percent
+    initial: 50
+    min: 1
+    max: 100
+    step: 1
+    mode: slider
+  thermostat_master_bedroom_setpoint:
+    name: 'Master Bedroom Setpoint'
+    icon: mdi:thermometer-lines
+    min: 55
+    max: 85
+    step: 1
+    unit_of_measurement: '°F'
+    mode: slider
+  thermostat_living_room_setpoint:
+    name: 'Living Room Setpoint'
+    icon: mdi:thermometer-lines
+    min: 55
+    max: 85
+    step: 1
+    unit_of_measurement: '°F'
+    mode: slider
+  thermostat_entertainment_room_setpoint:
+    name: 'Entertainment Room Setpoint'
+    icon: mdi:thermometer-lines
+    min: 55
+    max: 85
+    step: 1
+    unit_of_measurement: '°F'
+    mode: slider
+  thermostat_upper_big_bedroom_setpoint:
+    name: 'Upper Big Bedroom Setpoint'
+    icon: mdi:thermometer-lines
+    min: 55
+    max: 85
+    step: 1
+    unit_of_measurement: '°F'
+    mode: slider
+  thermostat_upper_small_bedroom_setpoint:
+    name: 'Upper Small Bedroom Setpoint'
+    icon: mdi:thermometer-lines
+    min: 55
+    max: 85
+    step: 1
+    unit_of_measurement: '°F'
+    mode: slider
+  thermostat_upper_guest_bedroom_setpoint:
+    name: 'Upper Guest Bedroom Setpoint'
+    icon: mdi:thermometer-lines
+    min: 55
+    max: 85
+    step: 1
+    unit_of_measurement: '°F'
+    mode: slider
+  thermostat_attic_setpoint:
+    name: 'Attic Cool Setpoint'
+    icon: mdi:snowflake-thermometer
+    initial: 74
+    min: 58
+    max: 85
+    step: 1
+    unit_of_measurement: '°F'
+    mode: slider
+  thermostat_master_bedroom_heat_setpoint:
+    name: 'Master Bedroom Heat Setpoint'
+    icon: mdi:fire
+    initial: 68
+    min: 55
+    max: 82
+    step: 1
+    unit_of_measurement: '°F'
+    mode: slider
+  thermostat_living_room_heat_setpoint:
+    name: 'Living Room Heat Setpoint'
+    icon: mdi:fire
+    initial: 68
+    min: 55
+    max: 82
+    step: 1
+    unit_of_measurement: '°F'
+    mode: slider
+  thermostat_entertainment_room_heat_setpoint:
+    name: 'Entertainment Room Heat Setpoint'
+    icon: mdi:fire
+    initial: 68
+    min: 55
+    max: 82
+    step: 1
+    unit_of_measurement: '°F'
+    mode: slider
+  thermostat_upper_big_bedroom_heat_setpoint:
+    name: 'Upper Big Bedroom Heat Setpoint'
+    icon: mdi:fire
+    initial: 68
+    min: 55
+    max: 82
+    step: 1
+    unit_of_measurement: '°F'
+    mode: slider
+  thermostat_upper_small_bedroom_heat_setpoint:
+    name: 'Upper Small Bedroom Heat Setpoint'
+    icon: mdi:fire
+    initial: 68
+    min: 55
+    max: 82
+    step: 1
+    unit_of_measurement: '°F'
+    mode: slider
+  thermostat_upper_guest_bedroom_heat_setpoint:
+    name: 'Upper Guest Bedroom Heat Setpoint'
+    icon: mdi:fire
+    initial: 68
+    min: 55
+    max: 82
+    step: 1
+    unit_of_measurement: '°F'
+    mode: slider
+  thermostat_attic_heat_setpoint:
+    name: 'Attic Heat Setpoint'
+    icon: mdi:fire
+    initial: 68
+    min: 55
+    max: 82
+    step: 1
+    unit_of_measurement: '°F'
+    mode: slider
+
+
 
 #logbook:
 #  include: !include entity_tracking.yaml
@@ -134,35 +497,17 @@ lovelace:
       icon: mdi:monitor-dashboard
       show_in_sidebar: true
   resources:
-    - url: /hacsfiles/atomic_calendar/atomic_calendar.js
-      type: module
-    - url: /hacsfiles/clock-weather-card/clock-weather-card.js
-      type: module
-    #- url: /hacsfiles/atomic-calendar-revive/atomic-calendar-revive.js
-    #  type: module
-    - url: /hacsfiles/bar-card/bar-card.js
-      type: module
-    - url: /hacsfiles/bignumber-card/bignumber-card.js
-      type: module
-    - url: /hacsfiles/config-template-card/config-template-card.js
-      type: module
-    - url: /hacsfiles/lovelace-auto-entities/auto-entities.js
+    - url: /hacsfiles/lovelace-mushroom/mushroom.js
       type: module
     - url: /hacsfiles/lovelace-layout-card/layout-card.js
       type: module
-    - url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js
+    - url: /hacsfiles/lovelace-auto-entities/auto-entities.js
       type: module
-    - url: /hacsfiles/simple-thermostat/simple-thermostat.js
+    - url: /hacsfiles/lovelace-card-mod/card-mod.js
       type: module
-    - url: /hacsfiles/weather-card/weather-card.js
+    - url: /local/solstice/thermostat-range-bar.js?v=10
       type: module
-    - url: /local/floorplan/floorplan-card.js?v=1.1.14
-      type: module
-    - url: /hacsfiles/lovelace-mushroom/mushroom.js
-      type: module
-    - url: https://fonts.googleapis.com/css2?family=Oxygen&family=Ubuntu:wght@300&display=swap
-      type: css
-    
+
 
 media_source:
 media_player:
@@ -351,6 +696,11 @@ template:
       default_entity_id: sensor.thermostat_upper_big_bedroom_temperature
       unit_of_measurement: °F
       state: "{{ state_attr('climate.thermostat_upper_big_bedroom', 'current_temperature') | float(0) }}"
+
+    - name: Thermostat Attic Temperature
+      default_entity_id: sensor.thermostat_attic_temperature
+      unit_of_measurement: °F
+      state: "{{ state_attr('climate.thermostat_attic', 'current_temperature') | float(0) }}"
 
 # tts:
 #   - platform: google_translate

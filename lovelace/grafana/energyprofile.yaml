@@ -1,7 +1,0 @@
-title: Energy Profile
-
-icon: mdi:solar-power
-panel: true
-cards:
-  - type: iframe
-    url: https://grafana.ubhits.com/d/fe75d2wuk7hfka/energy-profile?orgId=1&timezone=browser&kiosk

@@ -16,7 +16,7 @@ waves:
       # Change the value below 6px to 0px to remove the rounded corners
       ha-card-border-radius: 6px
       # Place the backgrounds in the folder  /config/www/waves/
-      background-image: "center / cover no-repeat url('/themes/waves/background.png') fixed"
+      background-image: "center / cover no-repeat url('/local/waves/background.png') fixed"
       lovelace-background: var(--background-image)
       # Main colors
       primary-color: rgba(41, 128, 185, 1)
@@ -113,7 +113,6 @@ waves:
       weather-icon-sunny: url("/local/waves/sunny.svg")
       weather-icon-windy: url("/local/waves/windy.svg")
       weather-icon-windy-variant: url("/local/waves/windy-variant.svg")
-      weather-icon-exceptional: url("/local/waves/exceptional.svg")
       # Shadown
       ha-card-box-shadow: "0px 0px 3px 0px #0d141c"
       # HACS
@@ -257,7 +256,6 @@ waves:
       weather-icon-sunny: url("/local/waves/sunny.svg")
       weather-icon-windy: url("/local/waves/windy.svg")
       weather-icon-windy-variant: url("/local/waves/windy-variant.svg")
-      weather-icon-exceptional: url("/local/waves/exceptional.svg")
       # Shadown
       ha-card-box-shadow: "inset 0px 0px 0px 0px var(--divider-color)"
       # HACS

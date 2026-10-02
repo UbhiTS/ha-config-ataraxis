@@ -117,19 +117,6 @@ solar_forecast:
     - sensor.power_highest_peak_time_today
     - sensor.power_highest_peak_time_tomorrow
 
-home_water:
-  name: Water (ACWD)
-  entities:
-    - sensor.flume_sensor_home_24_hours
-    - sensor.flume_sensor_home_30_days
-    - sensor.flume_sensor_home_60_minutes
-    - sensor.flume_sensor_home_current
-    - sensor.flume_sensor_home_current_day
-    - sensor.flume_sensor_home_current_month
-    - sensor.flume_sensor_home_current_week
-    - binary_sensor.flume_sensor_home_high_flow
-    - binary_sensor.flume_sensor_home_leak_detected
-
 living_room:
   name: Living Room
   entities:
@@ -155,7 +142,8 @@ master_bedroom:
   entities:
     - light.master_bedroom_light_left
     - light.master_bedroom_light_right
-    - fan.master_bedroom_fan
+    - fan.master_bedroom_fan_dimmer
+    - switch.master_bedroom_fan_master_bedroom_fan_switch
 #    - sensor.thermostat_master_bedroom_temperature
     - sensor.thermostat_master_bedroom_humidity
     - climate.thermostat_master_bedroom
@@ -179,8 +167,6 @@ upper_big_bedroom:
     - binary_sensor.upper_big_bedroom_door
     - binary_sensor.upper_big_bedroom_window_left
     - binary_sensor.upper_big_bedroom_window_right
-    - switch.upper_big_bedroom_bed_light
-    - switch.upper_big_bedroom_lava_lamp
     
 upper_small_bedroom:
   name: Upper Small Bedroom

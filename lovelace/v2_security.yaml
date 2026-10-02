@@ -1,491 +1,419 @@
 title: Security
-icon: mdi:shield-home
-panel: true
+path: security
+icon: mdi:shield-home-outline
+type: custom:grid-layout
+layout:
+  grid-template-columns: 1fr
+  grid-gap: 10px
+  margin: 8px 12px 16px 12px
+  mediaquery:
+    "(max-width: 640px)":
+      grid-gap: 8px
+      margin: 6px 8px 14px 8px
 cards:
+  # ════════════════════════════════════════════════════════════════════════════
+  #  COMPACT PERIMETER STATUS & LOCKDOWN BAR
+  # ════════════════════════════════════════════════════════════════════════════
+  - type: custom:mushroom-chips-card
+    alignment: justify
+    chips:
+      - type: template
+        entity: cover.garage_door_small
+        icon: >-
+          {% set g = ['cover.garage_door_small', 'cover.garage_door_big'] | select('is_state', 'open') | list | count %}
+          {{ 'mdi:garage-alert' if g > 0 else 'mdi:garage-lock' }}
+        icon_color: >-
+          {% set g = ['cover.garage_door_small', 'cover.garage_door_big'] | select('is_state', 'open') | list | count %}
+          {{ 'red' if g > 0 else 'green' }}
+        content: >-
+          {% set g = ['cover.garage_door_small', 'cover.garage_door_big'] | select('is_state', 'open') | list | count %}
+          Garages: {{ g ~ ' Open' if g > 0 else 'Locked' }}
+        tap_action:
+          action: more-info
+      - type: template
+        entity: binary_sensor.main_door
+        icon: mdi:door-closed-lock
+        icon_color: >-
+          {% set d = ['binary_sensor.main_door', 'binary_sensor.backyard_left_door', 'binary_sensor.upper_big_bedroom_door', 'binary_sensor.upper_small_bedroom_door', 'binary_sensor.upper_guest_bedroom_door', 'binary_sensor.lower_common_bathroom_door'] | select('is_state', 'on') | list | count %}
+          {{ 'red' if d > 0 else 'green' }}
+        content: >-
+          {% set d = ['binary_sensor.main_door', 'binary_sensor.backyard_left_door', 'binary_sensor.upper_big_bedroom_door', 'binary_sensor.upper_small_bedroom_door', 'binary_sensor.upper_guest_bedroom_door', 'binary_sensor.lower_common_bathroom_door'] | select('is_state', 'on') | list | count %}
+          Doors: {{ d ~ ' Open' if d > 0 else 'All Closed' }}
+      - type: template
+        entity: binary_sensor.living_room_window_left
+        icon: mdi:window-closed-variant
+        icon_color: >-
+          {% set w = ['binary_sensor.living_room_window_left', 'binary_sensor.living_room_window_right', 'binary_sensor.kitchen_window_left', 'binary_sensor.kitchen_window_right', 'binary_sensor.welcome_window_front', 'binary_sensor.welcome_window_left', 'binary_sensor.welcome_window_right', 'binary_sensor.entryway_window_peep', 'binary_sensor.master_bedroom_window_left', 'binary_sensor.master_bedroom_window_right', 'binary_sensor.master_bedroom_window_left_small', 'binary_sensor.master_bedroom_window_right_small', 'binary_sensor.upper_big_bedroom_window_left', 'binary_sensor.upper_big_bedroom_window_right', 'binary_sensor.upper_small_bedroom_window', 'binary_sensor.upper_guest_bedroom_window', 'binary_sensor.lower_guest_bedroom_window', 'binary_sensor.entertainment_window_left', 'binary_sensor.entertainment_window_right'] | select('is_state', 'on') | list | count %}
+          {{ 'amber' if w > 0 else 'green' }}
+        content: >-
+          {% set w = ['binary_sensor.living_room_window_left', 'binary_sensor.living_room_window_right', 'binary_sensor.kitchen_window_left', 'binary_sensor.kitchen_window_right', 'binary_sensor.welcome_window_front', 'binary_sensor.welcome_window_left', 'binary_sensor.welcome_window_right', 'binary_sensor.entryway_window_peep', 'binary_sensor.master_bedroom_window_left', 'binary_sensor.master_bedroom_window_right', 'binary_sensor.master_bedroom_window_left_small', 'binary_sensor.master_bedroom_window_right_small', 'binary_sensor.upper_big_bedroom_window_left', 'binary_sensor.upper_big_bedroom_window_right', 'binary_sensor.upper_small_bedroom_window', 'binary_sensor.upper_guest_bedroom_window', 'binary_sensor.lower_guest_bedroom_window', 'binary_sensor.entertainment_window_left', 'binary_sensor.entertainment_window_right'] | select('is_state', 'on') | list | count %}
+          Windows: {{ w ~ '/19 Open' if w > 0 else '19/19 Closed' }}
+      - type: template
+        entity: binary_sensor.main_door_motion
+        icon: mdi:motion-sensor
+        icon_color: >-
+          {% set m = ['binary_sensor.main_door_motion', 'binary_sensor.living_room_motion', 'binary_sensor.kitchen_motion'] | select('is_state', 'on') | list | count %}
+          {{ 'amber' if m > 0 else 'cyan' }}
+        content: >-
+          {% set m = ['binary_sensor.main_door_motion', 'binary_sensor.living_room_motion', 'binary_sensor.kitchen_motion'] | select('is_state', 'on') | list | count %}
+          Motion: {{ m ~ ' Active' if m > 0 else 'Clear' }}
+      - type: template
+        icon: mdi:garage-lock
+        icon_color: cyan
+        content: "Close Both Garages"
+        tap_action:
+          action: call-service
+          service: script.close_all_garages
+      - type: template
+        icon: mdi:shield-moon-outline
+        icon_color: indigo
+        content: "Goodnight Lockdown"
+        tap_action:
+          action: call-service
+          service: script.goodnight_lockdown
+
+  # ════════════════════════════════════════════════════════════════════════════
+  #  SECTION 1 — GARAGES, DOORS, MOTION & LEAK SENSORS
+  # ════════════════════════════════════════════════════════════════════════════
+  - type: custom:layout-card
+    layout_type: custom:grid-layout
+    layout:
+      grid-template-columns: repeat(2, minmax(0, 1fr))
+      grid-gap: 10px
+      margin: 0
+      mediaquery:
+        "(max-width: 900px)":
+          grid-template-columns: 1fr
+    cards:
+      # ── LEFT: GARAGE BAYS & ENTRY DOORS ──
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: Garage Bays & Doors
+            subtitle: Tap garage bays to toggle · tap doors for history
+          - type: custom:layout-card
+            layout_type: custom:grid-layout
+            layout:
+              grid-template-columns: repeat(2, minmax(0, 1fr))
+              grid-gap: 8px
+              margin: 0
+              mediaquery:
+                "(max-width: 400px)":
+                  grid-template-columns: 1fr
+            cards:
+              - type: custom:mushroom-template-card
+                entity: cover.garage_door_small
+                primary: Moto Bay (Small)
+                secondary: "{{ states('cover.garage_door_small') | title }} · Tap to Toggle"
+                icon: "{{ 'mdi:garage-open' if is_state('cover.garage_door_small', 'open') else 'mdi:motorbike' }}"
+                icon_color: "{{ 'red' if is_state('cover.garage_door_small', 'open') else 'green' }}"
+                tap_action:
+                  action: call-service
+                  service: script.moto_garage_bay
+                hold_action:
+                  action: more-info
+
+              - type: custom:mushroom-template-card
+                entity: cover.garage_door_big
+                primary: Big Garage Door
+                secondary: "{{ states('cover.garage_door_big') | title }} · Tap to Toggle"
+                icon: "{{ 'mdi:garage-open-variant' if is_state('cover.garage_door_big', 'open') else 'mdi:garage-variant' }}"
+                icon_color: "{{ 'red' if is_state('cover.garage_door_big', 'open') else 'green' }}"
+                tap_action:
+                  action: call-service
+                  service: cover.toggle
+                  target:
+                    entity_id: cover.garage_door_big
+                hold_action:
+                  action: more-info
+
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.main_door
+                name: Front Entry Door
+                icon_color: red
+
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.backyard_left_door
+                name: Backyard Patio Door
+                icon_color: red
+
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.upper_big_bedroom_door
+                name: Upper Big Bed Door
+                icon_color: amber
+
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.upper_small_bedroom_door
+                name: Upper Small Bed Door
+                icon_color: amber
+
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.upper_guest_bedroom_door
+                name: Upper Guest Bed Door
+                icon_color: amber
+
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.lower_common_bathroom_door
+                name: Lower Bath Door
+                icon_color: amber
+
+      # ── RIGHT: MOTION, WATER LEAK & OPEN WINDOW ALERTS ──
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: Motion, Water & Open Window Alerts
+            subtitle: Interior motion, leak detection, and open window summary
+          - type: custom:layout-card
+            layout_type: custom:grid-layout
+            layout:
+              grid-template-columns: repeat(2, minmax(0, 1fr))
+              grid-gap: 8px
+              margin: 0
+              mediaquery:
+                "(max-width: 400px)":
+                  grid-template-columns: 1fr
+            cards:
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.main_door_motion
+                name: Entryway Motion
+                icon_color: amber
+
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.living_room_motion
+                name: Living Room Motion
+                icon_color: amber
+
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.kitchen_motion
+                name: Kitchen Motion
+                icon_color: amber
+
+              - type: custom:mushroom-entity-card
+                entity: switch.living_room_doorbell
+                name: Doorbell Chime
+                icon: mdi:bell-ring-outline
+                icon_color: cyan
+                tap_action:
+                  action: toggle
+
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.kitchen_sink_water_leak
+                name: Kitchen Sink Leak
+                icon_color: red
+
+              - type: custom:mushroom-entity-card
+                entity: binary_sensor.master_bedroom_window_left_small_master_bedroom_window_left_small_water_alarm
+                name: Master Window Moisture
+                icon_color: red
+
+  # ════════════════════════════════════════════════════════════════════════════
+  #  SECTION 2 — 19 WINDOW CONTACT SENSORS (4-COL LAPTOP / 2-COL PHONE)
+  # ════════════════════════════════════════════════════════════════════════════
   - type: vertical-stack
     cards:
-
-      # ════════════════════════════════════════════════════════════
-      #  STATUS CHIPS — security overview
-      # ════════════════════════════════════════════════════════════
-      - type: custom:mushroom-chips-card
-        alignment: center
-        chips:
-          - type: template
-            icon: mdi:door
-            icon_color: |-
-              {% set open = states.binary_sensor
-                | selectattr('attributes.device_class','defined')
-                | selectattr('attributes.device_class','eq','door')
-                | selectattr('state','eq','on') | list | count %}
-              {{ 'red' if open > 0 else 'green' }}
-            content: >-
-              {% set open = states.binary_sensor
-                | selectattr('attributes.device_class','defined')
-                | selectattr('attributes.device_class','eq','door')
-                | selectattr('state','eq','on') | list | count %}
-              {{ open }} door{{ 's' if open != 1 }} open
-          - type: template
-            icon: mdi:window-open-variant
-            icon_color: |-
-              {% set open = states.binary_sensor
-                | selectattr('attributes.device_class','defined')
-                | selectattr('attributes.device_class','eq','window')
-                | selectattr('state','eq','on') | list | count %}
-              {{ 'orange' if open > 0 else 'green' }}
-            content: >-
-              {% set open = states.binary_sensor
-                | selectattr('attributes.device_class','defined')
-                | selectattr('attributes.device_class','eq','window')
-                | selectattr('state','eq','on') | list | count %}
-              {{ open }} window{{ 's' if open != 1 }} open
-          - type: template
-            icon: mdi:garage-variant
-            icon_color: |-
-              {% set open = states.cover
-                | selectattr('state','eq','open') | list | count %}
-              {{ 'red' if open > 0 else 'green' }}
-            content: >-
-              {% set open = states.cover
-                | selectattr('state','eq','open') | list | count %}
-              Garage {{ 'OPEN' if open > 0 else 'Closed' }}
-          - type: template
-            icon: mdi:cctv
-            icon_color: |-
-              {{ 'green' if is_state('switch.homelab_server_pdu_outlet_8','on') else 'red' }}
-            content: >-
-              NVR {{ 'Online' if is_state('switch.homelab_server_pdu_outlet_8','on') else 'OFFLINE' }}
-
-      # ════════════════════════════════════════════════════════════
-      #  GARAGE + SECURITY STATUS
-      # ════════════════════════════════════════════════════════════
-      - type: horizontal-stack
-        cards:
-          - type: custom:mushroom-cover-card
-            entity: cover.garage_door_big
-            name: Garage Door Big
-            icon: mdi:garage
-            show_buttons_control: true
-            show_position_control: false
-            layout: horizontal
-          - type: custom:mushroom-cover-card
-            entity: cover.garage_door_small
-            name: Garage Door Small
-            icon: mdi:garage-variant
-            show_buttons_control: true
-            show_position_control: false
-            layout: horizontal
-
-      # ── All Secure (shows when nothing is open) ──
-      - type: conditional
-        conditions:
-          - condition: state
-            entity: binary_sensor.main_door
-            state: "off"
-          - condition: state
-            entity: binary_sensor.kitchen_door
-            state: "off"
-          - condition: state
-            entity: binary_sensor.garage_laundry_door
-            state: "off"
-          - condition: state
-            entity: cover.garage_door_big
-            state: "closed"
-          - condition: state
-            entity: cover.garage_door_small
-            state: "closed"
-        card:
-          type: custom:mushroom-template-card
-          primary: All Secure
-          secondary: All entry points closed
-          icon: mdi:shield-check
-          icon_color: green
-          layout: horizontal
-
-      # ── Currently Open Items (hidden when empty) ──
-      - type: custom:auto-entities
-        card:
-          type: entities
-          title: Currently Open
-          show_header_toggle: false
-        show_empty: false
-        sort:
-          method: state
-          reverse: true
-        filter:
-          include:
-            - domain: binary_sensor
-              attributes:
-                device_class: door
-              state: "on"
-            - domain: binary_sensor
-              attributes:
-                device_class: window
-              state: "on"
-          exclude:
-            - entity_id: "*_door_state"
-            - entity_id: "*_window_state"
-            - entity_id: "*_state_of_*"
-            - domain: cover
-              state: open
-
-      # ════════════════════════════════════════════════════════════
-      #  CAMERAS — hero grid
-      # ════════════════════════════════════════════════════════════
+      - type: custom:mushroom-title-card
+        title: Window Contact Sensors (19 Zones)
+        subtitle: Live Z-Wave perimeter window state
       - type: custom:layout-card
         layout_type: custom:grid-layout
         layout:
-          grid-template-columns: 1fr 1fr 1fr
+          grid-template-columns: repeat(4, minmax(0, 1fr))
           grid-gap: 8px
+          margin: 0
           mediaquery:
-            "(max-width: 1000px)":
-              grid-template-columns: 1fr 1fr
-            "(max-width: 600px)":
+            "(max-width: 1100px)":
+              grid-template-columns: repeat(3, minmax(0, 1fr))
+            "(max-width: 720px)":
+              grid-template-columns: repeat(2, minmax(0, 1fr))
+            "(max-width: 380px)":
               grid-template-columns: 1fr
         cards:
-          - type: picture-glance
-            title: Main Door
-            camera_image: camera.main_door_camera
-            camera_view: auto
-            entities:
-              - binary_sensor.main_door
-              - light.living_room_light
-            card_mod:
-              style: |
-                ha-card { border-radius: 16px !important; overflow: hidden; border: 1px solid rgba(255,255,255,0.06) !important; }
-
-          - type: picture-glance
-            title: Living Room
-            camera_image: camera.living_room_camera
-            camera_view: auto
-            entities:
-              - light.living_room_light
-            card_mod:
-              style: |
-                ha-card { border-radius: 16px !important; overflow: hidden; border: 1px solid rgba(255,255,255,0.06) !important; }
-
-          - type: picture-glance
-            title: Upper Hallway
-            camera_image: camera.hallway_camera
-            camera_view: auto
-            entities: []
-            card_mod:
-              style: |
-                ha-card { border-radius: 16px !important; overflow: hidden; border: 1px solid rgba(255,255,255,0.06) !important; }
-
-          - type: picture-glance
-            title: Front Left
-            camera_image: camera.front_left_camera
-            camera_view: auto
-            entities: []
-            card_mod:
-              style: |
-                ha-card { border-radius: 16px !important; overflow: hidden; border: 1px solid rgba(255,255,255,0.06) !important; }
-
-          - type: picture-glance
-            title: Welcome Room
-            camera_image: camera.welcome_room_camera
-            camera_view: auto
-            entities:
-              - switch.welcome_room_light
-            card_mod:
-              style: |
-                ha-card { border-radius: 16px !important; overflow: hidden; border: 1px solid rgba(255,255,255,0.06) !important; }
-
-          - type: picture-glance
-            title: Front Right
-            camera_image: camera.front_right_camera
-            camera_view: auto
-            entities: []
-            card_mod:
-              style: |
-                ha-card { border-radius: 16px !important; overflow: hidden; border: 1px solid rgba(255,255,255,0.06) !important; }
-
-          - type: picture-glance
-            title: Front Street Right
-            camera_image: camera.front_street_right_camera
-            camera_view: auto
-            entities: []
-            card_mod:
-              style: |
-                ha-card { border-radius: 16px !important; overflow: hidden; border: 1px solid rgba(255,255,255,0.06) !important; }
-
-          - type: picture-glance
-            title: Front Street Straight
-            camera_image: camera.front_street_straight_camera
-            camera_view: auto
-            entities: []
-            card_mod:
-              style: |
-                ha-card { border-radius: 16px !important; overflow: hidden; border: 1px solid rgba(255,255,255,0.06) !important; }
-
-          - type: picture-glance
-            title: Side Deck
-            camera_image: camera.side_deck_camera
-            camera_view: auto
-            entities:
-              - switch.side_deck_light
-            card_mod:
-              style: |
-                ha-card { border-radius: 16px !important; overflow: hidden; border: 1px solid rgba(255,255,255,0.06) !important; }
-
-          - type: picture-glance
-            title: Garage Left
-            camera_image: camera.garage_left_camera
-            camera_view: auto
-            entities:
-              - cover.garage_door_big
-              - cover.garage_door_small
-            card_mod:
-              style: |
-                ha-card { border-radius: 16px !important; overflow: hidden; border: 1px solid rgba(255,255,255,0.06) !important; }
-
-          - type: picture-glance
-            title: Garage Right
-            camera_image: camera.garage_right_camera
-            camera_view: auto
-            entities:
-              - cover.garage_door_big
-            card_mod:
-              style: |
-                ha-card { border-radius: 16px !important; overflow: hidden; border: 1px solid rgba(255,255,255,0.06) !important; }
-
-          - type: picture-glance
-            title: Backyard Left
-            camera_image: camera.backyard_left_camera
-            camera_view: auto
-            entities:
-              - switch.backyard_light_left
-            card_mod:
-              style: |
-                ha-card { border-radius: 16px !important; overflow: hidden; border: 1px solid rgba(255,255,255,0.06) !important; }
-
-          - type: picture-glance
-            title: Backyard Right
-            camera_image: camera.backyard_right_camera
-            camera_view: auto
-            entities:
-              - switch.backyard_light_right
-            card_mod:
-              style: |
-                ha-card { border-radius: 16px !important; overflow: hidden; border: 1px solid rgba(255,255,255,0.06) !important; }
-
-          - type: picture-glance
-            title: Veggie Garden Left
-            camera_image: camera.veggie_garden_left_camera
-            camera_view: auto
-            entities: []
-            card_mod:
-              style: |
-                ha-card { border-radius: 16px !important; overflow: hidden; border: 1px solid rgba(255,255,255,0.06) !important; }
-
-          - type: picture-glance
-            title: Veggie Garden Right
-            camera_image: camera.veggie_garden_right_camera
-            camera_view: auto
-            entities: []
-            card_mod:
-              style: |
-                ha-card { border-radius: 16px !important; overflow: hidden; border: 1px solid rgba(255,255,255,0.06) !important; }
-
-      # ════════════════════════════════════════════════════════════
-      #  DOORS & WINDOWS — by floor
-      # ════════════════════════════════════════════════════════════
-      - type: custom:mushroom-title-card
-        title: Downstairs
-        subtitle: Doors & Windows
-
-      - type: custom:layout-card
-        layout_type: custom:grid-layout
-        layout:
-          grid-template-columns: repeat(4, 1fr)
-          grid-gap: 8px
-          mediaquery:
-            "(max-width: 1000px)":
-              grid-template-columns: repeat(3, 1fr)
-            "(max-width: 600px)":
-              grid-template-columns: 1fr 1fr
-        cards:
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.main_door
-            name: Main Door
-            layout: horizontal
-            icon_color: "{{ 'red' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: &card_border
-              style: |
-                ha-card {
-                  border-radius: 14px !important;
-                  border: 1px solid rgba(255,255,255,0.06) !important;
-                }
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.kitchen_door
-            name: Kitchen Door
-            layout: horizontal
-            icon_color: "{{ 'red' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.garage_laundry_door
-            name: Garage Laundry
-            layout: horizontal
-            icon_color: "{{ 'red' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.welcome_laundry_door
-            name: Welcome Laundry
-            layout: horizontal
-            icon_color: "{{ 'red' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.lower_common_bathroom_door
-            name: Bathroom
-            layout: horizontal
-            icon_color: "{{ 'red' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.master_bedroom_door
-            name: Master BR
-            layout: horizontal
-            icon_color: "{{ 'red' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.living_room_window_left
-            name: Living L
-            layout: horizontal
-            icon_color: "{{ 'orange' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.living_room_window_right
-            name: Living R
-            layout: horizontal
-            icon_color: "{{ 'orange' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.master_bedroom_window_left
-            name: Master Win L
-            layout: horizontal
-            icon_color: "{{ 'orange' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.master_bedroom_window_right
-            name: Master Win R
-            layout: horizontal
-            icon_color: "{{ 'orange' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.master_bedroom_window_left_small
-            name: Master Sm L
-            layout: horizontal
-            icon_color: "{{ 'orange' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.master_bedroom_window_right_small
-            name: Master Sm R
-            layout: horizontal
-            icon_color: "{{ 'orange' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.master_bathroom_window
-            name: Master Bath
-            layout: horizontal
-            icon_color: "{{ 'orange' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
           - type: custom:mushroom-entity-card
             entity: binary_sensor.welcome_window_front
             name: Welcome Front
-            layout: horizontal
-            icon_color: "{{ 'orange' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
           - type: custom:mushroom-entity-card
             entity: binary_sensor.welcome_window_left
-            name: Welcome L
-            layout: horizontal
-            icon_color: "{{ 'orange' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
+            name: Welcome Left
           - type: custom:mushroom-entity-card
             entity: binary_sensor.welcome_window_right
-            name: Welcome R
-            layout: horizontal
-            icon_color: "{{ 'orange' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
+            name: Welcome Right
           - type: custom:mushroom-entity-card
-            entity: binary_sensor.welcome_window_peep
-            name: Peep
-            layout: horizontal
-            icon_color: "{{ 'orange' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
+            entity: binary_sensor.entryway_window_peep
+            name: Entryway Peep
           - type: custom:mushroom-entity-card
-            entity: binary_sensor.entertainment_room_window_left
-            name: Entertain L
-            layout: horizontal
-            icon_color: "{{ 'orange' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
+            entity: binary_sensor.living_room_window_left
+            name: Living Room Left
           - type: custom:mushroom-entity-card
-            entity: binary_sensor.entertainment_room_window_right
-            name: Entertain R
-            layout: horizontal
-            icon_color: "{{ 'orange' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
+            entity: binary_sensor.living_room_window_right
+            name: Living Room Right
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.kitchen_window_left
+            name: Kitchen Left
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.kitchen_window_right
+            name: Kitchen Right
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.master_bedroom_window_left
+            name: Master Bed Left
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.master_bedroom_window_right
+            name: Master Bed Right
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.master_bedroom_window_left_small
+            name: Master Small Left
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.master_bedroom_window_right_small
+            name: Master Small Right
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.upper_big_bedroom_window_left
+            name: Upper Big Left
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.upper_big_bedroom_window_right
+            name: Upper Big Right
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.upper_small_bedroom_window
+            name: Upper Small Bed
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.upper_guest_bedroom_window
+            name: Upper Guest Bed
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.lower_guest_bedroom_window
+            name: Lower Guest Bed
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.entertainment_window_left
+            name: Entertainment Left
+          - type: custom:mushroom-entity-card
+            entity: binary_sensor.entertainment_window_right
+            name: Entertainment Right
 
+  # ════════════════════════════════════════════════════════════════════════════
+  #  SECTION 3 — SURVEILLANCE CAMERA MATRIX (15 CAMERAS, SNAPSHOT AUTO MODE)
+  # ════════════════════════════════════════════════════════════════════════════
+  - type: vertical-stack
+    cards:
       - type: custom:mushroom-title-card
-        title: Upstairs
-        subtitle: Doors & Windows
-
+        title: Surveillance Camera Feeds (15 Channels)
+        subtitle: Fast snapshot mode — tap any camera to launch live HD stream
       - type: custom:layout-card
         layout_type: custom:grid-layout
         layout:
-          grid-template-columns: repeat(4, 1fr)
-          grid-gap: 8px
+          grid-template-columns: repeat(3, minmax(0, 1fr))
+          grid-gap: 10px
+          margin: 0
           mediaquery:
-            "(max-width: 1000px)":
-              grid-template-columns: repeat(3, 1fr)
-            "(max-width: 600px)":
-              grid-template-columns: 1fr 1fr
+            "(max-width: 1024px)":
+              grid-template-columns: repeat(2, minmax(0, 1fr))
+            "(max-width: 560px)":
+              grid-template-columns: 1fr
         cards:
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.upper_big_bedroom_door
-            name: Big BR Door
-            layout: horizontal
-            icon_color: "{{ 'red' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.upper_small_bedroom_door
-            name: Small BR Door
-            layout: horizontal
-            icon_color: "{{ 'red' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.upper_guest_bedroom_door
-            name: Guest BR Door
-            layout: horizontal
-            icon_color: "{{ 'red' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.upper_common_bathroom_door
-            name: Bathroom
-            layout: horizontal
-            icon_color: "{{ 'red' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.upper_big_bedroom_window_left
-            name: Big BR Win L
-            layout: horizontal
-            icon_color: "{{ 'orange' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.upper_big_bedroom_window_right
-            name: Big BR Win R
-            layout: horizontal
-            icon_color: "{{ 'orange' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.upper_small_bedroom_window
-            name: Small BR Win
-            layout: horizontal
-            icon_color: "{{ 'orange' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
-          - type: custom:mushroom-entity-card
-            entity: binary_sensor.upper_guest_bedroom_window
-            name: Guest BR Win
-            layout: horizontal
-            icon_color: "{{ 'orange' if is_state(config.entity, 'on') else 'green' }}"
-            card_mod: *card_border
+          - type: picture-glance
+            title: Driveway
+            camera_image: camera.driveway_high
+            camera_view: auto
+            aspect_ratio: "16:9"
+            entities:
+              - entity: cover.garage_door_big
+              - entity: cover.garage_door_small
+          - type: picture-glance
+            title: Front Door
+            camera_image: camera.front_door_high
+            camera_view: auto
+            aspect_ratio: "16:9"
+            entities:
+              - entity: binary_sensor.main_door
+              - entity: binary_sensor.main_door_motion
+          - type: picture-glance
+            title: Side Yard
+            camera_image: camera.side_yard_high
+            camera_view: auto
+            aspect_ratio: "16:9"
+            entities:
+              - entity: switch.side_deck_light
+          - type: picture-glance
+            title: Backyard
+            camera_image: camera.backyard_high
+            camera_view: auto
+            aspect_ratio: "16:9"
+            entities:
+              - entity: binary_sensor.backyard_left_door
+              - entity: switch.backyard_patio_lights
+          - type: picture-glance
+            title: Deck
+            camera_image: camera.deck_high
+            camera_view: auto
+            aspect_ratio: "16:9"
+            entities:
+              - entity: switch.side_deck_light
+          - type: picture-glance
+            title: Patio
+            camera_image: camera.patio_high
+            camera_view: auto
+            aspect_ratio: "16:9"
+            entities:
+              - entity: switch.backyard_patio_lights
+          - type: picture-glance
+            title: Garage Bay
+            camera_image: camera.garage_high
+            camera_view: auto
+            aspect_ratio: "16:9"
+            entities:
+              - entity: cover.garage_door_big
+              - entity: cover.garage_door_small
+              - entity: light.garage_leds
+          - type: picture-glance
+            title: Entryway
+            camera_image: camera.entryway_high
+            camera_view: auto
+            aspect_ratio: "16:9"
+            entities:
+              - entity: binary_sensor.main_door
+              - entity: switch.entryway_light
+          - type: picture-glance
+            title: Living Room
+            camera_image: camera.living_room_high
+            camera_view: auto
+            aspect_ratio: "16:9"
+            entities:
+              - entity: light.living_room_light
+              - entity: binary_sensor.living_room_motion
+          - type: picture-glance
+            title: Kitchen
+            camera_image: camera.kitchen_high
+            camera_view: auto
+            aspect_ratio: "16:9"
+            entities:
+              - entity: switch.kitchen_light
+              - entity: binary_sensor.kitchen_motion
+          - type: picture-glance
+            title: Stairs
+            camera_image: camera.stairs_high
+            camera_view: auto
+            aspect_ratio: "16:9"
+            entities:
+              - entity: light.upper_wleds
+          - type: picture-glance
+            title: Upper Hallway
+            camera_image: camera.upper_hallway_high
+            camera_view: auto
+            aspect_ratio: "16:9"
+            entities:
+              - entity: light.upper_wleds
+          - type: picture-glance
+            title: Lower Hallway
+            camera_image: camera.lower_hallway_high
+            camera_view: auto
+            aspect_ratio: "16:9"
+            entities:
+              - entity: switch.lower_common_bathroom_light
+          - type: picture-glance
+            title: Baby Cam 1
+            camera_image: camera.baby_cam_1
+            camera_view: auto
+            aspect_ratio: "16:9"
+            entities: []
+          - type: picture-glance
+            title: Baby Cam 2
+            camera_image: camera.baby_cam_2
+            camera_view: auto
+            aspect_ratio: "16:9"
+            entities: []

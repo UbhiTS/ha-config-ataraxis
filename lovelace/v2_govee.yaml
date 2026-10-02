@@ -1,0 +1,325 @@
+title: RGB Studio
+path: govee
+icon: mdi:hexagon-multiple-outline
+type: custom:grid-layout
+layout:
+  grid-template-columns: 1fr
+  grid-gap: 10px
+  margin: 8px 12px 16px 12px
+  mediaquery:
+    "(max-width: 640px)":
+      grid-gap: 8px
+      margin: 6px 8px 14px 8px
+cards:
+  # ════════════════════════════════════════════════════════════════════════════
+  #  COMPACT RGB STUDIO STATUS & QUICK PRESET BAR
+  # ════════════════════════════════════════════════════════════════════════════
+  - type: custom:mushroom-chips-card
+    alignment: justify
+    chips:
+      - type: template
+        entity: light.glide_hexa
+        icon: mdi:hexagon-multiple
+        icon_color: >-
+          {% set cnt = ['light.glide_hexa', 'light.glide_hexa_ultra', 'light.govee_glide_y_lights'] | select('is_state', 'on') | list | count %}
+          {{ 'purple' if cnt > 0 else 'disabled' }}
+        content: >-
+          {% set cnt = ['light.glide_hexa', 'light.glide_hexa_ultra', 'light.govee_glide_y_lights'] | select('is_state', 'on') | list | count %}
+          Govee {{ cnt }}/3 On
+      - type: template
+        entity: input_boolean.govee_live_music
+        icon: mdi:waveform
+        icon_color: "{{ 'pink' if is_state('input_boolean.govee_live_music', 'on') else 'disabled' }}"
+        content: "Live Music: {{ states('input_boolean.govee_live_music') | upper }}"
+        tap_action:
+          action: call-service
+          service: input_boolean.toggle
+          target:
+            entity_id: input_boolean.govee_live_music
+      - type: template
+        entity: input_boolean.govee_music_auto_cycle
+        icon: mdi:creation
+        icon_color: "{{ 'amber' if is_state('input_boolean.govee_music_auto_cycle', 'on') else 'disabled' }}"
+        content: "Auto Cycle: {{ states('input_boolean.govee_music_auto_cycle') | upper }}"
+        tap_action:
+          action: call-service
+          service: input_boolean.toggle
+          target:
+            entity_id: input_boolean.govee_music_auto_cycle
+      - type: template
+        icon: mdi:desk
+        icon_color: cyan
+        content: "Office Mode (50%)"
+        tap_action:
+          action: call-service
+          service: script.govee_office_mode
+      - type: template
+        icon: mdi:dice-multiple
+        icon_color: purple
+        content: "Randomize Now"
+        tap_action:
+          action: call-service
+          service: script.govee_live_music_randomize
+      - type: template
+        icon: mdi:power-standby
+        icon_color: red
+        content: "All RGB Off"
+        tap_action:
+          action: call-service
+          service: script.govee_turn_off
+
+  # ════════════════════════════════════════════════════════════════════════════
+  #  SECTION 1 — MASTER ROOM BRIGHTNESS, PALETTE & AUDIO ENGINE
+  # ════════════════════════════════════════════════════════════════════════════
+  - type: vertical-stack
+    cards:
+      - type: custom:mushroom-title-card
+        title: Master RGB Engine & Audio Bridge
+        subtitle: Synchronized brightness, live audio palettes, and scene cycling
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout:
+          grid-template-columns: repeat(4, minmax(0, 1fr))
+          grid-gap: 8px
+          margin: 0
+          mediaquery:
+            "(max-width: 1024px)":
+              grid-template-columns: repeat(2, minmax(0, 1fr))
+            "(max-width: 480px)":
+              grid-template-columns: 1fr
+        cards:
+          - type: custom:mushroom-number-card
+            entity: input_number.govee_room_brightness
+            name: Shared Room Brightness
+            icon: mdi:brightness-percent
+            icon_color: amber
+            display_mode: slider
+
+          - type: custom:mushroom-select-card
+            entity: input_select.govee_live_palette
+            name: Live Audio Palette
+            icon: mdi:palette-outline
+            icon_color: pink
+
+          - type: custom:mushroom-select-card
+            entity: input_select.govee_music_cycle_interval
+            name: Scene Cycle Interval
+            icon: mdi:timer-cog-outline
+            icon_color: cyan
+
+          - type: custom:mushroom-select-card
+            entity: select.ataraxis_govee_music_agent_audio_source
+            name: Windows Audio Source
+            icon: mdi:speaker-multiple
+            icon_color: purple
+
+  # ════════════════════════════════════════════════════════════════════════════
+  #  SECTION 2 — QUICK SCENE & ENGINE MODES (5-COL LAPTOP / 2-COL PHONE)
+  # ════════════════════════════════════════════════════════════════════════════
+  - type: custom:layout-card
+    layout_type: custom:grid-layout
+    layout:
+      grid-template-columns: repeat(5, minmax(0, 1fr))
+      grid-gap: 8px
+      margin: 0
+      mediaquery:
+        "(max-width: 1024px)":
+          grid-template-columns: repeat(3, minmax(0, 1fr))
+        "(max-width: 640px)":
+          grid-template-columns: repeat(2, minmax(0, 1fr))
+    cards:
+      - type: custom:mushroom-template-card
+        entity: script.govee_office_mode
+        primary: Office Mode
+        secondary: Saved 50% DIY theme
+        icon: mdi:desk
+        icon_color: cyan
+        tap_action:
+          action: call-service
+          service: script.govee_office_mode
+
+      - type: custom:mushroom-template-card
+        entity: script.govee_start_live_music
+        primary: Start Live Music
+        secondary: Audio-reactive per-panel
+        icon: mdi:waveform
+        icon_color: pink
+        tap_action:
+          action: call-service
+          service: script.govee_start_live_music
+
+      - type: custom:mushroom-template-card
+        entity: script.govee_start_music_cycle
+        primary: Random Scenes
+        secondary: Non-music scene loop
+        icon: mdi:creation
+        icon_color: amber
+        tap_action:
+          action: call-service
+          service: script.govee_start_music_cycle
+
+      - type: custom:mushroom-entity-card
+        entity: input_boolean.govee_live_music_pause_transitions
+        name: Pause Transitions
+        icon: mdi:motion-pause
+        icon_color: orange
+        tap_action:
+          action: toggle
+
+      - type: custom:mushroom-template-card
+        entity: script.govee_turn_off
+        primary: Turn Off Govee
+        secondary: Stop engines & power off
+        icon: mdi:power
+        icon_color: red
+        tap_action:
+          action: call-service
+          service: script.govee_turn_off
+
+  # ════════════════════════════════════════════════════════════════════════════
+  #  SECTION 3 — GOVEE WALL FIXTURES (3-COL LAPTOP / 1-COL PHONE)
+  # ════════════════════════════════════════════════════════════════════════════
+  - type: vertical-stack
+    cards:
+      - type: custom:mushroom-title-card
+        title: Govee Wall Fixtures (Upper Small Office)
+        subtitle: Individual fixture brightness, color temperature, and RGB effects
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout:
+          grid-template-columns: repeat(3, minmax(0, 1fr))
+          grid-gap: 10px
+          margin: 0
+          mediaquery:
+            "(max-width: 960px)":
+              grid-template-columns: 1fr
+        cards:
+          # 1. Glide Hexa
+          - type: vertical-stack
+            cards:
+              - type: custom:mushroom-light-card
+                entity: light.glide_hexa
+                name: Glide Hexa
+                icon: mdi:hexagon-multiple
+                show_brightness_control: true
+                show_color_temp_control: true
+                show_color_control: true
+                use_light_color: true
+                collapsible_controls: false
+              - type: custom:layout-card
+                layout_type: custom:grid-layout
+                layout:
+                  grid-template-columns: repeat(2, minmax(0, 1fr))
+                  grid-gap: 6px
+                  margin: 0
+                cards:
+                  - type: custom:mushroom-select-card
+                    entity: select.glide_hexa_music_mode
+                    name: Music Mode
+                  - type: custom:mushroom-number-card
+                    entity: number.glide_hexa_music_sensitivity
+                    name: Sensitivity
+
+          # 2. Glide Hexa Ultra
+          - type: vertical-stack
+            cards:
+              - type: custom:mushroom-light-card
+                entity: light.glide_hexa_ultra
+                name: Upper Small Hexa Ultra
+                icon: mdi:hexagon-slice-6
+                show_brightness_control: true
+                show_color_temp_control: true
+                show_color_control: true
+                use_light_color: true
+                collapsible_controls: false
+              - type: custom:layout-card
+                layout_type: custom:grid-layout
+                layout:
+                  grid-template-columns: repeat(2, minmax(0, 1fr))
+                  grid-gap: 6px
+                  margin: 0
+                cards:
+                  - type: custom:mushroom-select-card
+                    entity: select.upper_small_hexa_ultra_music_mode
+                    name: Music Mode
+                  - type: custom:mushroom-number-card
+                    entity: number.upper_small_hexa_ultra_music_sensitivity
+                    name: Sensitivity
+
+          # 3. Glide Y-Lights
+          - type: vertical-stack
+            cards:
+              - type: custom:mushroom-light-card
+                entity: light.govee_glide_y_lights
+                name: Upper Small Y-Lights
+                icon: mdi:led-strip-variant
+                show_brightness_control: true
+                show_color_temp_control: true
+                show_color_control: true
+                use_light_color: true
+                collapsible_controls: false
+              - type: custom:layout-card
+                layout_type: custom:grid-layout
+                layout:
+                  grid-template-columns: repeat(2, minmax(0, 1fr))
+                  grid-gap: 6px
+                  margin: 0
+                cards:
+                  - type: custom:mushroom-select-card
+                    entity: select.upper_small_y_lights_music_mode
+                    name: Music Mode
+                  - type: custom:mushroom-number-card
+                    entity: number.upper_small_y_lights_music_sensitivity
+                    name: Sensitivity
+
+  # ════════════════════════════════════════════════════════════════════════════
+  #  SECTION 4 — ARCHITECTURAL WLED STRIPS & HOME THEATER RGB
+  # ════════════════════════════════════════════════════════════════════════════
+  - type: vertical-stack
+    cards:
+      - type: custom:mushroom-title-card
+        title: Architectural WLEDs & Home Theater RGB
+        subtitle: Upper Hall, Entryway, Garage WLEDs, and Living Room RGB
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout:
+          grid-template-columns: repeat(4, minmax(0, 1fr))
+          grid-gap: 8px
+          margin: 0
+          mediaquery:
+            "(max-width: 1024px)":
+              grid-template-columns: repeat(2, minmax(0, 1fr))
+            "(max-width: 480px)":
+              grid-template-columns: 1fr
+        cards:
+          - type: custom:mushroom-light-card
+            entity: light.upper_wleds
+            name: Upper WLEDs
+            icon: mdi:led-strip-variant
+            show_brightness_control: true
+            show_color_control: true
+            use_light_color: true
+
+          - type: custom:mushroom-light-card
+            entity: light.entry_leds
+            name: Entry LEDs
+            icon: mdi:led-strip
+            show_brightness_control: true
+            show_color_control: true
+            use_light_color: true
+
+          - type: custom:mushroom-light-card
+            entity: light.garage_leds
+            name: Garage LEDs
+            icon: mdi:led-strip
+            show_brightness_control: true
+            show_color_control: true
+            use_light_color: true
+
+          - type: custom:mushroom-light-card
+            entity: light.home_theatre_living_room_rgb_dimmer
+            name: Home Theater RGB
+            icon: mdi:television-ambient-light
+            show_brightness_control: true
+            show_color_control: true
+            use_light_color: true

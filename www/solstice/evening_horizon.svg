@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- Base Evening Twilight Gradient (Dusk Slate to Indigo — Not Midnight Black) -->
+    <linearGradient id="eveningBase" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#191f2e"/>
+      <stop offset="45%" stop-color="#1e2536"/>
+      <stop offset="80%" stop-color="#232b3f"/>
+      <stop offset="100%" stop-color="#1b2131"/>
+    </linearGradient>
+
+    <!-- Warm Horizon Sunset Glow (Top Left / West) -->
+    <radialGradient id="sunsetGlow" cx="16%" cy="18%" r="58%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.14"/>
+      <stop offset="42%" stop-color="#fb7185" stop-opacity="0.07"/>
+      <stop offset="100%" stop-color="#1e2536" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Twilight Sky Cyan/Indigo Bloom (Top Right) -->
+    <radialGradient id="skyBloom" cx="86%" cy="14%" r="62%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.14"/>
+      <stop offset="48%" stop-color="#818cf8" stop-opacity="0.09"/>
+      <stop offset="100%" stop-color="#1e2536" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Soft Dusk Violet Undertone (Bottom Center-Right) -->
+    <radialGradient id="duskViolet" cx="72%" cy="84%" r="55%">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.13"/>
+      <stop offset="50%" stop-color="#2dd4bf" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#1b2131" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Warm Evening Ember (Bottom Left) -->
+    <radialGradient id="eveningEmber" cx="22%" cy="88%" r="48%">
+      <stop offset="0%" stop-color="#fb923c" stop-opacity="0.09"/>
+      <stop offset="60%" stop-color="#818cf8" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#1b2131" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Subtle Architectural Grid / Horizon Lines -->
+    <linearGradient id="horizonLine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="25%" stop-color="#38bdf8" stop-opacity="0.06"/>
+      <stop offset="50%" stop-color="#fbbf24" stop-opacity="0.08"/>
+      <stop offset="75%" stop-color="#818cf8" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Canvas Fill -->
+  <rect width="1920" height="1080" fill="url(#eveningBase)"/>
+
+  <!-- Atmospheric Blooms -->
+  <rect width="1920" height="1080" fill="url(#sunsetGlow)"/>
+  <rect width="1920" height="1080" fill="url(#skyBloom)"/>
+  <rect width="1920" height="1080" fill="url(#duskViolet)"/>
+  <rect width="1920" height="1080" fill="url(#eveningEmber)"/>
+
+  <!-- Delicate Futuristic Horizon Arcs -->
+  <path d="M -200,260 Q 960,120 2120,280" fill="none" stroke="url(#horizonLine)" stroke-width="1.2"/>
+  <path d="M -200,820 Q 960,940 2120,800" fill="none" stroke="url(#horizonLine)" stroke-width="1"/>
+</svg>

@@ -1,30 +1,75 @@
-visionos:
+Liquid Glass Tinted:
   modes:
     light:
-      background-image: "center / cover no-repeat fixed url('https://raw.githubusercontent.com/Nezz/homeassistant-visionos-theme/1.1/themes/day.jpg')"
-      primary-background-color: rgb(84, 80, 76)
-      secondary-background-color: rgb(84, 80, 76)
-      app-header-background-color: rgba(84, 80, 76, 0.3)
-      ha-card-background: rgba(128, 128, 128, 0.3)
-      app-theme-color: rgb(122, 114, 106) # Average header color, used on the top of the browser
-      ha-color-fill-neutral-quiet-resting: rgba(255, 255, 255, 0.1)
-      ha-color-fill-neutral-quiet-hover: rgba(255, 255, 255, 0.16)
-      ha-color-fill-neutral-quiet-active: rgba(255, 255, 255, 0.1)
-      ha-color-fill-neutral-normal-resting: rgba(255, 255, 255, 0.16)
-      ha-color-fill-neutral-normal-hover: rgba(255, 255, 255, 0.22)
-      ha-color-fill-neutral-normal-active: rgba(255, 255, 255, 0.16)
-      ha-color-surface-default: var(--secondary-background-color)
-      ha-color-surface-low: rgba(255, 255, 255, 0.1)
-      ha-color-surface-lower: rgba(0, 0, 0, 0.15)
-      ha-color-on-surface-default: var(--primary-text-color)
-      energy-gas-color: "#FF6961"
+      background-image: "center / cover no-repeat fixed url('https://raw.githubusercontent.com/Nezz/homeassistant-visionos-theme/refs/heads/static/macOS_27_Light.webp')"
+      primary-background-color: rgb(242, 242, 247)
+      secondary-background-color: rgb(242, 242, 247)
+      app-header-background-color: rgba(245, 245, 247, 0.6)
+      ha-card-background: rgba(245, 245, 247, 0.6)
+      app-theme-color: rgb(206, 199, 194)
+      ha-card-backdrop-filter: blur(12px) saturate(1.3)
+      ha-dialog-surface-background: color-mix(in srgb, rgba(245, 245, 247, 0.8), var(--ha-color-neutral-50) 0%)
+      bar-box-shadow: inset 0 0 0 100vmax rgba(245, 245, 247, 0.15), 0 0.5px 0 rgba(0, 0, 0, 0.15)
+      glass-edge-color: rgba(0, 0, 0, 0.1)
+      glass-contrast-background: rgba(255, 255, 255, 0.95)
+      glass-contrast-outline: rgba(0, 0, 0, 0.5)
+      light-primary-color: "#b3e5fc"
+      sidebar-icon-color: var(--state-icon-color)
+      sidebar-text-color: var(--primary-text-color)
+      sidebar-selected-icon-color: var(--state-icon-color)
+      sidebar-selected-text-color: var(--primary-text-color)
+      disabled-color: rgb(120, 120, 128)
+      state-icon-color: rgba(0, 0, 0, 0.7)
+      state-climate-heat-color: "#C93400"
+      bubble-secondary-background-color: rgba(0, 0, 0, 0.06)
+      bubble-icon-background-color: rgba(255, 255, 255, 0.7)
+      energy-gas-color: "#D70015"
+      divider-color: rgba(60, 60, 67, 0.2)
+      primary-text-color: rgba(0, 0, 0, 0.85)
+      secondary-text-color: rgba(60, 60, 67, 0.6)
+      disabled-text-color: rgba(60, 60, 67, 0.3)
+      paper-item-icon-color: var(--state-icon-color)
+      mini-media-player-base-color: var(--primary-text-color)
+      mini-media-player-icon-color: var(--state-icon-color)
+      app-header-edit-background-color: rgba(255, 255, 255, 0.6)
+      markdown-code-background-color: rgba(0, 0, 0, 0.06)
+      code-editor-background-color: rgb(250, 250, 250)
+      mdc-checkbox-unchecked-color: rgba(60, 60, 67, 0.6)
+      mdc-radio-unchecked-color: rgba(60, 60, 67, 0.6)
+      wa-color-neutral-fill-normal: "#0000000D"
+      ha-color-fill-primary-quiet-resting: rgba(0, 0, 0, 0.06)
+      ha-color-fill-primary-quiet-hover: rgba(0, 0, 0, 0.1)
+      red-color: "#FF3B30"
+      pink-color: "#FF2D55"
+      purple-color: "#AF52DE"
+      indigo-color: "#5856D6"
+      blue-color: "#007AFF"
+      light-blue-color: "#00C7BE"
+      cyan-color: "#32ADE6"
+      teal-color: "#30B0C7"
+      green-color: "#34C759"
+      yellow-color: "#FFCC00"
+      orange-color: "#FF9500"
+      brown-color: "#A2845E"
     dark:
-      background-image: "center / cover no-repeat fixed url('https://raw.githubusercontent.com/Nezz/homeassistant-visionos-theme/1.1/themes/night.jpg')"
-      primary-background-color: rgb(25, 24, 22)
-      secondary-background-color: rgb(25, 24, 22)
-      app-header-background-color: rgba(25, 24, 22, 0.3)
-      ha-card-background: rgba(0, 0, 0, 0.3)
+      background-image: "center / cover no-repeat fixed url('https://raw.githubusercontent.com/Nezz/homeassistant-visionos-theme/refs/heads/static/macOS_27_Dark.webp')"
+      primary-background-color: rgb(28, 28, 30)
+      secondary-background-color: rgb(28, 28, 30)
+      app-header-background-color: rgba(58, 58, 60, 0.6)
+      ha-card-background: rgba(58, 58, 60, 0.6)
+      ha-card-backdrop-filter: blur(12px) saturate(1.3)
+      ha-dialog-surface-background: color-mix(in srgb, rgba(58, 58, 60, 0.8), var(--ha-color-neutral-50) 0%)
+      bar-box-shadow: inset 0 0 0 100vmax rgba(58, 58, 60, 0.15), 0 0.5px 0 rgba(0, 0, 0, 0.4)
+      secondary-text-color: rgba(235, 235, 245, 0.6)
+      glass-edge-color: rgba(0, 0, 0, 0.15)
+      glass-contrast-background: rgba(0, 0, 0, 0.8)
+      glass-contrast-outline: rgba(255, 255, 255, 0.6)
       app-theme-color: rgb(0, 0, 0)
+      light-primary-color: "#b3e5fc"
+      sidebar-icon-color: rgb(241, 241, 241)
+      sidebar-text-color: rgb(241, 241, 241)
+      disabled-color: rgb(160, 160, 168)
+      history-unknown-color: "#AEAEB2"
   # Global
   lovelace-background: var(--background-image)
   light-primary-color: rgb(241, 241, 241) # Icons on sidebar
@@ -32,7 +77,7 @@ visionos:
   accent-color: var(--primary-color)
   # Text
   primary-text-color: rgba(255, 255, 255, 0.96)
-  secondary-text-color: "#d3d3d3"
+  secondary-text-color: rgba(222, 222, 222, 0.96)
   ha-color-text-secondary: var(--secondary-text-color)
   text-primary-color: var(--primary-text-color)
   disabled-text-color: rgba(208, 208, 208, 0.5) # XXX: https://github.com/basnijholt/lovelace-ios-dark-mode-theme/issues/2
@@ -56,11 +101,12 @@ visionos:
   label-badge-red: rgba(255, 159, 9, 0.7) # from Apple systemOrange dark mode
   # Cards
   card-background-color: var(--secondary-background-color) # Data table background
-  ha-card-border-radius: 20px
+  ha-card-border-radius: 34px
+  ha-card-features-border-radius: var(--ha-card-border-radius)
   rgb-card-background-color: rgb(10, 10, 10) # see https://github.com/basnijholt/lovelace-ios-themes/issues/60
   ha-card-border-width: 0 # https://github.com/basnijholt/lovelace-ios-dark-mode-theme/issues/82#event-7732695357
-  ha-card-backdrop-filter: blur(20px)
-  ha-card-box-shadow: 0.5px 0.5px 1px 0px rgba(255, 255, 255, 0.40) inset, -0.5px -0.5px 1px 0px rgba(255, 255, 255, 0.10) inset, 0px 1px 2px 0px rgba(0, 0, 0, 0.10)
+  ha-card-box-shadow: >
+    3px 3px 0.5px -3.5px rgba(255, 255, 255, 0.7) inset, -2px -2px 0.5px -2px rgba(255, 255, 255, 0.55) inset, 0 0 8px 1px rgba(255, 255, 255, 0.18) inset, 0 0 0 0.5px var(--glass-edge-color), 0 0.5px 1px 0 rgba(0, 0, 0, 0.12)
   # Table row
   table-row-background-color: var(--primary-background-color)
   table-row-alternative-background-color: var(--secondary-background-color)
@@ -69,11 +115,11 @@ visionos:
   # its old dialogs fall back to no blur and an opaque surface. A blurred surface there breaks fixed-position dropdowns like the version picker.
   ha-dialog-surface-backdrop-filter: var(--ha-card-backdrop-filter) blur(calc(0 * var(--ha-space-1)))
   dialog-box-shadow: var(--ha-card-box-shadow)
-  ha-dialog-surface-background: color-mix(in srgb, var(--ha-card-background), var(--ha-color-neutral-50) 0%)
   ha-dialog-scrim-backdrop-filter: none
   # Header
   app-header-backdrop-filter: var(--ha-card-backdrop-filter)
   app-header-edit-background-color: rgba(0, 0, 0, 0.2)
+  app-header-border-bottom: none
   # Colors
   red-color: "#FF453A"
   pink-color: "#FF375F"
@@ -95,7 +141,6 @@ visionos:
   energy-battery-in-color: var(--pink-color)
   energy-gas-color: var(--red-color)
   energy-water-color: var(--light-blue-color)
-  history-unknown-color: "#AEAEB2"
   primary-color: var(--orange-color)
   ha-color-primary-05: "#331f00"
   ha-color-primary-10: "#663d00"
@@ -133,8 +178,8 @@ visionos:
   md-list-container-color: none # ha-md-list already has a card background
   # Dropdown
   wa-shadow-m: var(--ha-card-box-shadow)
-  wa-border-radius-s: 16px
-  wa-border-radius-m: var(--ha-card-border-radius)
+  wa-border-radius-s: var(--ha-card-border-radius)
+  wa-border-radius-m: 24px
   wa-border-width-s: 0px
   ha-color-on-neutral-normal: var(--primary-text-color) # icon color
   wa-color-neutral-fill-normal: "#FFFFFF14" # hover color
@@ -152,7 +197,7 @@ visionos:
   bubble-pop-up-main-background-color: var(--ha-card-background)
   bubble-select-list-background-color: var(--card-background-color) # its menu can't be blurred, match HA's own dropdowns
   wa-form-control-padding-inline: var(--ha-space-3)
-  card-mod-theme: "visionos"
+  card-mod-theme: "Liquid Glass Tinted"
   card-mod-drawer: |
     .mdc-drawer {
       background-color: var(--app-header-background-color) !important;
@@ -165,11 +210,28 @@ visionos:
 
     wa-drawer::part(dialog) {
       backdrop-filter: var(--ha-card-backdrop-filter);
+      background-color: var(--app-header-background-color) !important;
+      box-shadow: none !important;
     }
   card-mod-sidebar: |
     :host {
       background: none !important;
       backdrop-filter: var(--ha-card-backdrop-filter);
+    }
+
+    .menu {
+      border-bottom-color: transparent !important;
+    }
+
+    ha-list-item-button,
+    ha-list-item-button.selected::before {
+      border-radius: var(--ha-card-border-radius) !important;
+      --ha-list-item-focus-radius: var(--ha-card-border-radius) !important;
+    }
+
+    ha-md-list-item,
+    ha-md-list-item.selected::before {
+      border-radius: var(--ha-card-border-radius) !important;
     }
   card-mod-root: |
     ha-tab-group::part(scroll-button) {
@@ -180,6 +242,11 @@ visionos:
       mask:
         linear-gradient(90deg, transparent, #000 16px, #000 calc(100% - 16px), transparent),
         linear-gradient(#000, #000) bottom / 100% 4px no-repeat;
+    }
+
+    ha-menu-button,
+    .action-items > * {
+      color: var(--state-icon-color);
     }
   card-mod-state-history-charts: |
     .entry-container:first-of-type {
@@ -198,16 +265,15 @@ visionos:
       content: '';
       position: absolute;
       inset: 0;
-      background: transparent;
       backdrop-filter: var(--ha-card-backdrop-filter);
       z-index: -1;
       pointer-events: none;
       border-radius: inherit;
-      box-shadow: var(--ha-card-box-shadow);
     }
     :host(hui-heading-card) ha-card {
       background: none !important;
       backdrop-filter: none !important;
+      box-shadow: none !important;
     }
     :host(hui-heading-card) ha-card::before {
       content: none !important;
@@ -225,6 +291,7 @@ visionos:
     ha-card.text-only {
       background: none !important;
       backdrop-filter: none !important;
+      box-shadow: none !important;
       overflow: visible;
     }
     ha-card.text-only::before {
@@ -235,6 +302,7 @@ visionos:
     :host(mushroom-title-card) ha-card {
       background: none !important;
       backdrop-filter: none !important;
+      box-shadow: none !important;
     }
     :host(mushroom-title-card) ha-card::before {
       content: none !important;
@@ -392,4 +460,22 @@ visionos:
 
     :host(bubble-card) .bubble-pop-up {
       --bubble-pop-up-background-color: var(--ha-dialog-surface-background) !important;
+    }
+
+    ha-card:has(ha-tile-icon[data-domain="light"], ha-tile-icon[data-domain="cover"], ha-tile-icon[data-domain="humidifier"], ha-tile-icon[data-domain="climate"]) hui-card-features,
+    :host(hui-humidifier-card) hui-card-features,
+    :host(hui-thermostat-card) hui-card-features {
+      --ha-border-radius-md: 0px;
+    }
+
+    hui-card-features {
+      --thumb-border-radius: 0px;
+      --primary-text-color: var(--state-icon-color);
+    }
+
+    @media (prefers-contrast: more) {
+      ha-card {
+        background-color: var(--glass-contrast-background) !important;
+        box-shadow: 0 0 0 1px var(--glass-contrast-outline) !important;
+      }
     }

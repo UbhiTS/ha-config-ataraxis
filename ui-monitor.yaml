@@ -1,6 +1,7 @@
 title: Solstice Home
+background: "center / cover no-repeat fixed url('/local/solstice/evening_horizon.svg')"
 views:
-  # ── Solstice Evening — High-Performance Responsive Command Deck (10 Views) ──
+  # ── Solstice Evening — Futuristic Soft-UI Command Deck (10 Views) ──
   - !include lovelace/v2_overview.yaml
   - !include lovelace/v2_home.yaml
   - !include lovelace/v2_climate.yaml

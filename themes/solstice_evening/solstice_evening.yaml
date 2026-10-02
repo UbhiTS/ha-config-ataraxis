@@ -1,35 +1,35 @@
 Solstice Evening:
   # ════════════════════════════════════════════════════════════════════════════
-  #  SOLSTICE EVENING — High-Performance Responsive Twilight Theme
-  #  Zero-Blur GPU-Accelerated Surfaces · Compact Laptop & Mobile Density
+  #  SOLSTICE EVENING — Futuristic Soft-UI & Twilight Atmosphere Theme
+  #  Designed for Home Assistant 2026 · Warm Dusk Slate-Indigo (Not Midnight)
   # ════════════════════════════════════════════════════════════════════════════
   modes:
     dark:
-      background-image: "radial-gradient(ellipse at 50% 0%, #232f46 0%, #171f30 60%, #111726 100%)"
-      primary-background-color: "#141b29"
-      secondary-background-color: "#1c2436"
-      app-header-background-color: "#161d2b"
-      ha-card-background: "#1e2638"
-      app-theme-color: "#141b29"
+      background-image: "center / cover no-repeat fixed url('/local/solstice/evening_horizon.svg')"
+      primary-background-color: "#1b2232"
+      secondary-background-color: "#222a3d"
+      app-header-background-color: "rgba(25, 31, 46, 0.92)"
+      ha-card-background: "linear-gradient(145deg, rgba(41, 50, 72, 0.90) 0%, rgba(31, 38, 56, 0.94) 100%)"
+      app-theme-color: "#1b2232"
     light:
-      background-image: "radial-gradient(ellipse at 50% 0%, #232f46 0%, #171f30 60%, #111726 100%)"
-      primary-background-color: "#141b29"
-      secondary-background-color: "#1c2436"
-      app-header-background-color: "#161d2b"
-      ha-card-background: "#1e2638"
-      app-theme-color: "#141b29"
+      background-image: "center / cover no-repeat fixed url('/local/solstice/evening_horizon.svg')"
+      primary-background-color: "#1b2232"
+      secondary-background-color: "#222a3d"
+      app-header-background-color: "rgba(25, 31, 46, 0.92)"
+      ha-card-background: "linear-gradient(145deg, rgba(41, 50, 72, 0.90) 0%, rgba(31, 38, 56, 0.94) 100%)"
+      app-theme-color: "#1b2232"
 
-  # ── Global Canvas & System-First High-Speed Typography ──
+  # ── Global Canvas & Typography ──
   lovelace-background: var(--background-image)
-  primary-font-family: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+  primary-font-family: "'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
   paper-font-common-base_-_font-family: var(--primary-font-family)
   paper-font-common-expensive-kerning_-_font-family: var(--primary-font-family)
-  paper-font-common-code_-_font-family: "ui-monospace, 'SFMono-Regular', Menlo, Monaco, Consolas, monospace"
+  paper-font-common-code_-_font-family: "'JetBrains Mono', monospace"
   ha-font-family-body: var(--primary-font-family)
-  ha-font-family-heading: var(--primary-font-family)
-  ha-font-family-code: "ui-monospace, 'SFMono-Regular', Menlo, Monaco, Consolas, monospace"
+  ha-font-family-heading: "'Space Grotesk', 'Plus Jakarta Sans', sans-serif"
+  ha-font-family-code: "'JetBrains Mono', monospace"
 
-  # ── Core Palette ──
+  # ── Core Palette (Evening Twilight + Warm Horizon) ──
   primary-color: "#38bdf8"
   accent-color: "#f59e0b"
   dark-primary-color: "#0284c7"
@@ -37,7 +37,7 @@ Solstice Evening:
   divider-color: "rgba(148, 163, 184, 0.12)"
   outline-color: "rgba(148, 163, 184, 0.12)"
 
-  # ── Text Hierarchy ──
+  # ── Text Hierarchy (Soft Alabaster & Cool Twilight Silver) ──
   primary-text-color: "#f1f5f9"
   secondary-text-color: "#94a3b8"
   ha-color-text-primary: "#f1f5f9"
@@ -46,7 +46,7 @@ Solstice Evening:
   disabled-text-color: "rgba(148, 163, 184, 0.45)"
   text-dark-color: "#f1f5f9"
 
-  # ── Semantic & Accent Colors ──
+  # ── Semantic & Accent Colors (Softened Futuristic Pastels) ──
   red-color: "#fb7185"
   pink-color: "#f472b6"
   purple-color: "#a78bfa"
@@ -65,7 +65,7 @@ Solstice Evening:
   grey-color: "#64748b"
   blue-grey-color: "#94a3b8"
 
-  # ── RGB Equivalents for Mushroom & Native Alpha Blends ──
+  # ── RGB Equivalents for Mushroom & Card-Mod Alpha Blends ──
   rgb-primary-color: "56, 189, 248"
   rgb-accent-color: "245, 158, 11"
   rgb-red-color: "251, 113, 133"
@@ -82,7 +82,7 @@ Solstice Evening:
   rgb-grey-color: "100, 116, 139"
   rgb-primary-text-color: "241, 245, 249"
   rgb-secondary-text-color: "148, 163, 184"
-  rgb-card-background-color: "30, 38, 56"
+  rgb-card-background-color: "34, 42, 61"
 
   # ── States & Icons ──
   state-icon-color: "#94a3b8"
@@ -102,48 +102,49 @@ Solstice Evening:
   state-person-home-color: "#34d399"
 
   # ── Sidebar & Header Navigation ──
-  sidebar-background-color: "#151c2b"
+  sidebar-background-color: "rgba(24, 30, 44, 0.94)"
   sidebar-icon-color: "#94a3b8"
   sidebar-text-color: "#cbd5e1"
   sidebar-selected-background-color: "rgba(56, 189, 248, 0.14)"
   sidebar-selected-icon-color: "#38bdf8"
   sidebar-selected-text-color: "#f8fafc"
   app-header-text-color: "#f1f5f9"
-  app-header-edit-background-color: "#1e2638"
+  app-header-backdrop-filter: "none"
+  app-header-edit-background-color: "rgba(30, 37, 54, 0.95)"
 
-  # ── High-Speed Opaque Cards (Zero GPU Blur Overhead) ──
-  card-background-color: "#1e2638"
-  paper-card-background-color: "#1e2638"
-  ha-card-border-radius: "10px"
-  ha-card-features-border-radius: "8px"
+  # ── Soft-UI Cards & Elevation (Crisp 8px Architectural Corners) ──
+  card-background-color: "#232b3e"
+  paper-card-background-color: "rgba(36, 44, 64, 0.92)"
+  ha-card-border-radius: "8px"
+  ha-card-features-border-radius: "6px"
   ha-card-border-width: "1px"
-  ha-card-border-color: "rgba(148, 163, 184, 0.14)"
+  ha-card-border-color: "rgba(255, 255, 255, 0.08)"
   ha-card-backdrop-filter: "none"
-  ha-card-box-shadow: "0 2px 8px rgba(6, 10, 18, 0.32)"
+  ha-card-box-shadow: "inset 0 1px 0 0 rgba(255, 255, 255, 0.12), inset 0 0 0 1px rgba(255, 255, 255, 0.03), 0 12px 28px -8px rgba(9, 13, 22, 0.48), 0 4px 12px -2px rgba(9, 13, 22, 0.28)"
 
-  # ── Compact Mushroom Tokens for Laptop & Phone Fit ──
-  mush-spacing: "8px"
-  mush-card-primary-font-size: "13.5px"
-  mush-card-secondary-font-size: "11.5px"
+  # ── Mushroom Soft-UI Design Tokens ──
+  mush-spacing: "12px"
+  mush-card-primary-font-size: "15px"
+  mush-card-secondary-font-size: "12.5px"
   mush-card-primary-font-weight: "600"
   mush-card-secondary-font-weight: "500"
-  mush-card-primary-line-height: "1.28"
-  mush-card-secondary-line-height: "1.25"
-  mush-chip-border-radius: "8px"
-  mush-chip-height: "30px"
-  mush-chip-padding: "0 10px"
-  mush-chip-font-size: "11.5px"
+  mush-card-primary-line-height: "1.35"
+  mush-card-secondary-line-height: "1.3"
+  mush-chip-border-radius: "6px"
+  mush-chip-height: "36px"
+  mush-chip-padding: "0 12px"
+  mush-chip-font-size: "13px"
   mush-chip-font-weight: "600"
-  mush-chip-background: "#232c40"
-  mush-chip-box-shadow: "0 1px 4px rgba(6, 10, 18, 0.25)"
-  mush-control-border-radius: "8px"
-  mush-control-height: "34px"
+  mush-chip-background: "rgba(36, 45, 66, 0.90)"
+  mush-chip-box-shadow: "inset 0 1px 0 0 rgba(255, 255, 255, 0.12), 0 4px 12px rgba(9, 13, 22, 0.3)"
+  mush-control-border-radius: "6px"
+  mush-control-height: "40px"
   mush-icon-border-radius: "8px"
-  mush-icon-size: "36px"
-  mush-title-padding: "8px 4px 4px"
-  mush-title-font-size: "16px"
+  mush-icon-size: "42px"
+  mush-title-padding: "18px 8px 10px"
+  mush-title-font-size: "21px"
   mush-title-font-weight: "700"
-  mush-subtitle-font-size: "12px"
+  mush-subtitle-font-size: "13.5px"
   mush-subtitle-font-weight: "500"
 
   # ── Controls, Sliders & Switches ──
@@ -159,15 +160,16 @@ Solstice Evening:
   ha-slider-background: "none !important"
 
   # ── Dialogs, Modals & Overlays ──
-  ha-dialog-surface-background: "#1c2436"
-  paper-dialog-background-color: "#1c2436"
-  more-info-header-background: "#161d2b"
-  mdc-theme-surface: "#1e2638"
-  material-background-color: "#1e2638"
-  code-editor-background-color: "#131926"
-  markdown-code-background-color: "rgba(15, 23, 42, 0.65)"
+  ha-dialog-surface-backdrop-filter: "none"
+  ha-dialog-surface-background: "rgba(31, 38, 56, 0.96)"
+  paper-dialog-background-color: "rgba(31, 38, 56, 0.96)"
+  more-info-header-background: "rgba(25, 31, 46, 0.90)"
+  mdc-theme-surface: "#232b3e"
+  material-background-color: "#232b3e"
+  code-editor-background-color: "#171d2b"
+  markdown-code-background-color: "rgba(15, 23, 42, 0.55)"
 
-  # ── Energy Dashboard Colors ──
+  # ── Energy Dashboard Colors (Harmonized with Evening Palette) ──
   energy-solar-color: "#fbbf24"
   energy-grid-consumption-color: "#38bdf8"
   energy-grid-return-color: "#a78bfa"
@@ -176,20 +178,61 @@ Solstice Evening:
   energy-gas-color: "#fb923c"
   energy-water-color: "#22d3ee"
 
-  # ── Lightweight Global Card-Mod Rules (No Blur) ──
+  # ── Global Card-Mod Styling ──
   card-mod-theme: "Solstice Evening"
+  card-mod-drawer-yaml: |
+    .: |
+      .mdc-drawer {
+        background-color: rgba(24, 30, 44, 0.94) !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.07) !important;
+      }
+      .sidebar-shell {
+        background-color: rgba(24, 30, 44, 0.94) !important;
+      }
+  card-mod-sidebar: |
+    :host {
+      background: rgba(24, 30, 44, 0.94) !important;
+    }
+    ha-md-list-item,
+    ha-list-item-button {
+      border-radius: 14px !important;
+      margin: 2px 8px !important;
+      transition: background-color 0.15s ease !important;
+    }
   card-mod-card-yaml: |
     .: |
       ha-card {
         background: var(--ha-card-background);
         border-radius: var(--ha-card-border-radius);
-        border: 1px solid rgba(148, 163, 184, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.085);
         box-shadow: var(--ha-card-box-shadow);
+        transition: border-color 0.15s ease;
       }
+      ha-card:hover {
+        border-color: rgba(255, 255, 255, 0.15);
+      }
+
+      /* Keep Mushroom Title & Chip Containers Transparent */
       :host(mushroom-title-card) ha-card,
-      :host(hui-heading-card) ha-card,
-      :host(mushroom-chips-card) ha-card {
+      :host(hui-heading-card) ha-card {
         background: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
         border: none !important;
         box-shadow: none !important;
+      }
+      :host(mushroom-chips-card) ha-card {
+        background: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+
+      /* Energy & Data Tables */
+      .mdc-data-table,
+      .mdc-data-table__row,
+      .mdc-data-table__header-cell,
+      ha-sankey-chart {
+        background: none !important;
       }

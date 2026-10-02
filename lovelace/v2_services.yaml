@@ -1,5 +1,4 @@
 title: Services
-path: services
 icon: mdi:apps
 panel: true
 cards:
@@ -9,59 +8,52 @@ cards:
         layout_type: custom:grid-layout
         layout:
           grid-template-columns: 1fr
-          grid-gap: 10px
-          margin: 8px 12px 16px 12px
-          mediaquery:
-            "(max-width: 600px)":
-              grid-gap: 8px
-              margin: 6px 6px 14px 6px
+          grid-gap: 14px
+          margin: 14px 18px 24px 18px
         cards:
 
           # ════════════════════════════════════════════════════════════════════
-          #  COMPACT SERVICES PORTAL BAR
+          #  SOLSTICE APP LAUNCHPAD HUD
           # ════════════════════════════════════════════════════════════════════
-          - type: custom:mushroom-chips-card
-            alignment: justify
-            chips:
-              - type: template
-                icon: mdi:apps
-                icon_color: light-blue
-                content: "Homelab Portal · 9 Endpoints"
-              - type: template
-                icon: mdi:nas
-                icon_color: "{{ 'green' if is_state('sensor.ubhinas_status','good') else 'red' }}"
-                content: "UbhiNAS"
-                tap_action:
-                  action: url
-                  url_path: !secret ubhinas_url
-              - type: template
-                icon: mdi:nas
-                icon_color: "{{ 'green' if is_state('sensor.plexnas_status','good') else 'red' }}"
-                content: "PlexNAS"
-                tap_action:
-                  action: url
-                  url_path: !secret plexnas_url
-              - type: template
-                icon: mdi:chart-areaspline
-                icon_color: amber
-                content: "Grafana"
-                tap_action:
-                  action: url
-                  url_path: !secret grafana_url
+          - type: markdown
+            content: >-
+              <div class="hud-bar">
+                <div class="hud-left">
+                  <div class="hud-eyebrow">SOLSTICE PORTAL · SELF-HOSTED SERVICES & CONSOLES</div>
+                  <div class="hud-title">Homelab Application Portal <span class="hud-divider">·</span> <span class="hud-sub">9 Core Infrastructure Endpoints</span></div>
+                </div>
+                <div class="hud-badges">
+                  <span class="hud-pill pill-sky">✦ Instant Web Launchers</span>
+                </div>
+              </div>
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(41, 50, 72, 0.92) 0%, rgba(28, 35, 52, 0.96) 100%) !important;
+                  border-radius: 8px !important;
+                  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+                  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.14), 0 12px 30px -8px rgba(8, 12, 21, 0.5) !important;
+                  padding: 4px 10px !important;
+                }
+                .hud-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+                .hud-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 1.8px; color: #38bdf8; margin-bottom: 2px; }
+                .hud-title { font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif; font-size: 22px; font-weight: 700; color: #f8fafc; letter-spacing: -0.3px; }
+                .hud-divider { color: rgba(148, 163, 184, 0.45); margin: 0 4px; }
+                .hud-sub { font-weight: 500; font-size: 16px; color: #94a3b8; }
+                .hud-pill { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12.5px; font-weight: 600; padding: 6px 14px; border-radius: 6px; background: rgba(56, 189, 248, 0.14); color: #bae6fd; border: 1px solid rgba(56, 189, 248, 0.3); }
 
           # ════════════════════════════════════════════════════════════════════
-          #  SERVICES LAUNCHPAD — Responsive 3-Col Laptop / 2-Col Mobile Grid
+          #  SERVICES LAUNCHPAD — Soft-UI Elevated Glass Tiles
           # ════════════════════════════════════════════════════════════════════
           - type: custom:layout-card
             layout_type: custom:grid-layout
             layout:
-              grid-template-columns: repeat(3, minmax(0, 1fr))
-              grid-gap: 10px
+              grid-template-columns: repeat(3, 1fr)
+              grid-gap: 14px
               mediaquery:
-                "(max-width: 900px)":
-                  grid-template-columns: repeat(2, minmax(0, 1fr))
-                  grid-gap: 8px
-                "(max-width: 480px)":
+                "(max-width: 1000px)":
+                  grid-template-columns: repeat(2, 1fr)
+                "(max-width: 600px)":
                   grid-template-columns: 1fr
             cards:
               - type: custom:mushroom-template-card
@@ -69,87 +61,108 @@ cards:
                 secondary: Dashboards & Telemetry Analytics
                 icon: mdi:chart-areaspline
                 icon_color: amber
-                layout: horizontal
                 tap_action:
                   action: url
                   url_path: !secret grafana_url
+                layout: horizontal
+                card_mod: &service_card
+                  style: |
+                    ha-card {
+                      background: linear-gradient(145deg, rgba(41, 50, 72, 0.90) 0%, rgba(30, 37, 54, 0.94) 100%) !important;
+                      border-radius: 8px !important;
+                      border: 1px solid rgba(255, 255, 255, 0.085) !important;
+                      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.12), 0 12px 28px -8px rgba(9, 13, 22, 0.45) !important;
+                      transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.22s ease !important;
+                    }
+                    ha-card:hover {
+                      transform: translateY(-3px);
+                      border-color: rgba(56, 189, 248, 0.38) !important;
+                    }
 
               - type: custom:mushroom-template-card
                 primary: Z-Wave JS UI
                 secondary: Mesh Network & Node Management
                 icon: mdi:z-wave
                 icon_color: light-blue
-                layout: horizontal
                 tap_action:
                   action: url
                   url_path: !secret zwavejs_url
+                layout: horizontal
+                card_mod: *service_card
 
               - type: custom:mushroom-template-card
                 primary: Portainer
                 secondary: Docker Container Orchestration
                 icon: mdi:docker
                 icon_color: cyan
-                layout: horizontal
                 tap_action:
                   action: url
                   url_path: !secret portainer_url
+                layout: horizontal
+                card_mod: *service_card
 
               - type: custom:mushroom-template-card
                 primary: InfluxDB
                 secondary: Time-Series Telemetry Engine
                 icon: mdi:database-settings-outline
                 icon_color: purple
-                layout: horizontal
                 tap_action:
                   action: url
                   url_path: !secret influxdb_url
+                layout: horizontal
+                card_mod: *service_card
 
               - type: custom:mushroom-template-card
                 primary: NGINX Proxy
                 secondary: Reverse Proxy & TLS Certificates
                 icon: mdi:server-security
                 icon_color: green
-                layout: horizontal
                 tap_action:
                   action: url
                   url_path: !secret nginx_url
+                layout: horizontal
+                card_mod: *service_card
 
               - type: custom:mushroom-template-card
                 primary: UbhiNAS
                 secondary: Primary QNAP Storage Array
                 icon: mdi:nas
                 icon_color: amber
-                layout: horizontal
                 tap_action:
                   action: url
                   url_path: !secret ubhinas_url
+                layout: horizontal
+                card_mod: *service_card
 
               - type: custom:mushroom-template-card
                 primary: PlexNAS
                 secondary: Media Streaming Storage Array
                 icon: mdi:nas
                 icon_color: orange
-                layout: horizontal
                 tap_action:
                   action: url
                   url_path: !secret plexnas_url
+                layout: horizontal
+                card_mod: *service_card
 
               - type: custom:mushroom-template-card
                 primary: Xfinity Usage
                 secondary: ISP Bandwidth & Quota Tracker
                 icon: mdi:wan
                 icon_color: red
-                layout: horizontal
                 tap_action:
                   action: url
                   url_path: !secret xfinity_usage_url
+                layout: horizontal
+                card_mod: *service_card
 
               - type: custom:mushroom-template-card
                 primary: Mosquitto MQTT
                 secondary: Event Bus & Message Broker
                 icon: mdi:message-settings-outline
                 icon_color: teal
-                layout: horizontal
                 tap_action:
                   action: url
                   url_path: !secret mqtt_url
+                layout: horizontal
+                card_mod: *service_card

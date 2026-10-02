@@ -1,5 +1,4 @@
 title: Admin
-path: admin
 icon: mdi:tune-vertical
 panel: true
 cards:
@@ -9,112 +8,83 @@ cards:
         layout_type: custom:grid-layout
         layout:
           grid-template-columns: 1fr
-          grid-gap: 10px
-          margin: 8px 12px 16px 12px
-          mediaquery:
-            "(max-width: 600px)":
-              grid-gap: 8px
-              margin: 6px 6px 14px 6px
+          grid-gap: 14px
+          margin: 14px 18px 24px 18px
         cards:
 
           # ════════════════════════════════════════════════════════════════════
-          #  COMPACT ADMIN & DIAGNOSTICS BAR
+          #  SOLSTICE DIAGNOSTICS HUD — Entity Registry & Group Inspector
           # ════════════════════════════════════════════════════════════════════
-          - type: custom:mushroom-chips-card
-            alignment: justify
-            chips:
-              - type: entity
-                entity: device_tracker.funky_monkey_s_iphone
-                icon_color: green
-              - type: entity
-                entity: device_tracker.ivavvays_iphone
-                icon_color: green
-              - type: template
-                icon: mdi:battery-check
-                icon_color: green
-                content: "Min Battery: {{ [states('sensor.main_door_lock_battery_level')|float(100), states('sensor.garage_door_small_battery_level')|float(100), states('sensor.garage_battery_level')|float(100)] | min | round(0) }}%"
-              - type: template
-                icon: mdi:cpu-64-bit
-                icon_color: light-blue
-                content: "HA CPU {{ states('sensor.processor_use') }}% · RAM {{ states('sensor.memory_use_percent') }}%"
-                tap_action:
-                  action: more-info
-                  entity: sensor.processor_use
+          - type: markdown
+            content: >-
+              <div class="hud-bar">
+                <div class="hud-left">
+                  <div class="hud-eyebrow">SOLSTICE SYSTEM DIAGNOSTICS · ENTITY REGISTRY INSPECTOR</div>
+                  <div class="hud-title">Administration & Raw Telemetry <span class="hud-divider">·</span> <span class="hud-sub">All Room & System Groups</span></div>
+                </div>
+                <div class="hud-badges">
+                  <span class="hud-pill pill-sky">HA Core 2026.8.3</span>
+                </div>
+              </div>
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(41, 50, 72, 0.92) 0%, rgba(28, 35, 52, 0.96) 100%) !important;
+                  border-radius: 8px !important;
+                  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+                  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.14), 0 12px 30px -8px rgba(8, 12, 21, 0.5) !important;
+                  padding: 4px 10px !important;
+                }
+                .hud-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+                .hud-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 1.8px; color: #38bdf8; margin-bottom: 2px; }
+                .hud-title { font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif; font-size: 22px; font-weight: 700; color: #f8fafc; letter-spacing: -0.3px; }
+                .hud-divider { color: rgba(148, 163, 184, 0.45); margin: 0 4px; }
+                .hud-sub { font-weight: 500; font-size: 16px; color: #94a3b8; }
+                .hud-pill { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12.5px; font-weight: 600; padding: 6px 14px; border-radius: 6px; background: rgba(56, 189, 248, 0.14); color: #bae6fd; border: 1px solid rgba(56, 189, 248, 0.3); }
 
-          # ════════════════════════════════════════════════════════════════════
-          #  HIGH-SIGNAL SYSTEM DIAGNOSTICS (2-Column Laptop / 1-Column Mobile)
-          # ════════════════════════════════════════════════════════════════════
+          # ── People Trackers ──
           - type: custom:layout-card
             layout_type: custom:grid-layout
             layout:
-              grid-template-columns: repeat(2, minmax(0, 1fr))
-              grid-gap: 10px
+              grid-template-columns: 1fr 1fr
+              grid-gap: 14px
+            cards:
+              - type: custom:mushroom-entity-card
+                entity: device_tracker.funky_monkey_s_iphone
+                icon_color: green
+                layout: horizontal
+                card_mod: &admin_card
+                  style: |
+                    ha-card {
+                      background: linear-gradient(145deg, rgba(41, 50, 72, 0.90) 0%, rgba(30, 37, 54, 0.94) 100%) !important;
+                      border-radius: 8px !important;
+                      border: 1px solid rgba(255, 255, 255, 0.085) !important;
+                      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.12), 0 12px 28px -8px rgba(9, 13, 22, 0.45) !important;
+                    }
+              - type: custom:mushroom-entity-card
+                entity: device_tracker.ivavvays_iphone
+                icon_color: green
+                layout: horizontal
+                card_mod: *admin_card
+
+          # ── Garage Tilt Sensor & Z-Wave Battery Health Radar ──
+          - type: custom:mushroom-title-card
+            title: Z-Wave Battery & Garage Barrier Health
+            subtitle: Garage tilt sensor telemetry & lowest-first battery replacement queue
+
+          - type: custom:layout-card
+            layout_type: custom:grid-layout
+            layout:
+              grid-template-columns: 1fr 1fr
+              grid-gap: 14px
               mediaquery:
                 "(max-width: 800px)":
                   grid-template-columns: 1fr
             cards:
-              # 1. Unavailable / Unknown Entities Watchlist
-              - type: custom:auto-entities
-                show_empty: true
-                card:
-                  type: entities
-                  title: "⚠️ Unavailable / Alert Entities"
-                  show_header_toggle: false
-                  state_color: true
-                filter:
-                  include:
-                    - state: "unavailable"
-                    - state: "unknown"
-                  exclude:
-                    - domain: group
-                    - domain: zone
-                    - entity_id: "sensor.supermicro_*"
-                    - entity_id: "sensor.hp_ilo_*"
-
-              # 2. Z-Wave Battery Replacement Queue (Lowest First)
-              - type: custom:auto-entities
-                card:
-                  type: entities
-                  title: "🔋 Z-Wave Battery Levels (Lowest First)"
-                  show_header_toggle: false
-                  state_color: true
-                sort:
-                  method: state
-                  numeric: true
-                  reverse: false
-                filter:
-                  include:
-                    - entity_id: "sensor.*battery_level*"
-                  exclude:
-                    - entity_id: "sensor.*iphone*"
-                    - entity_id: "sensor.*watch*"
-
-              # 3. 7-Zone Climate & Helper Diagnostics
-              - type: entities
-                title: "🌡️ 7-Zone Climate Entities & Setpoints"
-                show_header_toggle: false
-                state_color: true
-                entities:
-                  - entity: climate.thermostat_living_room
-                    name: Living Room
-                  - entity: climate.thermostat_master_bedroom
-                    name: Master Bedroom
-                  - entity: climate.thermostat_upper_big_bedroom
-                    name: Upper Big Bedroom
-                  - entity: climate.thermostat_upper_small_bedroom
-                    name: Upper Small Bedroom
-                  - entity: climate.thermostat_upper_guest_bedroom
-                    name: Upper Guest Bedroom
-                  - entity: climate.thermostat_entertainment_room
-                    name: Entertainment Room (Lower Guest)
-                  - entity: climate.thermostat_attic
-                    name: Attic
-
-              # 4. Garage Controllers & Barrier Health
               - type: entities
                 title: "🏍️ Garage Controllers & Tilt Sensors"
                 show_header_toggle: false
-                state_color: true
+                card_mod: *admin_card
                 entities:
                   - entity: cover.garage_door_small
                     name: Moto Bay (Small Garage)
@@ -129,42 +99,289 @@ cards:
                   - entity: binary_sensor.garage_barrier_ul_disabling_status
                     name: Big Garage UL Lockout Status
 
-              # 5. Energy & Solar Telemetry
-              - type: entities
-                title: "☀️ Powerwall & Solar Telemetry"
-                show_header_toggle: false
-                state_color: true
-                entities:
-                  - entity: sensor.powerwall_charge
-                    name: Powerwall Reserve
-                  - entity: sensor.powerwall_solar_now
-                    name: Solar Production Now
-                  - entity: sensor.powerwall_load_now
-                    name: Home Load Now
-                  - entity: sensor.powerwall_battery_now
-                    name: Battery Flow Now
-                  - entity: sensor.powerwall_site_now
-                    name: Grid Flow Now
-                  - entity: binary_sensor.grid_status
-                    name: Grid Connected
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  title: "🔋 All Z-Wave Sensor Batteries (Lowest First)"
+                  show_header_toggle: false
+                  state_color: true
+                  card_mod: *admin_card
+                sort:
+                  method: state
+                  numeric: true
+                  reverse: false
+                filter:
+                  include:
+                    - entity_id: "sensor.*battery_level*"
+                  exclude:
+                    - entity_id: "sensor.*iphone*"
+                    - entity_id: "sensor.*watch*"
 
-              # 6. Host & WAN Telemetry
-              - type: entities
-                title: "🖥️ Host & WAN Telemetry"
-                show_header_toggle: false
-                state_color: true
-                entities:
-                  - entity: sensor.processor_use
-                    name: CPU Usage
-                  - entity: sensor.memory_use_percent
-                    name: Memory Usage
-                  - entity: sensor.disk_free
-                    name: Disk Free
-                  - entity: sensor.load_1m
-                    name: System Load (1m)
-                  - entity: sensor.speedtest_download
-                    name: WAN Download
-                  - entity: sensor.speedtest_upload
-                    name: WAN Upload
-                  - entity: sensor.xfinity_usage
-                    name: Xfinity Monthly Data
+          # ── Energy & Solar Raw Data ──
+          - type: custom:layout-card
+            layout_type: custom:grid-layout
+            layout:
+              grid-template-columns: 1fr 1fr
+              grid-gap: 14px
+              mediaquery:
+                "(max-width: 800px)":
+                  grid-template-columns: 1fr
+            cards:
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  state_color: true
+                  title: Solar Forecast
+                  show_header_toggle: false
+                  card_mod: *admin_card
+                filter:
+                  include:
+                    - group: group.solar_forecast
+
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  state_color: true
+                  title: Home Energy
+                  show_header_toggle: false
+                  card_mod: *admin_card
+                filter:
+                  include:
+                    - group: group.home_energy
+
+          # ── Room Entities Inspector ──
+          - type: custom:mushroom-title-card
+            title: Room Entity Groups
+            subtitle: Complete state & attribute inspection by room
+
+          - type: custom:layout-card
+            layout_type: custom:grid-layout
+            layout:
+              grid-template-columns: 1fr 1fr
+              grid-gap: 14px
+              mediaquery:
+                "(max-width: 800px)":
+                  grid-template-columns: 1fr
+            cards:
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  state_color: true
+                  title: Living Room
+                  show_header_toggle: false
+                  card_mod: *admin_card
+                filter:
+                  include:
+                    - group: group.living_room
+
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  state_color: true
+                  title: Kitchen
+                  show_header_toggle: false
+                  card_mod: *admin_card
+                filter:
+                  include:
+                    - group: group.kitchen
+
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  state_color: true
+                  title: Master Bedroom
+                  show_header_toggle: false
+                  card_mod: *admin_card
+                filter:
+                  include:
+                    - group: group.master_bedroom
+
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  state_color: true
+                  title: Master Bathroom
+                  show_header_toggle: false
+                  card_mod: *admin_card
+                filter:
+                  include:
+                    - group: group.master_bathroom
+
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  state_color: true
+                  title: Entertainment Room
+                  show_header_toggle: false
+                  card_mod: *admin_card
+                filter:
+                  include:
+                    - group: group.entertainment_room
+
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  state_color: true
+                  title: Welcome Room
+                  show_header_toggle: false
+                  card_mod: *admin_card
+                filter:
+                  include:
+                    - group: group.welcome_room
+
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  state_color: true
+                  title: Upper Big Bedroom
+                  show_header_toggle: false
+                  card_mod: *admin_card
+                filter:
+                  include:
+                    - group: group.upper_big_bedroom
+
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  state_color: true
+                  title: Upper Small Bedroom
+                  show_header_toggle: false
+                  card_mod: *admin_card
+                filter:
+                  include:
+                    - group: group.upper_small_bedroom
+
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  state_color: true
+                  title: Upper Guest Bedroom
+                  show_header_toggle: false
+                  card_mod: *admin_card
+                filter:
+                  include:
+                    - group: group.upper_guest_bedroom
+
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  state_color: true
+                  title: Attic
+                  show_header_toggle: false
+                  card_mod: *admin_card
+                filter:
+                  include:
+                    - group: group.attic
+
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  state_color: true
+                  title: Entryway
+                  show_header_toggle: false
+                  card_mod: *admin_card
+                filter:
+                  include:
+                    - group: group.entryway
+
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  state_color: true
+                  title: Garage
+                  show_header_toggle: false
+                  card_mod: *admin_card
+                filter:
+                  include:
+                    - group: group.garage
+
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  state_color: true
+                  title: Backyard
+                  show_header_toggle: false
+                  card_mod: *admin_card
+                filter:
+                  include:
+                    - group: group.backyard
+
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  state_color: true
+                  title: Side Deck
+                  show_header_toggle: false
+                  card_mod: *admin_card
+                filter:
+                  include:
+                    - group: group.side_deck
+
+          # ── Infrastructure Raw Data ──
+          - type: custom:mushroom-title-card
+            title: Infrastructure Entities
+            subtitle: NAS, Network & System Monitor Groups
+
+          - type: custom:layout-card
+            layout_type: custom:grid-layout
+            layout:
+              grid-template-columns: 1fr 1fr
+              grid-gap: 14px
+              mediaquery:
+                "(max-width: 800px)":
+                  grid-template-columns: 1fr
+            cards:
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  state_color: true
+                  title: UbhiNAS
+                  show_header_toggle: false
+                  card_mod: *admin_card
+                filter:
+                  include:
+                    - group: group.ubhinas
+
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  state_color: true
+                  title: PlexNAS
+                  show_header_toggle: false
+                  card_mod: *admin_card
+                filter:
+                  include:
+                    - group: group.plexnas
+
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  state_color: true
+                  title: System Monitor
+                  show_header_toggle: false
+                  card_mod: *admin_card
+                filter:
+                  include:
+                    - group: group.system_monitor
+
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  state_color: true
+                  title: Internet
+                  show_header_toggle: false
+                  card_mod: *admin_card
+                filter:
+                  include:
+                    - group: group.internet
+
+              - type: custom:auto-entities
+                card:
+                  type: entities
+                  state_color: true
+                  title: Time & Date
+                  show_header_toggle: false
+                  card_mod: *admin_card
+                filter:
+                  include:
+                    - group: group.time_date

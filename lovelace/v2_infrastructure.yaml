@@ -1,5 +1,4 @@
 title: Infrastructure
-path: infrastructure
 icon: mdi:server-network
 panel: true
 cards:
@@ -9,259 +8,225 @@ cards:
         layout_type: custom:grid-layout
         layout:
           grid-template-columns: 1fr
-          grid-gap: 10px
-          margin: 8px 12px 16px 12px
-          mediaquery:
-            "(max-width: 600px)":
-              grid-gap: 8px
-              margin: 6px 6px 14px 6px
+          grid-gap: 14px
+          margin: 14px 18px 24px 18px
         cards:
 
           # ════════════════════════════════════════════════════════════════════
-          #  COMPACT INFRASTRUCTURE BAR — Rack PDU, NAS & Host Telemetry
+          #  SOLSTICE INFRASTRUCTURE HUD — HomeLab Rack & Compute Telemetry
           # ════════════════════════════════════════════════════════════════════
+          - type: markdown
+            content: >-
+              <div class="hud-bar">
+                <div class="hud-left">
+                  <div class="hud-eyebrow">SOLSTICE DATACENTER · RACK PDU, COMPUTE & STORAGE ARRAYS</div>
+                  <div class="hud-title">HomeLab & Infrastructure <span class="hud-divider">·</span> <span class="hud-sub">Rack Draw {{ states('sensor.homelab_server_pdu_load') }} A</span></div>
+                </div>
+                <div class="hud-badges">
+                  <span class="hud-pill {{ 'pill-ok' if is_state('sensor.ubhinas_status','good') else 'pill-alert' }}">● UbhiNAS {{ states('sensor.ubhinas_status') | title }}</span>
+                  <span class="hud-pill {{ 'pill-ok' if is_state('sensor.plexnas_status','good') else 'pill-alert' }}">● PlexNAS {{ states('sensor.plexnas_status') | title }}</span>
+                  <span class="hud-pill pill-amber">⚡ {{ states('sensor.homelab_server_pdu_load') }}A PDU Load</span>
+                  <span class="hud-pill pill-sky">CPU {{ states('sensor.processor_use') }}% · RAM {{ states('sensor.memory_use_percent') }}%</span>
+                </div>
+              </div>
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(41, 50, 72, 0.92) 0%, rgba(28, 35, 52, 0.96) 100%) !important;
+                  border-radius: 8px !important;
+                  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+                  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.14), 0 12px 30px -8px rgba(8, 12, 21, 0.5) !important;
+                  padding: 4px 10px !important;
+                }
+                .hud-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+                .hud-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: 1.8px; color: #38bdf8; margin-bottom: 2px; }
+                .hud-title { font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif; font-size: 22px; font-weight: 700; color: #f8fafc; letter-spacing: -0.3px; }
+                .hud-divider { color: rgba(148, 163, 184, 0.45); margin: 0 4px; }
+                .hud-sub { font-weight: 500; font-size: 16px; color: #94a3b8; }
+                .hud-badges { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+                .hud-pill { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12.5px; font-weight: 600; padding: 6px 14px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.08); }
+                .pill-ok { background: rgba(52, 211, 153, 0.14); color: #6ee7b7; border-color: rgba(52, 211, 153, 0.3); }
+                .pill-alert { background: rgba(251, 113, 133, 0.18); color: #fda4af; border-color: rgba(251, 113, 133, 0.38); }
+                .pill-amber { background: rgba(251, 191, 36, 0.14); color: #fde68a; border-color: rgba(251, 191, 36, 0.3); }
+                .pill-sky { background: rgba(56, 189, 248, 0.14); color: #bae6fd; border-color: rgba(56, 189, 248, 0.3); }
+
+          # ── Rack Node Status Chips ──
           - type: custom:mushroom-chips-card
-            alignment: justify
+            alignment: center
+            card_mod:
+              style: |
+                mushroom-chip {
+                  --chip-background: rgba(36, 45, 66, 0.90) !important;
+                  --chip-border-radius: 6px !important;
+                  border: 1px solid rgba(255,255,255,0.07) !important;
+                }
             chips:
-              - type: template
-                icon: mdi:flash
-                icon_color: amber
-                content: "PDU {{ states('sensor.homelab_server_pdu_load') }}A"
-                tap_action:
-                  action: more-info
-                  entity: sensor.homelab_server_pdu_load
               - type: template
                 icon: mdi:nas
                 icon_color: "{{ 'green' if is_state('sensor.ubhinas_status','good') else 'red' }}"
-                content: "UbhiNAS: {{ states('sensor.ubhinas_status') | title }}"
+                content: UbhiNAS
                 tap_action:
                   action: more-info
                   entity: sensor.ubhinas_status
               - type: template
                 icon: mdi:nas
                 icon_color: "{{ 'green' if is_state('sensor.plexnas_status','good') else 'red' }}"
-                content: "PlexNAS: {{ states('sensor.plexnas_status') | title }}"
+                content: PlexNAS
                 tap_action:
                   action: more-info
                   entity: sensor.plexnas_status
               - type: template
-                icon: mdi:cpu-64-bit
-                icon_color: light-blue
-                content: "HA CPU {{ states('sensor.processor_use') }}% · RAM {{ states('sensor.memory_use_percent') }}%"
-                tap_action:
-                  action: more-info
-                  entity: sensor.processor_use
+                icon: mdi:server
+                icon_color: "{{ 'green' if is_state('switch.homelab_server_pdu_outlet_2','on') else 'grey' }}"
+                content: HP DL380
               - type: template
-                icon: mdi:wan
-                icon_color: cyan
-                content: "↓{{ states('sensor.speedtest_download') | float(0) | round(0) }} ↑{{ states('sensor.speedtest_upload') | float(0) | round(0) }} Mbps"
-                tap_action:
-                  action: more-info
-                  entity: sensor.speedtest_download
+                icon: mdi:server
+                icon_color: "{{ 'green' if is_state('switch.homelab_server_pdu_outlet_3','on') else 'grey' }}"
+                content: SM-01
               - type: template
-                icon: mdi:chart-areaspline
-                icon_color: orange
-                content: "Grafana ↗"
-                tap_action:
-                  action: url
-                  url_path: https://grafana.ubhits.com/d/ae751mokonhfkf/nas-status?orgId=1&timezone=browser&kiosk
+                icon: mdi:server
+                icon_color: "{{ 'green' if is_state('switch.homelab_server_pdu_outlet_4','on') else 'grey' }}"
+                content: SM-02
+              - type: template
+                icon: mdi:cctv
+                icon_color: "{{ 'green' if is_state('switch.homelab_server_pdu_outlet_8','on') else 'red' }}"
+                content: NVR
+              - type: template
+                icon: mdi:flash
+                icon_color: amber
+                content: "{{ states('sensor.homelab_server_pdu_load') }}A draw"
 
           # ════════════════════════════════════════════════════════════════════
-          #  PDU POWER CONTROLS — 8-Outlet Switched Rack Matrix (4-col / 2-col)
+          #  PDU POWER CONTROLS — 8-Outlet Switched Rack Matrix
           # ════════════════════════════════════════════════════════════════════
+          - type: custom:mushroom-title-card
+            title: Switched Rack PDU
+            subtitle: "8-Channel Power Distribution · Current Draw: {{ states('sensor.homelab_server_pdu_load') }} A"
+
           - type: custom:layout-card
             layout_type: custom:grid-layout
             layout:
-              grid-template-columns: repeat(4, minmax(0, 1fr))
-              grid-gap: 8px
+              grid-template-columns: repeat(4, 1fr)
+              grid-gap: 12px
               mediaquery:
-                "(max-width: 900px)":
-                  grid-template-columns: repeat(2, minmax(0, 1fr))
+                "(max-width: 1000px)":
+                  grid-template-columns: repeat(3, 1fr)
+                "(max-width: 600px)":
+                  grid-template-columns: 1fr 1fr
             cards:
               - type: custom:mushroom-entity-card
                 entity: switch.homelab_server_pdu_outlet_1
                 name: Network Switch
                 icon: mdi:router-network-wireless
                 icon_color: cyan
-                layout: horizontal
                 tap_action: &pdu_net_confirm
                   action: toggle
                   confirmation:
                     text: "Toggle power for HomeLab Network Switch?"
                 icon_tap_action: *pdu_net_confirm
+                layout: vertical
+                card_mod: &infra_card
+                  style: |
+                    ha-card {
+                      background: linear-gradient(145deg, rgba(41, 50, 72, 0.90) 0%, rgba(30, 37, 54, 0.94) 100%) !important;
+                      border-radius: 8px !important;
+                      border: 1px solid rgba(255, 255, 255, 0.085) !important;
+                      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.12), 0 10px 24px -6px rgba(9, 13, 22, 0.45) !important;
+                    }
 
               - type: custom:mushroom-entity-card
                 entity: switch.homelab_server_pdu_outlet_2
                 name: HP DL380 G9
                 icon: mdi:server
                 icon_color: amber
-                layout: horizontal
                 tap_action: &pdu_dl380_confirm
                   action: toggle
                   confirmation:
                     text: "Toggle power for HP DL380 G9?"
                 icon_tap_action: *pdu_dl380_confirm
+                layout: vertical
+                card_mod: *infra_card
 
               - type: custom:mushroom-entity-card
                 entity: switch.homelab_server_pdu_outlet_3
                 name: SuperMicro 01
                 icon: mdi:server
                 icon_color: purple
-                layout: horizontal
                 tap_action: &pdu_sm01_confirm
                   action: toggle
                   confirmation:
                     text: "Toggle power for SuperMicro 01?"
                 icon_tap_action: *pdu_sm01_confirm
+                layout: vertical
+                card_mod: *infra_card
 
               - type: custom:mushroom-entity-card
                 entity: switch.homelab_server_pdu_outlet_4
                 name: SuperMicro 02
                 icon: mdi:server
                 icon_color: purple
-                layout: horizontal
                 tap_action: &pdu_sm02_confirm
                   action: toggle
                   confirmation:
                     text: "Toggle power for SuperMicro 02?"
                 icon_tap_action: *pdu_sm02_confirm
+                layout: vertical
+                card_mod: *infra_card
 
               - type: custom:mushroom-entity-card
                 entity: switch.homelab_server_pdu_outlet_5
                 name: Rack Monitor
                 icon: mdi:monitor
                 icon_color: light-blue
-                layout: horizontal
                 tap_action: &pdu_mon_confirm
                   action: toggle
                   confirmation:
                     text: "Toggle power for Rack Monitor?"
                 icon_tap_action: *pdu_mon_confirm
+                layout: vertical
+                card_mod: *infra_card
 
               - type: custom:mushroom-entity-card
                 entity: switch.homelab_server_pdu_outlet_6
                 name: PlexNAS
                 icon: mdi:nas
                 icon_color: green
-                layout: horizontal
                 tap_action: &pdu_plex_confirm
                   action: toggle
                   confirmation:
                     text: "Toggle power for PlexNAS?"
                 icon_tap_action: *pdu_plex_confirm
+                layout: vertical
+                card_mod: *infra_card
 
               - type: custom:mushroom-entity-card
                 entity: switch.homelab_server_pdu_outlet_7
                 name: ThorNAS
                 icon: mdi:nas
                 icon_color: green
-                layout: horizontal
                 tap_action: &pdu_thor_confirm
                   action: toggle
                   confirmation:
                     text: "Toggle power for ThorNAS?"
                 icon_tap_action: *pdu_thor_confirm
+                layout: vertical
+                card_mod: *infra_card
 
               - type: custom:mushroom-entity-card
                 entity: switch.homelab_server_pdu_outlet_8
                 name: NVR
                 icon: mdi:cctv
                 icon_color: teal
-                layout: horizontal
                 tap_action: &pdu_nvr_confirm
                   action: toggle
                   confirmation:
                     text: "Toggle power for the NVR?"
                 icon_tap_action: *pdu_nvr_confirm
+                layout: vertical
+                card_mod: *infra_card
 
           # ════════════════════════════════════════════════════════════════════
-          #  STORAGE ARRAYS (Native HA Telemetry — Replaces Heavy Iframe)
-          # ════════════════════════════════════════════════════════════════════
-          - type: custom:layout-card
-            layout_type: custom:grid-layout
-            layout:
-              grid-template-columns: repeat(2, minmax(0, 1fr))
-              grid-gap: 10px
-              mediaquery:
-                "(max-width: 800px)":
-                  grid-template-columns: 1fr
-            cards:
-              # UbhiNAS Card
-              - type: vertical-stack
-                cards:
-                  - type: custom:mushroom-template-card
-                    entity: sensor.ubhinas_status
-                    primary: "UbhiNAS · {{ states('sensor.ubhinas_status') | title }}"
-                    secondary: "Used: {{ states('sensor.ubhinas_volume_used_storage') }}% · Free: {{ states('sensor.ubhinas_free_space_storage') }} TB"
-                    icon: mdi:nas
-                    icon_color: "{{ 'green' if is_state('sensor.ubhinas_status','good') else 'red' }}"
-                    layout: horizontal
-                    tap_action:
-                      action: more-info
-                  - type: custom:layout-card
-                    layout_type: custom:grid-layout
-                    layout:
-                      grid-template-columns: repeat(3, minmax(0, 1fr))
-                      grid-gap: 6px
-                    cards:
-                      - type: custom:mushroom-entity-card
-                        entity: sensor.ubhinas_cpu_usage
-                        name: CPU
-                        icon: mdi:cpu-64-bit
-                        icon_color: light-blue
-                        layout: horizontal
-                      - type: custom:mushroom-entity-card
-                        entity: sensor.ubhinas_memory_usage
-                        name: RAM
-                        icon: mdi:memory
-                        icon_color: purple
-                        layout: horizontal
-                      - type: custom:mushroom-entity-card
-                        entity: sensor.ubhinas_system_temperature
-                        name: Temp
-                        icon: mdi:thermometer
-                        icon_color: amber
-                        layout: horizontal
-
-              # PlexNAS Card
-              - type: vertical-stack
-                cards:
-                  - type: custom:mushroom-template-card
-                    entity: sensor.plexnas_status
-                    primary: "PlexNAS · {{ states('sensor.plexnas_status') | title }}"
-                    secondary: "Used: {{ states('sensor.plexnas_volume_used_storage') }}% · Free: {{ states('sensor.plexnas_free_space_storage') }} TB"
-                    icon: mdi:nas
-                    icon_color: "{{ 'green' if is_state('sensor.plexnas_status','good') else 'red' }}"
-                    layout: horizontal
-                    tap_action:
-                      action: more-info
-                  - type: custom:layout-card
-                    layout_type: custom:grid-layout
-                    layout:
-                      grid-template-columns: repeat(3, minmax(0, 1fr))
-                      grid-gap: 6px
-                    cards:
-                      - type: custom:mushroom-entity-card
-                        entity: sensor.plexnas_cpu_usage
-                        name: CPU
-                        icon: mdi:cpu-64-bit
-                        icon_color: light-blue
-                        layout: horizontal
-                      - type: custom:mushroom-entity-card
-                        entity: sensor.plexnas_memory_usage
-                        name: RAM
-                        icon: mdi:memory
-                        icon_color: purple
-                        layout: horizontal
-                      - type: custom:mushroom-entity-card
-                        entity: sensor.plexnas_system_temperature
-                        name: Temp
-                        icon: mdi:thermometer
-                        icon_color: amber
-                        layout: horizontal
-
-          # ════════════════════════════════════════════════════════════════════
-          #  HP DL380 G9 TITAN AI SERVER — Conditional Telemetry
+          #  HP DL380 G9 TITAN AI SERVER — Conditional Telemetry Deck
           # ════════════════════════════════════════════════════════════════════
           - type: conditional
             conditions:
@@ -271,48 +236,133 @@ cards:
             card:
               type: vertical-stack
               cards:
+                - type: custom:mushroom-title-card
+                  title: HP DL380 G9 · Titan AI Server
+                  subtitle: iLO Hardware Health & Thermal Telemetry
+
                 - type: custom:layout-card
                   layout_type: custom:grid-layout
                   layout:
-                    grid-template-columns: repeat(4, minmax(0, 1fr))
-                    grid-gap: 8px
-                    mediaquery:
-                      "(max-width: 900px)":
-                        grid-template-columns: repeat(2, minmax(0, 1fr))
+                    grid-template-columns: 1fr 1fr 1fr
+                    grid-gap: 12px
                   cards:
                     - type: custom:mushroom-entity-card
                       entity: sensor.hp_ilo_power_status
-                      name: DL380 Power
+                      name: Power State
                       icon: mdi:power
                       icon_color: green
                       layout: horizontal
+                      card_mod: *infra_card
                     - type: custom:mushroom-entity-card
                       entity: sensor.hp_ilo_power_reading
                       name: Power Draw
                       icon: mdi:flash
                       icon_color: amber
                       layout: horizontal
-                    - type: custom:mushroom-template-card
-                      entity: sensor.hp_ilo_temp_cpu1
-                      primary: "CPU {{ states('sensor.hp_ilo_temp_cpu1') }}° / {{ states('sensor.hp_ilo_temp_cpu2') }}°C"
-                      secondary: "Inlet {{ states('sensor.hp_ilo_temp_inlet') }}°C"
-                      icon: mdi:thermometer
-                      icon_color: amber
-                      layout: horizontal
-                    - type: custom:mushroom-template-card
-                      primary: iLO Power Cycle
-                      secondary: Toggle Server Power
+                      card_mod: *infra_card
+                    - type: button
                       icon: mdi:power-cycle
-                      icon_color: red
-                      layout: horizontal
+                      name: iLO Toggle
                       tap_action:
                         action: call-service
                         service: rest_command.hp_server_toggleonoff
                         confirmation:
                           text: "Toggle HP DL380 via iLO?"
+                      card_mod: *infra_card
+
+                - type: custom:mini-graph-card
+                  name: HP DL380 Real-Time Power Draw (W)
+                  unit: W
+                  icon: mdi:server
+                  hours_to_show: 1
+                  points_per_hour: 60
+                  update_interval: 60
+                  animate: true
+                  line_width: 2
+                  smoothing: true
+                  entities:
+                    - entity: sensor.hp_ilo_power_reading
+                      color: '#fbbf24'
+                  show:
+                    graph: bar
+                  card_mod: *infra_card
+
+                - type: custom:layout-card
+                  layout_type: custom:grid-layout
+                  layout:
+                    grid-template-columns: repeat(5, 1fr)
+                    grid-gap: 10px
+                    mediaquery:
+                      "(max-width: 1000px)":
+                        grid-template-columns: repeat(3, 1fr)
+                  cards:
+                    - type: custom:mushroom-entity-card
+                      entity: sensor.hp_ilo_health_processor_status
+                      name: CPU
+                      icon: mdi:cpu-64-bit
+                      layout: vertical
+                      card_mod: *infra_card
+                    - type: custom:mushroom-entity-card
+                      entity: sensor.hp_ilo_health_memory_status
+                      name: Memory
+                      icon: mdi:memory
+                      layout: vertical
+                      card_mod: *infra_card
+                    - type: custom:mushroom-entity-card
+                      entity: sensor.hp_ilo_health_storage_status
+                      name: Storage
+                      icon: mdi:harddisk
+                      layout: vertical
+                      card_mod: *infra_card
+                    - type: custom:mushroom-entity-card
+                      entity: sensor.hp_ilo_health_fan_status
+                      name: Fans
+                      icon: mdi:fan
+                      layout: vertical
+                      card_mod: *infra_card
+                    - type: custom:mushroom-entity-card
+                      entity: sensor.hp_ilo_health_network_status
+                      name: Network
+                      icon: mdi:ethernet
+                      layout: vertical
+                      card_mod: *infra_card
+
+                - type: custom:layout-card
+                  layout_type: custom:grid-layout
+                  layout:
+                    grid-template-columns: repeat(3, 1fr)
+                    grid-gap: 10px
+                  cards:
+                    - type: custom:mushroom-template-card
+                      primary: "{{ states('sensor.hp_ilo_temp_inlet') }}°C"
+                      secondary: Inlet Temp
+                      icon: mdi:thermometer
+                      icon_color: |-
+                        {% set t = states('sensor.hp_ilo_temp_inlet') | float(0) %}
+                        {% if t < 30 %}green{% elif t < 40 %}amber{% else %}red{% endif %}
+                      layout: horizontal
+                      card_mod: *infra_card
+                    - type: custom:mushroom-template-card
+                      primary: "{{ states('sensor.hp_ilo_temp_cpu1') }}°C"
+                      secondary: CPU 1
+                      icon: mdi:cpu-64-bit
+                      icon_color: |-
+                        {% set t = states('sensor.hp_ilo_temp_cpu1') | float(0) %}
+                        {% if t < 60 %}green{% elif t < 80 %}amber{% else %}red{% endif %}
+                      layout: horizontal
+                      card_mod: *infra_card
+                    - type: custom:mushroom-template-card
+                      primary: "{{ states('sensor.hp_ilo_temp_cpu2') }}°C"
+                      secondary: CPU 2
+                      icon: mdi:cpu-64-bit
+                      icon_color: |-
+                        {% set t = states('sensor.hp_ilo_temp_cpu2') | float(0) %}
+                        {% if t < 60 %}green{% elif t < 80 %}amber{% else %}red{% endif %}
+                      layout: horizontal
+                      card_mod: *infra_card
 
           # ════════════════════════════════════════════════════════════════════
-          #  SUPERMICRO 01 & 02 — Conditional Telemetry
+          #  SUPERMICRO 01 — Conditional Telemetry
           # ════════════════════════════════════════════════════════════════════
           - type: conditional
             conditions:
@@ -320,97 +370,190 @@ cards:
                 entity: switch.homelab_server_pdu_outlet_3
                 state: "on"
             card:
-              type: custom:layout-card
-              layout_type: custom:grid-layout
-              layout:
-                grid-template-columns: repeat(4, minmax(0, 1fr))
-                grid-gap: 8px
-                mediaquery:
-                  "(max-width: 900px)":
-                    grid-template-columns: repeat(2, minmax(0, 1fr))
+              type: vertical-stack
               cards:
-                - type: custom:mushroom-entity-card
-                  entity: sensor.supermicro_01_state
-                  name: SM-01 State
-                  icon: mdi:server
-                  layout: horizontal
-                - type: custom:mushroom-entity-card
-                  entity: sensor.supermicro_01_cpu1_temp
-                  name: SM-01 CPU 1
-                  icon: mdi:cpu-64-bit
-                  layout: horizontal
-                - type: custom:mushroom-entity-card
-                  entity: sensor.supermicro_01_cpu2_temp
-                  name: SM-01 CPU 2
-                  icon: mdi:cpu-64-bit
-                  layout: horizontal
-                - type: custom:mushroom-entity-card
-                  entity: sensor.supermicro_01_system_temp
-                  name: SM-01 Sys Temp
-                  icon: mdi:thermometer
-                  layout: horizontal
+                - type: custom:mushroom-title-card
+                  title: SuperMicro 01
+                - type: custom:layout-card
+                  layout_type: custom:grid-layout
+                  layout:
+                    grid-template-columns: repeat(3, 1fr)
+                    grid-gap: 10px
+                  cards:
+                    - type: custom:mushroom-entity-card
+                      entity: sensor.supermicro_01_state
+                      name: State
+                      layout: horizontal
+                      card_mod: *infra_card
+                    - type: custom:mushroom-template-card
+                      primary: "{{ states('sensor.supermicro_01_cpu1_temp') }}°C"
+                      secondary: CPU 1
+                      icon: mdi:cpu-64-bit
+                      icon_color: |-
+                        {% set t = states('sensor.supermicro_01_cpu1_temp') | float(0) %}
+                        {% if t < 60 %}green{% elif t < 80 %}amber{% else %}red{% endif %}
+                      layout: horizontal
+                      card_mod: *infra_card
+                    - type: custom:mushroom-template-card
+                      primary: "{{ states('sensor.supermicro_01_cpu2_temp') }}°C"
+                      secondary: CPU 2
+                      icon: mdi:cpu-64-bit
+                      icon_color: |-
+                        {% set t = states('sensor.supermicro_01_cpu2_temp') | float(0) %}
+                        {% if t < 60 %}green{% elif t < 80 %}amber{% else %}red{% endif %}
+                      layout: horizontal
+                      card_mod: *infra_card
+                - type: custom:layout-card
+                  layout_type: custom:grid-layout
+                  layout:
+                    grid-template-columns: repeat(4, 1fr)
+                    grid-gap: 10px
+                  cards:
+                    - type: custom:mushroom-entity-card
+                      entity: switch.supermicro_01_server_chassis
+                      name: Chassis
+                      layout: vertical
+                      card_mod: *infra_card
+                    - type: custom:mushroom-entity-card
+                      entity: sensor.supermicro_01_system_temp
+                      name: System
+                      layout: vertical
+                      card_mod: *infra_card
+                    - type: custom:mushroom-entity-card
+                      entity: sensor.supermicro_01_pch_temp
+                      name: PCH
+                      layout: vertical
+                      card_mod: *infra_card
+                    - type: custom:mushroom-entity-card
+                      entity: sensor.supermicro_01_peripheral_temp
+                      name: Peripheral
+                      layout: vertical
+                      card_mod: *infra_card
 
+          # ════════════════════════════════════════════════════════════════════
+          #  SUPERMICRO 02 — Conditional Telemetry
+          # ════════════════════════════════════════════════════════════════════
           - type: conditional
             conditions:
               - condition: state
                 entity: switch.homelab_server_pdu_outlet_4
                 state: "on"
             card:
-              type: custom:layout-card
-              layout_type: custom:grid-layout
-              layout:
-                grid-template-columns: repeat(4, minmax(0, 1fr))
-                grid-gap: 8px
-                mediaquery:
-                  "(max-width: 900px)":
-                    grid-template-columns: repeat(2, minmax(0, 1fr))
+              type: vertical-stack
               cards:
-                - type: custom:mushroom-entity-card
-                  entity: sensor.supermicro_02_state
-                  name: SM-02 State
-                  icon: mdi:server
-                  layout: horizontal
-                - type: custom:mushroom-entity-card
-                  entity: sensor.supermicro_02_cpu1_temp
-                  name: SM-02 CPU 1
-                  icon: mdi:cpu-64-bit
-                  layout: horizontal
-                - type: custom:mushroom-entity-card
-                  entity: sensor.supermicro_02_cpu2_temp
-                  name: SM-02 CPU 2
-                  icon: mdi:cpu-64-bit
-                  layout: horizontal
-                - type: custom:mushroom-entity-card
-                  entity: sensor.supermicro_02_system_temp
-                  name: SM-02 Sys Temp
-                  icon: mdi:thermometer
-                  layout: horizontal
+                - type: custom:mushroom-title-card
+                  title: SuperMicro 02
+                - type: custom:layout-card
+                  layout_type: custom:grid-layout
+                  layout:
+                    grid-template-columns: repeat(3, 1fr)
+                    grid-gap: 10px
+                  cards:
+                    - type: custom:mushroom-entity-card
+                      entity: sensor.supermicro_02_state
+                      name: State
+                      layout: horizontal
+                      card_mod: *infra_card
+                    - type: custom:mushroom-template-card
+                      primary: "{{ states('sensor.supermicro_02_cpu1_temp') }}°C"
+                      secondary: CPU 1
+                      icon: mdi:cpu-64-bit
+                      icon_color: |-
+                        {% set t = states('sensor.supermicro_02_cpu1_temp') | float(0) %}
+                        {% if t < 60 %}green{% elif t < 80 %}amber{% else %}red{% endif %}
+                      layout: horizontal
+                      card_mod: *infra_card
+                    - type: custom:mushroom-template-card
+                      primary: "{{ states('sensor.supermicro_02_cpu2_temp') }}°C"
+                      secondary: CPU 2
+                      icon: mdi:cpu-64-bit
+                      icon_color: |-
+                        {% set t = states('sensor.supermicro_02_cpu2_temp') | float(0) %}
+                        {% if t < 60 %}green{% elif t < 80 %}amber{% else %}red{% endif %}
+                      layout: horizontal
+                      card_mod: *infra_card
+                - type: custom:layout-card
+                  layout_type: custom:grid-layout
+                  layout:
+                    grid-template-columns: repeat(4, 1fr)
+                    grid-gap: 10px
+                  cards:
+                    - type: custom:mushroom-entity-card
+                      entity: switch.supermicro_02_server_chassis
+                      name: Chassis
+                      layout: vertical
+                      card_mod: *infra_card
+                    - type: custom:mushroom-entity-card
+                      entity: sensor.supermicro_02_system_temp
+                      name: System
+                      layout: vertical
+                      card_mod: *infra_card
+                    - type: custom:mushroom-entity-card
+                      entity: sensor.supermicro_02_pch_temp
+                      name: PCH
+                      layout: vertical
+                      card_mod: *infra_card
+                    - type: custom:mushroom-entity-card
+                      entity: sensor.supermicro_02_peripheral_temp
+                      name: Peripheral
+                      layout: vertical
+                      card_mod: *infra_card
 
           # ════════════════════════════════════════════════════════════════════
-          #  HOME ASSISTANT CORE & WAN TELEMETRY (3-col / 2-col)
+          #  NAS HEALTH — Grafana Storage Analytics
           # ════════════════════════════════════════════════════════════════════
+          - type: custom:mushroom-title-card
+            title: Storage Arrays & NAS Telemetry
+            subtitle: Live Grafana Health Metrics
+
+          - type: iframe
+            url: https://grafana.ubhits.com/d/ae751mokonhfkf/nas-status?orgId=1&timezone=browser&kiosk
+            aspect_ratio: 60%
+            card_mod:
+              style: |
+                ha-card {
+                  background: rgba(25, 31, 46, 0.88) !important;
+                  border-radius: 8px !important;
+                  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+                  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.12), 0 16px 36px -10px rgba(8, 12, 21, 0.5) !important;
+                  overflow: hidden;
+                }
+
+          # ════════════════════════════════════════════════════════════════════
+          #  HOME ASSISTANT CORE RESOURCES
+          # ════════════════════════════════════════════════════════════════════
+          - type: custom:mushroom-title-card
+            title: Home Assistant Core Host
+            subtitle: Compute, Memory & Storage Utilization
+
           - type: custom:layout-card
             layout_type: custom:grid-layout
             layout:
-              grid-template-columns: repeat(3, minmax(0, 1fr))
-              grid-gap: 8px
+              grid-template-columns: repeat(3, 1fr)
+              grid-gap: 12px
               mediaquery:
-                "(max-width: 768px)":
-                  grid-template-columns: repeat(2, minmax(0, 1fr))
+                "(max-width: 600px)":
+                  grid-template-columns: 1fr 1fr
             cards:
-              - type: custom:mushroom-entity-card
-                entity: sensor.processor_use
-                name: HA CPU Usage
+              - type: custom:mushroom-template-card
+                primary: "{{ states('sensor.processor_use') }}%"
+                secondary: CPU Usage
                 icon: mdi:cpu-64-bit
-                icon_color: green
+                icon_color: |-
+                  {% set u = states('sensor.processor_use') | float(0) %}
+                  {% if u < 50 %}green{% elif u < 80 %}amber{% else %}red{% endif %}
                 layout: horizontal
+                card_mod: *infra_card
 
-              - type: custom:mushroom-entity-card
-                entity: sensor.memory_use_percent
-                name: HA Memory
+              - type: custom:mushroom-template-card
+                primary: "{{ states('sensor.memory_use_percent') }}%"
+                secondary: Memory Usage
                 icon: mdi:memory
-                icon_color: light-blue
+                icon_color: |-
+                  {% set u = states('sensor.memory_use_percent') | float(0) %}
+                  {% if u < 60 %}green{% elif u < 85 %}amber{% else %}red{% endif %}
                 layout: horizontal
+                card_mod: *infra_card
 
               - type: custom:mushroom-entity-card
                 entity: sensor.disk_free
@@ -418,24 +561,30 @@ cards:
                 icon: mdi:harddisk
                 icon_color: cyan
                 layout: horizontal
+                card_mod: *infra_card
 
               - type: custom:mushroom-entity-card
                 entity: sensor.load_1m
-                name: Load (1m)
+                name: Load 1m
+                icon: mdi:gauge
+                icon_color: light-blue
+                layout: horizontal
+                card_mod: *infra_card
+
+              - type: custom:mushroom-entity-card
+                entity: sensor.load_5m
+                name: Load 5m
                 icon: mdi:gauge
                 icon_color: purple
                 layout: horizontal
+                card_mod: *infra_card
 
-              - type: custom:mushroom-entity-card
-                entity: sensor.xfinity_usage
-                name: Xfinity Quota
-                icon: mdi:wan
-                icon_color: amber
+              - type: custom:mushroom-template-card
+                primary: "{{ states('sensor.swap_use_percent') }}%"
+                secondary: Swap Usage
+                icon: mdi:swap-horizontal
+                icon_color: |-
+                  {% set u = states('sensor.swap_use_percent') | float(0) %}
+                  {% if u < 30 %}green{% elif u < 70 %}amber{% else %}red{% endif %}
                 layout: horizontal
-
-              - type: custom:mushroom-entity-card
-                entity: sensor.speedtest_ping
-                name: WAN Ping
-                icon: mdi:speedometer
-                icon_color: teal
-                layout: horizontal
+                card_mod: *infra_card

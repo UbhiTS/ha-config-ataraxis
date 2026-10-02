@@ -497,17 +497,47 @@ lovelace:
       icon: mdi:monitor-dashboard
       show_in_sidebar: true
   resources:
-    - url: /hacsfiles/lovelace-mushroom/mushroom.js
+    - url: /hacsfiles/atomic_calendar/atomic_calendar.js
       type: module
-    - url: /hacsfiles/lovelace-layout-card/layout-card.js
+    - url: /hacsfiles/clock-weather-card/clock-weather-card.js
+      type: module
+    #- url: /hacsfiles/atomic-calendar-revive/atomic-calendar-revive.js
+    #  type: module
+    - url: /hacsfiles/bar-card/bar-card.js
+      type: module
+    - url: /hacsfiles/bignumber-card/bignumber-card.js
+      type: module
+    - url: /hacsfiles/config-template-card/config-template-card.js
       type: module
     - url: /hacsfiles/lovelace-auto-entities/auto-entities.js
       type: module
+    - url: /hacsfiles/lovelace-layout-card/layout-card.js
+      type: module
+    - url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js
+      type: module
+    - url: /hacsfiles/simple-thermostat/simple-thermostat.js
+      type: module
+    - url: /hacsfiles/weather-card/weather-card.js
+      type: module
+    - url: /local/floorplan/floorplan-card.js?v=1.1.14
+      type: module
+    - url: /hacsfiles/lovelace-mushroom/mushroom.js
+      type: module
+    - url: /hacsfiles/button-card/button-card.js
+      type: module
+    - url: /hacsfiles/stack-in-card/stack-in-card.js
+      type: module
+    - url: /hacsfiles/vertical-stack-in-card/vertical-stack-in-card.js
+      type: module
+    - url: /hacsfiles/mini-media-player/mini-media-player-bundle.js
+      type: module
     - url: /hacsfiles/lovelace-card-mod/card-mod.js
       type: module
-    - url: /local/solstice/thermostat-range-bar.js?v=10
+    - url: /local/solstice/thermostat-range-bar.js?v=11
       type: module
-
+    - url: https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap
+      type: css
+    
 
 media_source:
 media_player:
@@ -696,11 +726,6 @@ template:
       default_entity_id: sensor.thermostat_upper_big_bedroom_temperature
       unit_of_measurement: °F
       state: "{{ state_attr('climate.thermostat_upper_big_bedroom', 'current_temperature') | float(0) }}"
-
-    - name: Thermostat Attic Temperature
-      default_entity_id: sensor.thermostat_attic_temperature
-      unit_of_measurement: °F
-      state: "{{ state_attr('climate.thermostat_attic', 'current_temperature') | float(0) }}"
 
 # tts:
 #   - platform: google_translate

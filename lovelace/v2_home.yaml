@@ -1,546 +1,480 @@
-title: Floorplan
-path: home
-icon: mdi:floor-plan
-type: custom:grid-layout
-layout:
-  grid-template-columns: 1fr
-  grid-gap: 10px
-  margin: 8px 12px 16px 12px
-  mediaquery:
-    "(max-width: 640px)":
-      grid-gap: 8px
-      margin: 6px 8px 14px 8px
+title: Home
+icon: mdi:home-variant-outline
+panel: true
 cards:
-  # ════════════════════════════════════════════════════════════════════════════
-  #  COMPACT FLOORPLAN TELEMETRY BAR
-  # ════════════════════════════════════════════════════════════════════════════
-  - type: custom:mushroom-chips-card
-    alignment: justify
-    chips:
-      - type: template
-        icon: mdi:home-thermometer-outline
-        icon_color: cyan
-        content: >-
-          {% set temps = [
-            states('sensor.thermostat_living_room_temperature') | float(0),
-            states('sensor.thermostat_master_bedroom_temperature') | float(0),
-            states('sensor.thermostat_upper_big_bedroom_temperature') | float(0),
-            states('sensor.thermostat_upper_small_bedroom_temperature') | float(0),
-            states('sensor.thermostat_upper_guest_bedroom_temperature') | float(0),
-            states('sensor.thermostat_entertainment_room_temperature') | float(0)
-          ] | reject('le', 0) | list %}
-          Avg {{ (temps | sum / (temps | count if temps | count > 0 else 1)) | round(1) }}°F
-        tap_action:
-          action: navigate
-          navigation_path: /lovelace/climate
-      - type: template
-        entity: cover.garage_door_small
-        icon: >-
-          {% set g = ['cover.garage_door_small', 'cover.garage_door_big'] | select('is_state', 'open') | list | count %}
-          {{ 'mdi:garage-alert' if g > 0 else 'mdi:garage-lock' }}
-        icon_color: >-
-          {% set g = ['cover.garage_door_small', 'cover.garage_door_big'] | select('is_state', 'open') | list | count %}
-          {{ 'red' if g > 0 else 'green' }}
-        content: >-
-          {% set g = ['cover.garage_door_small', 'cover.garage_door_big'] | select('is_state', 'open') | list | count %}
-          Garages: {{ g ~ ' Open' if g > 0 else 'Closed' }}
-        tap_action:
-          action: navigate
-          navigation_path: /lovelace/security
-      - type: template
-        icon: mdi:white-balance-sunny
-        icon_color: amber
-        content: "Daylight Scene"
-        tap_action:
-          action: call-service
-          service: script.scene_daylight_work
-      - type: template
-        icon: mdi:weather-sunset
-        icon_color: orange
-        content: "Evening Scene"
-        tap_action:
-          action: call-service
-          service: script.scene_evening_relax
-      - type: template
-        icon: mdi:lightbulb-group-off
-        icon_color: blue
-        content: "All Lights Off"
-        tap_action:
-          action: call-service
-          service: script.lights_all_off
-
-  # ════════════════════════════════════════════════════════════════════════════
-  #  LEVEL 3 — UPPER FLOOR (BEDROOMS & ATTIC)
-  # ════════════════════════════════════════════════════════════════════════════
-  - type: custom:layout-card
-    layout_type: custom:grid-layout
-    layout:
-      grid-template-columns: 1.5fr 1fr
-      grid-gap: 10px
-      margin: 0
-      mediaquery:
-        "(max-width: 960px)":
-          grid-template-columns: 1fr
+  - type: vertical-stack
     cards:
-      - type: picture-elements
-        image: /local/solstice/floor_upper.svg
-        elements:
-          - type: state-label
-            entity: sensor.thermostat_master_bedroom_temperature
-            prefix: "Master "
-            style:
-              top: 38%
-              left: 24%
-              color: "#f8fafc"
-              font-weight: 700
-              font-size: 11px
-              background: "#0f172ae6"
-              padding: 2px 8px
-              border-radius: 999px
-              border: 1px solid rgba(56, 189, 248, 0.4)
-          - type: state-icon
-            entity: fan.master_bedroom_fan_dimmer
-            tap_action:
-              action: toggle
-            style:
-              top: 52%
-              left: 24%
-              --paper-item-icon-color: "#94a3b8"
-              --paper-item-icon-active-color: "#38bdf8"
-              background: "#0f172ae6"
-              border-radius: 50%
-              padding: 3px
-          - type: state-label
-            entity: sensor.thermostat_upper_big_bedroom_temperature
-            prefix: "Big Bed "
-            style:
-              top: 36%
-              left: 55%
-              color: "#f8fafc"
-              font-weight: 700
-              font-size: 11px
-              background: "#0f172ae6"
-              padding: 2px 8px
-              border-radius: 999px
-              border: 1px solid rgba(52, 211, 153, 0.4)
-          - type: state-icon
-            entity: switch.upper_big_bedroom_light_fan
-            tap_action:
-              action: toggle
-            style:
-              top: 50%
-              left: 55%
-              --paper-item-icon-color: "#94a3b8"
-              --paper-item-icon-active-color: "#fbbf24"
-              background: "#0f172ae6"
-              border-radius: 50%
-              padding: 3px
-          - type: state-label
-            entity: sensor.thermostat_upper_small_bedroom_temperature
-            prefix: "Small "
-            style:
-              top: 36%
-              left: 80%
-              color: "#f8fafc"
-              font-weight: 700
-              font-size: 11px
-              background: "#0f172ae6"
-              padding: 2px 8px
-              border-radius: 999px
-              border: 1px solid rgba(251, 191, 36, 0.4)
-          - type: state-icon
-            entity: switch.upper_small_bedroom_light_fan
-            tap_action:
-              action: toggle
-            style:
-              top: 50%
-              left: 80%
-              --paper-item-icon-color: "#94a3b8"
-              --paper-item-icon-active-color: "#fbbf24"
-              background: "#0f172ae6"
-              border-radius: 50%
-              padding: 3px
-          - type: state-label
-            entity: sensor.thermostat_upper_guest_bedroom_temperature
-            prefix: "Guest "
-            style:
-              top: 76%
-              left: 74%
-              color: "#f8fafc"
-              font-weight: 700
-              font-size: 11px
-              background: "#0f172ae6"
-              padding: 2px 8px
-              border-radius: 999px
-              border: 1px solid rgba(167, 139, 250, 0.4)
-          - type: state-icon
-            entity: switch.upper_guest_bedroom_light_fan
-            tap_action:
-              action: toggle
-            style:
-              top: 86%
-              left: 84%
-              --paper-item-icon-color: "#94a3b8"
-              --paper-item-icon-active-color: "#fbbf24"
-              background: "#0f172ae6"
-              border-radius: 50%
-              padding: 3px
 
-      - type: vertical-stack
+      # ════════════════════════════════════════════════════════════════════════
+      #  SOLSTICE EVENING HUD — Architectural Command Header
+      # ════════════════════════════════════════════════════════════════════════
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout:
+          grid-template-columns: 1fr
+          margin: 14px 18px 0 18px
         cards:
-          - type: custom:mushroom-title-card
-            title: Level 3 — Upper Floor
-            subtitle: 4 bedroom suites & attic zone
+          - type: markdown
+            content: >-
+              {% set h = now().hour %}
+              {% set greet = 'Good Morning' if h < 12 else ('Good Afternoon' if h < 17 else 'Good Evening') %}
+              {% set doors = expand(["binary_sensor.main_door","binary_sensor.welcome_laundry_door","binary_sensor.garage_laundry_door","binary_sensor.kitchen_door","binary_sensor.master_bedroom_door","binary_sensor.upper_big_bedroom_door","binary_sensor.upper_small_bedroom_door","binary_sensor.upper_guest_bedroom_door","binary_sensor.upper_common_bathroom_door","binary_sensor.lower_common_bathroom_door"]) | selectattr("state","eq","on") | list | count %}
+              {% set wins = expand(["binary_sensor.welcome_window_left","binary_sensor.welcome_window_right","binary_sensor.welcome_window_front","binary_sensor.welcome_window_peep","binary_sensor.living_room_window_left","binary_sensor.living_room_window_right","binary_sensor.kitchen_window_left","binary_sensor.kitchen_window_right","binary_sensor.entertainment_room_window_left","binary_sensor.entertainment_room_window_right","binary_sensor.master_bedroom_window_left","binary_sensor.master_bedroom_window_right","binary_sensor.master_bedroom_window_left_small","binary_sensor.master_bedroom_window_right_small","binary_sensor.master_bathroom_window","binary_sensor.upper_big_bedroom_window_left","binary_sensor.upper_big_bedroom_window_right","binary_sensor.upper_small_bedroom_window","binary_sensor.upper_guest_bedroom_window"]) | selectattr("state","eq","on") | list | count %}
+              {% set garage = expand(["cover.garage_door_small","cover.garage_door_big"]) | selectattr("state","eq","open") | list | count %}
+              {% set open_count = doors + wins + garage %}
+              {% set lights_on = expand(["light.living_room_light","light.master_bedroom_light_left","light.master_bedroom_light_right","light.upper_small_bedroom_bed_light","switch.kitchen_light","switch.welcome_room_light","switch.entryway_light","switch.entryway_outlet_switch","switch.side_deck_light","switch.backyard_light_left","switch.backyard_light_right","switch.backyard_mesh_lights","switch.backyard_gym_lights","switch.upper_small_bedroom_light_fan","switch.upper_guest_bedroom_light_fan","switch.master_bedroom_fan_master_bedroom_fan_switch","switch.home_theatre_living_room"]) | selectattr("state","eq","on") | list | count %}
+              <div class="hud-bar">
+                <div class="hud-left">
+                  <div class="hud-eyebrow">SOLSTICE OS · INTERACTIVE ARCHITECTURAL TWIN</div>
+                  <div class="hud-title">{{ greet }} <span class="hud-divider">·</span> <span class="hud-sub">{{ now().strftime('%A, %B %-d') }}</span></div>
+                </div>
+                <div class="hud-badges">
+                  <span class="hud-pill {{ 'pill-alert' if open_count > 0 else 'pill-ok' }}">
+                    {{ '● Perimeter Secure' if open_count == 0 else ('▲ ' ~ open_count ~ ' Entry Open') }}
+                  </span>
+                  <span class="hud-pill pill-amber">✦ {{ lights_on }} Active Lights</span>
+                  <span class="hud-pill pill-sky">⚡ {{ states('sensor.solar_power') }} kW Solar · {{ states('sensor.house_load') }} kW Load</span>
+                </div>
+              </div>
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(41, 50, 72, 0.92) 0%, rgba(28, 35, 52, 0.96) 100%) !important;
+                  border-radius: 8px !important;
+                  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+                  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.14), 0 12px 30px -8px rgba(8, 12, 21, 0.5) !important;
+                  padding: 4px 10px !important;
+                }
+                .hud-bar {
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  flex-wrap: wrap;
+                  gap: 12px;
+                }
+                .hud-eyebrow {
+                  font-family: 'JetBrains Mono', monospace;
+                  font-size: 10.5px;
+                  font-weight: 600;
+                  letter-spacing: 1.8px;
+                  color: #38bdf8;
+                  margin-bottom: 2px;
+                }
+                .hud-title {
+                  font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+                  font-size: 22px;
+                  font-weight: 700;
+                  color: #f8fafc;
+                  letter-spacing: -0.3px;
+                }
+                .hud-divider {
+                  color: rgba(148, 163, 184, 0.45);
+                  margin: 0 4px;
+                }
+                .hud-sub {
+                  font-weight: 500;
+                  font-size: 16px;
+                  color: #94a3b8;
+                }
+                .hud-badges {
+                  display: flex;
+                  flex-wrap: wrap;
+                  gap: 8px;
+                  align-items: center;
+                }
+                .hud-pill {
+                  font-family: 'Plus Jakarta Sans', sans-serif;
+                  font-size: 12.5px;
+                  font-weight: 600;
+                  padding: 6px 14px;
+                  border-radius: 6px;
+                  letter-spacing: 0.2px;
+                  border: 1px solid rgba(255, 255, 255, 0.08);
+                }
+                .pill-ok {
+                  background: rgba(52, 211, 153, 0.14);
+                  color: #6ee7b7;
+                  border-color: rgba(52, 211, 153, 0.3);
+                }
+                .pill-alert {
+                  background: rgba(251, 113, 133, 0.18);
+                  color: #fda4af;
+                  border-color: rgba(251, 113, 133, 0.38);
+                }
+                .pill-amber {
+                  background: rgba(251, 191, 36, 0.14);
+                  color: #fde68a;
+                  border-color: rgba(251, 191, 36, 0.3);
+                }
+                .pill-sky {
+                  background: rgba(56, 189, 248, 0.14);
+                  color: #bae6fd;
+                  border-color: rgba(56, 189, 248, 0.3);
+                }
+
+          # ── Soft-UI Telemetry Chips Bar ──
+          - type: custom:mushroom-chips-card
+            alignment: center
+            card_mod:
+              style: |
+                mushroom-chip {
+                  --chip-background: rgba(36, 45, 66, 0.82) !important;
+                  --chip-border-radius: 6px !important;
+                  --chip-box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.12), 0 4px 12px rgba(9, 13, 22, 0.28) !important;
+                  border: 1px solid rgba(255,255,255,0.07) !important;
+                }
+            chips:
+              - type: weather
+                entity: weather.openweathermap
+                show_conditions: true
+                show_temperature: true
+              - type: template
+                icon: mdi:solar-power-variant
+                icon_color: amber
+                content: "{{ states('sensor.solar_power') }} kW"
+                tap_action:
+                  action: navigate
+                  navigation_path: /lovelace/3
+              - type: template
+                icon: mdi:battery-heart-variant
+                icon_color: >-
+                  {% set pct = states('sensor.home_energy_gateway_charge') | float(0) %}
+                  {% if pct > 50 %}green{% elif pct > 20 %}amber{% else %}red{% endif %}
+                content: "{{ states('sensor.powerwall_power_name') }}"
+                tap_action:
+                  action: navigate
+                  navigation_path: /lovelace/3
+              - type: template
+                icon: mdi:home-lightning-bolt-outline
+                icon_color: orange
+                content: "{{ states('sensor.house_load') }} kW"
+              - type: template
+                icon: mdi:shield-home-outline
+                icon_color: |-
+                  {% set doors = expand(["binary_sensor.main_door","binary_sensor.welcome_laundry_door","binary_sensor.garage_laundry_door","binary_sensor.kitchen_door","binary_sensor.master_bedroom_door","binary_sensor.upper_big_bedroom_door","binary_sensor.upper_small_bedroom_door","binary_sensor.upper_guest_bedroom_door","binary_sensor.upper_common_bathroom_door","binary_sensor.lower_common_bathroom_door"]) | selectattr("state","eq","on") | list | count %}
+                  {% set wins = expand(["binary_sensor.welcome_window_left","binary_sensor.welcome_window_right","binary_sensor.welcome_window_front","binary_sensor.welcome_window_peep","binary_sensor.living_room_window_left","binary_sensor.living_room_window_right","binary_sensor.kitchen_window_left","binary_sensor.kitchen_window_right","binary_sensor.entertainment_room_window_left","binary_sensor.entertainment_room_window_right","binary_sensor.master_bedroom_window_left","binary_sensor.master_bedroom_window_right","binary_sensor.master_bedroom_window_left_small","binary_sensor.master_bedroom_window_right_small","binary_sensor.master_bathroom_window","binary_sensor.upper_big_bedroom_window_left","binary_sensor.upper_big_bedroom_window_right","binary_sensor.upper_small_bedroom_window","binary_sensor.upper_guest_bedroom_window"]) | selectattr("state","eq","on") | list | count %}
+                  {% set garage = expand(["cover.garage_door_small","cover.garage_door_big"]) | selectattr("state","eq","open") | list | count %}
+                  {{ 'red' if (doors + wins + garage) > 0 else 'green' }}
+                content: >-
+                  {% set doors = expand(["binary_sensor.main_door","binary_sensor.welcome_laundry_door","binary_sensor.garage_laundry_door","binary_sensor.kitchen_door","binary_sensor.master_bedroom_door","binary_sensor.upper_big_bedroom_door","binary_sensor.upper_small_bedroom_door","binary_sensor.upper_guest_bedroom_door","binary_sensor.upper_common_bathroom_door","binary_sensor.lower_common_bathroom_door"]) | selectattr("state","eq","on") | list | count %}
+                  {% set wins = expand(["binary_sensor.welcome_window_left","binary_sensor.welcome_window_right","binary_sensor.welcome_window_front","binary_sensor.welcome_window_peep","binary_sensor.living_room_window_left","binary_sensor.living_room_window_right","binary_sensor.kitchen_window_left","binary_sensor.kitchen_window_right","binary_sensor.entertainment_room_window_left","binary_sensor.entertainment_room_window_right","binary_sensor.master_bedroom_window_left","binary_sensor.master_bedroom_window_right","binary_sensor.master_bedroom_window_left_small","binary_sensor.master_bedroom_window_right_small","binary_sensor.master_bathroom_window","binary_sensor.upper_big_bedroom_window_left","binary_sensor.upper_big_bedroom_window_right","binary_sensor.upper_small_bedroom_window","binary_sensor.upper_guest_bedroom_window"]) | selectattr("state","eq","on") | list | count %}
+                  {% set garage = expand(["cover.garage_door_small","cover.garage_door_big"]) | selectattr("state","eq","open") | list | count %}
+                  {% set total = doors + wins + garage %}
+                  {{ 'All Secure' if total == 0 else (total | string + ' open') }}
+                tap_action:
+                  action: navigate
+                  navigation_path: /lovelace/4
+              - type: template
+                icon: mdi:speedometer
+                icon_color: light-blue
+                content: "{{ states('sensor.speedtest_download') | float(0) | round(0) }} Mbps"
+              - type: template
+                icon: mdi:wan
+                icon_color: |-
+                  {% if states('sensor.xfinity_usage') | int(0) > states('sensor.data_allowance_till_date') | int(0) %}red
+                  {% else %}teal{% endif %}
+                content: "{{ states('sensor.xfinity_usage') | int(0) }} / 1229 GB"
+
+          # ── Moto Bay & Garage 1-Tap Command Bar above Floorplan ──
           - type: custom:layout-card
             layout_type: custom:grid-layout
             layout:
-              grid-template-columns: repeat(2, minmax(0, 1fr))
-              grid-gap: 8px
-              margin: 0
+              grid-template-columns: 1fr 1fr 1fr
+              grid-gap: 12px
+              mediaquery:
+                "(max-width: 750px)":
+                  grid-template-columns: 1fr
             cards:
-              - type: custom:mushroom-template-card
-                entity: climate.thermostat_master_bedroom
-                primary: Master Suite
-                secondary: >-
-                  {{ states('sensor.thermostat_master_bedroom_temperature') | round(0) }}°F · {{ states('sensor.thermostat_master_bedroom_humidity') | round(0) }}% · {{ states('input_select.thermostat_master_bedroom_mode') }}
-                icon: mdi:bed-king-outline
-                icon_color: >-
-                  {% set m = states('input_select.thermostat_master_bedroom_mode') | lower %}
-                  {{ 'blue' if m == 'cool' else ('orange' if m == 'heat' else ('green' if m == 'auto' else 'disabled')) }}
-                tap_action:
-                  action: navigate
-                  navigation_path: /lovelace/climate
-              - type: custom:mushroom-template-card
-                entity: climate.thermostat_upper_big_bedroom
-                primary: Upper Big Bed
-                secondary: >-
-                  {{ states('sensor.thermostat_upper_big_bedroom_temperature') | round(0) }}°F · {{ states('sensor.thermostat_upper_big_bedroom_humidity') | round(0) }}% · {{ states('input_select.thermostat_upper_big_bedroom_mode') }}
-                icon: mdi:bed-double-outline
-                icon_color: >-
-                  {% set m = states('input_select.thermostat_upper_big_bedroom_mode') | lower %}
-                  {{ 'blue' if m == 'cool' else ('orange' if m == 'heat' else ('green' if m == 'auto' else 'disabled')) }}
-                tap_action:
-                  action: navigate
-                  navigation_path: /lovelace/climate
-              - type: custom:mushroom-template-card
-                entity: climate.thermostat_upper_small_bedroom
-                primary: Upper Small Bed
-                secondary: >-
-                  {{ states('sensor.thermostat_upper_small_bedroom_temperature') | round(0) }}°F · {{ states('sensor.thermostat_upper_small_bedroom_humidity') | round(0) }}% · {{ states('input_select.thermostat_upper_small_bedroom_mode') }}
-                icon: mdi:bed-single-outline
-                icon_color: >-
-                  {% set m = states('input_select.thermostat_upper_small_bedroom_mode') | lower %}
-                  {{ 'blue' if m == 'cool' else ('orange' if m == 'heat' else ('green' if m == 'auto' else 'disabled')) }}
-                tap_action:
-                  action: navigate
-                  navigation_path: /lovelace/climate
-              - type: custom:mushroom-template-card
-                entity: climate.thermostat_upper_guest_bedroom
-                primary: Upper Guest Bed
-                secondary: >-
-                  {{ states('sensor.thermostat_upper_guest_bedroom_temperature') | round(0) }}°F · {{ states('sensor.thermostat_upper_guest_bedroom_humidity') | round(0) }}% · {{ states('input_select.thermostat_upper_guest_bedroom_mode') }}
-                icon: mdi:bed-queen-outline
-                icon_color: >-
-                  {% set m = states('input_select.thermostat_upper_guest_bedroom_mode') | lower %}
-                  {{ 'blue' if m == 'cool' else ('orange' if m == 'heat' else ('green' if m == 'auto' else 'disabled')) }}
-                tap_action:
-                  action: navigate
-                  navigation_path: /lovelace/climate
-              - type: custom:mushroom-entity-card
-                entity: switch.upper_big_bedroom_light_fan
-                name: Big Bed Fan/Light
-                tap_action:
-                  action: toggle
-              - type: custom:mushroom-entity-card
-                entity: switch.upper_small_bedroom_light_fan
-                name: Small Bed Fan/Light
-                tap_action:
-                  action: toggle
-
-  # ════════════════════════════════════════════════════════════════════════════
-  #  LEVEL 2 — MAIN FLOOR (LIVING, KITCHEN, WELCOME, ENTRYWAY)
-  # ════════════════════════════════════════════════════════════════════════════
-  - type: custom:layout-card
-    layout_type: custom:grid-layout
-    layout:
-      grid-template-columns: 1.5fr 1fr
-      grid-gap: 10px
-      margin: 0
-      mediaquery:
-        "(max-width: 960px)":
-          grid-template-columns: 1fr
-    cards:
-      - type: picture-elements
-        image: /local/solstice/floor_main.svg
-        elements:
-          - type: state-label
-            entity: sensor.thermostat_living_room_temperature
-            prefix: "Living "
-            style:
-              top: 38%
-              left: 26%
-              color: "#f8fafc"
-              font-weight: 700
-              font-size: 11px
-              background: "#0f172ae6"
-              padding: 2px 8px
-              border-radius: 999px
-              border: 1px solid rgba(56, 189, 248, 0.4)
-          - type: state-icon
-            entity: light.living_room_light
-            tap_action:
-              action: toggle
-            style:
-              top: 52%
-              left: 26%
-              --paper-item-icon-color: "#94a3b8"
-              --paper-item-icon-active-color: "#fbbf24"
-              background: "#0f172ae6"
-              border-radius: 50%
-              padding: 3px
-          - type: state-icon
-            entity: switch.kitchen_light
-            tap_action:
-              action: toggle
-            style:
-              top: 48%
-              left: 58%
-              --paper-item-icon-color: "#94a3b8"
-              --paper-item-icon-active-color: "#fbbf24"
-              background: "#0f172ae6"
-              border-radius: 50%
-              padding: 3px
-          - type: state-icon
-            entity: switch.welcome_room_light
-            tap_action:
-              action: toggle
-            style:
-              top: 45%
-              left: 82%
-              --paper-item-icon-color: "#94a3b8"
-              --paper-item-icon-active-color: "#fbbf24"
-              background: "#0f172ae6"
-              border-radius: 50%
-              padding: 3px
-          - type: state-icon
-            entity: switch.entryway_light
-            tap_action:
-              action: toggle
-            style:
-              top: 78%
-              left: 78%
-              --paper-item-icon-color: "#94a3b8"
-              --paper-item-icon-active-color: "#fbbf24"
-              background: "#0f172ae6"
-              border-radius: 50%
-              padding: 3px
-          - type: state-icon
-            entity: binary_sensor.main_door
-            style:
-              top: 84%
-              left: 88%
-              --paper-item-icon-color: "#34d399"
-              --paper-item-icon-active-color: "#fb7185"
-              background: "#0f172ae6"
-              border-radius: 50%
-              padding: 3px
-
-      - type: vertical-stack
-        cards:
-          - type: custom:mushroom-title-card
-            title: Level 2 — Main Living Level
-            subtitle: Living Room, Kitchen, Welcome Room, and Front Entry
-          - type: custom:layout-card
-            layout_type: custom:grid-layout
-            layout:
-              grid-template-columns: repeat(2, minmax(0, 1fr))
-              grid-gap: 8px
-              margin: 0
-            cards:
-              - type: custom:mushroom-template-card
-                entity: climate.thermostat_living_room
-                primary: Living Room HVAC
-                secondary: >-
-                  {{ states('sensor.thermostat_living_room_temperature') | round(0) }}°F · {{ states('sensor.thermostat_living_room_humidity') | round(0) }}% · {{ states('input_select.thermostat_living_room_mode') }}
-                icon: mdi:sofa-outline
-                icon_color: >-
-                  {% set m = states('input_select.thermostat_living_room_mode') | lower %}
-                  {{ 'blue' if m == 'cool' else ('orange' if m == 'heat' else ('green' if m == 'auto' else 'disabled')) }}
-                tap_action:
-                  action: navigate
-                  navigation_path: /lovelace/climate
-              - type: custom:mushroom-light-card
-                entity: light.living_room_light
-                name: Living Room Light
-                show_brightness_control: false
-                tap_action:
-                  action: toggle
-              - type: custom:mushroom-entity-card
-                entity: switch.kitchen_light
-                name: Kitchen Overhead
-                icon: mdi:countertop-outline
-                icon_color: amber
-                tap_action:
-                  action: toggle
-              - type: custom:mushroom-entity-card
-                entity: switch.welcome_room_light
-                name: Welcome Room
-                icon: mdi:sofa-single-outline
-                icon_color: amber
-                tap_action:
-                  action: toggle
-              - type: custom:mushroom-entity-card
-                entity: switch.entryway_light
-                name: Entryway Light
-                icon: mdi:coach-lamp
-                icon_color: amber
-                tap_action:
-                  action: toggle
-              - type: custom:mushroom-entity-card
-                entity: binary_sensor.main_door
-                name: Front Entry Door
-                icon_color: red
-
-  # ════════════════════════════════════════════════════════════════════════════
-  #  LEVEL 1 — LOWER LEVEL & GARAGE BAYS
-  # ════════════════════════════════════════════════════════════════════════════
-  - type: custom:layout-card
-    layout_type: custom:grid-layout
-    layout:
-      grid-template-columns: 1.5fr 1fr
-      grid-gap: 10px
-      margin: 0
-      mediaquery:
-        "(max-width: 960px)":
-          grid-template-columns: 1fr
-    cards:
-      - type: picture-elements
-        image: /local/solstice/floor_lower.svg
-        elements:
-          - type: state-label
-            entity: sensor.thermostat_entertainment_room_temperature
-            prefix: "Media "
-            style:
-              top: 38%
-              left: 25%
-              color: "#f8fafc"
-              font-weight: 700
-              font-size: 11px
-              background: "#0f172ae6"
-              padding: 2px 8px
-              border-radius: 999px
-              border: 1px solid rgba(52, 211, 153, 0.4)
-          - type: state-icon
-            entity: switch.lower_common_bathroom_light
-            tap_action:
-              action: toggle
-            style:
-              top: 48%
-              left: 55%
-              --paper-item-icon-color: "#94a3b8"
-              --paper-item-icon-active-color: "#fbbf24"
-              background: "#0f172ae6"
-              border-radius: 50%
-              padding: 3px
-          - type: state-icon
-            entity: cover.garage_door_big
-            tap_action:
-              action: toggle
-            style:
-              top: 45%
-              left: 80%
-              --paper-item-icon-color: "#34d399"
-              --paper-item-icon-active-color: "#fb7185"
-              background: "#0f172ae6"
-              border-radius: 50%
-              padding: 3px
-          - type: state-icon
-            entity: cover.garage_door_small
-            tap_action:
-              action: toggle
-            style:
-              top: 68%
-              left: 80%
-              --paper-item-icon-color: "#34d399"
-              --paper-item-icon-active-color: "#fb7185"
-              background: "#0f172ae6"
-              border-radius: 50%
-              padding: 3px
-          - type: state-icon
-            entity: switch.backyard_patio_lights
-            tap_action:
-              action: toggle
-            style:
-              top: 82%
-              left: 28%
-              --paper-item-icon-color: "#94a3b8"
-              --paper-item-icon-active-color: "#fbbf24"
-              background: "#0f172ae6"
-              border-radius: 50%
-              padding: 3px
-
-      - type: vertical-stack
-        cards:
-          - type: custom:mushroom-title-card
-            title: Level 1 — Lower Level & Garage
-            subtitle: Entertainment Room, Garage Bays, and Patio
-          - type: custom:layout-card
-            layout_type: custom:grid-layout
-            layout:
-              grid-template-columns: repeat(2, minmax(0, 1fr))
-              grid-gap: 8px
-              margin: 0
-            cards:
-              - type: custom:mushroom-template-card
-                entity: climate.thermostat_entertainment_room
-                primary: Entertainment HVAC
-                secondary: >-
-                  {{ states('sensor.thermostat_entertainment_room_temperature') | round(0) }}°F · {{ states('sensor.thermostat_entertainment_room_humidity') | round(0) }}% · {{ states('input_select.thermostat_entertainment_room_mode') }}
-                icon: mdi:television-ambient-light
-                icon_color: >-
-                  {% set m = states('input_select.thermostat_entertainment_room_mode') | lower %}
-                  {{ 'blue' if m == 'cool' else ('orange' if m == 'heat' else ('green' if m == 'auto' else 'disabled')) }}
-                tap_action:
-                  action: navigate
-                  navigation_path: /lovelace/climate
               - type: custom:mushroom-template-card
                 entity: cover.garage_door_small
-                primary: Moto Bay (Small)
-                secondary: "{{ states('cover.garage_door_small') | title }} · Tap to Toggle"
-                icon: "{{ 'mdi:garage-open' if is_state('cover.garage_door_small', 'open') else 'mdi:motorbike' }}"
-                icon_color: "{{ 'red' if is_state('cover.garage_door_small', 'open') else 'green' }}"
+                primary: "🏍️ Moto Bay · {{ states('cover.garage_door_small') | upper }}"
+                secondary: "{{ '1-Tap Open + Entry Lights' if is_state('cover.garage_door_small', 'closed') else '⚡ BAY OPEN — 1-Tap to Close' }}"
+                icon: "{{ 'mdi:motorbike' if is_state('cover.garage_door_small', 'closed') else 'mdi:garage-open-variant' }}"
+                icon_color: "{{ 'cyan' if is_state('cover.garage_door_small', 'closed') else 'red' }}"
+                layout: horizontal
                 tap_action:
                   action: call-service
                   service: script.moto_garage_bay
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: linear-gradient(135deg, rgba(14, 165, 233, 0.18) 0%, rgba(30, 38, 56, 0.90) 100%) !important;
+                      border: 1px solid rgba(56, 189, 248, 0.38) !important;
+                      border-radius: 8px !important;
+                    }
               - type: custom:mushroom-template-card
                 entity: cover.garage_door_big
-                primary: Big Garage Door
-                secondary: "{{ states('cover.garage_door_big') | title }} · Tap to Toggle"
-                icon: "{{ 'mdi:garage-open-variant' if is_state('cover.garage_door_big', 'open') else 'mdi:garage-variant' }}"
-                icon_color: "{{ 'red' if is_state('cover.garage_door_big', 'open') else 'green' }}"
+                primary: "🚗 Big Garage · {{ states('cover.garage_door_big') | upper }}"
+                secondary: "{{ '1-Tap Open Main Bay' if is_state('cover.garage_door_big', 'closed') else '⚡ BAY OPEN — 1-Tap to Close' }}"
+                icon: "{{ 'mdi:garage' if is_state('cover.garage_door_big', 'closed') else 'mdi:garage-open' }}"
+                icon_color: "{{ 'green' if is_state('cover.garage_door_big', 'closed') else 'red' }}"
+                layout: horizontal
                 tap_action:
                   action: call-service
                   service: cover.toggle
                   target:
                     entity_id: cover.garage_door_big
-              - type: custom:mushroom-entity-card
-                entity: switch.lower_common_bathroom_light
-                name: Lower Bath Light
-                icon: mdi:shower-head
-                icon_color: amber
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: linear-gradient(145deg, rgba(41, 50, 72, 0.82) 0%, rgba(30, 37, 54, 0.90) 100%) !important;
+                      border: 1px solid rgba(52, 211, 153, 0.28) !important;
+                      border-radius: 8px !important;
+                    }
+              - type: custom:mushroom-template-card
+                primary: Goodnight Lockdown
+                secondary: Seal Garages · Lights Off · Sleep 67°F
+                icon: mdi:shield-moon-outline
+                icon_color: indigo
+                layout: horizontal
                 tap_action:
-                  action: toggle
-              - type: custom:mushroom-entity-card
-                entity: switch.backyard_patio_lights
-                name: Backyard Patio
-                icon: mdi:outdoor-lamp
-                icon_color: amber
-                tap_action:
-                  action: toggle
-              - type: custom:mushroom-entity-card
-                entity: switch.backyard_gym_lights
-                name: Backyard Gym
-                icon: mdi:dumbbell
-                icon_color: cyan
-                tap_action:
-                  action: toggle
+                  action: call-service
+                  service: script.goodnight_lockdown
+                  confirmation:
+                    text: "Run Goodnight Lockdown (Close both garages, turn off downstairs/outdoor lights, and set HVAC to Sleep 67°F)?"
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: linear-gradient(145deg, rgba(49, 46, 129, 0.34) 0%, rgba(30, 37, 54, 0.90) 100%) !important;
+                      border: 1px solid rgba(129, 140, 248, 0.32) !important;
+                      border-radius: 8px !important;
+                    }
+
+          # ── Interactive SVG Floorplan Canvas (Framed in Soft-UI Evening Glass) ──
+          - type: 'custom:floorplan-card'
+            card_mod:
+              style: |
+                ha-card {
+                  background: radial-gradient(circle at 50% 45%, rgba(42, 52, 75, 0.68) 0%, rgba(25, 31, 46, 0.88) 100%) !important;
+                  border-radius: 8px !important;
+                  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+                  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.14), 0 18px 40px -10px rgba(8, 12, 21, 0.55) !important;
+                  padding: 8px !important;
+                }
+            config:
+              image: /local/floorplan/config/floorplan.svg?v=3.5.10
+              stylesheet: /local/floorplan/config/floorplan.css?v=3.6.0
+              rules:
+                - name: Lights
+                  entities:
+                    - light.living_room_light
+                    - light.master_bedroom_light_left
+                    - light.master_bedroom_light_right
+                    - switch.master_bedroom_fan_master_bedroom_fan_switch
+                    - switch.welcome_room_light
+                    - switch.entryway_light
+                    - switch.kitchen_light
+                    - switch.side_deck_light
+                    - switch.entryway_outlet_switch
+                    - switch.backyard_light_left
+                    - switch.backyard_light_right
+                    - switch.upper_small_bedroom_light_fan
+                    - switch.upper_guest_bedroom_light_fan
+                    - switch.home_theatre_living_room
+                    - switch.backyard_mesh_lights
+                    - switch.backyard_gym_lights
+                    - switch.entryway_festival_leds_01
+                    - switch.entryway_festival_leds_02
+                  states:
+                    - state: 'on'
+                      class: 'red'
+                    - state: 'off'
+                      class: 'entity-off'
+                    - state: 'unavailable'
+                      class: 'entity-unavailable'
+                    - state: 'unknown'
+                      class: 'entity-unavailable'
+                  action:
+                    service: homeassistant.toggle
+
+                - name: Fans
+                  entities:
+                    - fan.master_bedroom_fan_dimmer
+                  states:
+                    - state: 'on'
+                      class: 'red'
+                    - state: 'off'
+                      class: 'entity-off'
+                    - state: 'unavailable'
+                      class: 'entity-unavailable'
+                    - state: 'unknown'
+                      class: 'entity-unavailable'
+
+                - name: Binary Sensors
+                  entities:
+                    - binary_sensor.kitchen_door
+                    - binary_sensor.welcome_window_right
+                    - binary_sensor.welcome_window_left
+                    - binary_sensor.welcome_window_front
+                    - binary_sensor.welcome_window_peep
+                    - binary_sensor.main_door
+                    - binary_sensor.master_bedroom_door
+                    - binary_sensor.master_bathroom_window
+                    - binary_sensor.master_bedroom_window_left_small
+                    - binary_sensor.master_bedroom_window_left
+                    - binary_sensor.master_bedroom_window_right_small
+                    - binary_sensor.master_bedroom_window_right
+                    - binary_sensor.living_room_window_left
+                    - binary_sensor.living_room_window_right
+                    - binary_sensor.welcome_laundry_door
+                    - binary_sensor.garage_laundry_door
+                    - binary_sensor.entertainment_room_window_left
+                    - binary_sensor.entertainment_room_window_right
+                    - binary_sensor.upper_guest_bedroom_door
+                    - binary_sensor.upper_small_bedroom_door
+                    - binary_sensor.upper_big_bedroom_door
+                    - binary_sensor.upper_guest_bedroom_window
+                    - binary_sensor.upper_small_bedroom_window
+                    - binary_sensor.upper_big_bedroom_window_left
+                    - binary_sensor.upper_big_bedroom_window_right
+                    - binary_sensor.upper_common_bathroom_door
+                    - binary_sensor.lower_common_bathroom_door
+                  states:
+                    - state: 'off'
+                      class: 'entity-off'
+                    - state: 'on'
+                      class: 'red'
+                    - state: 'unavailable'
+                      class: 'entity-unavailable'
+                    - state: 'unknown'
+                      class: 'entity-unavailable'
+                  state_transitions:
+                    - name: On to off
+                      from_state: 'on'
+                      to_state: 'off'
+                      duration: 0
+
+                - name: Cameras
+                  entities:
+                    - camera.living_room_camera
+                    - camera.welcome_room_camera
+                    - camera.hallway_camera
+                  states:
+                    - state: 'idle'
+                      class: 'entity-off'
+                    - state: 'streaming'
+                      class: 'red'
+                    - state: 'recording'
+                      class: 'red'
+                    - state: 'unavailable'
+                      class: 'entity-unavailable'
+                    - state: 'unknown'
+                      class: 'entity-unavailable'
+
+                - name: Garage Doors
+                  entities:
+                    - cover.garage_door_big
+                    - cover.garage_door_small
+                  states:
+                    - state: 'closed'
+                      class: 'entity-off'
+                    - state: 'opening'
+                      class: 'red'
+                    - state: 'closing'
+                      class: 'red'
+                    - state: 'open'
+                      class: 'red'
+                    - state: 'unavailable'
+                      class: 'entity-unavailable'
+                    - state: 'unknown'
+                      class: 'entity-unavailable'
+
+                - name: Thermostat States
+                  entities:
+                    - climate.thermostat_master_bedroom
+                    - climate.thermostat_living_room
+                    - climate.thermostat_entertainment_room
+                    - climate.thermostat_upper_guest_bedroom
+                    - climate.thermostat_upper_small_bedroom
+                    - climate.thermostat_upper_big_bedroom
+                  text_template: '${!["unknown", "unavailable"].includes(entity.state) && entity.attributes.current_temperature != null ? entity.attributes.current_temperature + "°" : "—"}'
+                  states:
+                    - state: 'heat'
+                      class: 'red'
+                    - state: 'cool'
+                      class: 'blue'
+                    - state: 'heat_cool'
+                      class: 'orange'
+                    - state: 'auto'
+                      class: 'orange'
+                    - state: 'off'
+                      class: 'entity-off'
+                    - state: 'unavailable'
+                      class: 'entity-unavailable'
+                    - state: 'unknown'
+                      class: 'entity-unavailable'
+
+                - name: Thermostat Temperatures
+                  entities:
+                    - sensor.thermostat_living_room_temperature
+                    - sensor.thermostat_master_bedroom_temperature
+                    - sensor.thermostat_entertainment_room_temperature
+                    - sensor.thermostat_upper_guest_bedroom_temperature
+                    - sensor.thermostat_upper_small_bedroom_temperature
+                    - sensor.thermostat_upper_big_bedroom_temperature
+                  text_template: '${!["unknown", "unavailable"].includes(entity.state) ? parseFloat(entity.state).toFixed(1) + "°" : "—"}'
+                  states:
+                    - state: 'unavailable'
+                      class: 'entity-unavailable'
+                    - state: 'unknown'
+                      class: 'entity-unavailable'
+
+                - name: Internet States
+                  entities:
+                    - sensor.speedtest_download
+                    - sensor.speedtest_upload
+                    - sensor.speedtest_ping
+                  text_template: '${!["unknown", "unavailable"].includes(entity.state) ? parseFloat(entity.state.replace(/\s{2,}/g,"")).toFixed(1) : "—"}'
+                  states:
+                    - state: 'unavailable'
+                      class: 'entity-unavailable'
+                    - state: 'unknown'
+                      class: 'entity-unavailable'
+
+                - name: Power (Watts)
+                  entities:
+                    - sensor.entryway_outlet_power
+                  text_template: '${!["unknown", "unavailable"].includes(entity.state) ? parseFloat(entity.state).toFixed(0) + "W" : "—"}'
+                  states:
+                    - state: 'unavailable'
+                      class: 'entity-unavailable'
+                    - state: 'unknown'
+                      class: 'entity-unavailable'
+
+                - name: Power (kW)
+                  entities:
+                    - sensor.house_load
+                  text_template: '${!["unknown", "unavailable"].includes(entity.state) ? parseFloat(entity.state).toFixed(1) + " kW" : "—"}'
+                  states:
+                    - state: 'unavailable'
+                      class: 'entity-unavailable'
+                    - state: 'unknown'
+                      class: 'entity-unavailable'
+
+          # ── Currently Active Strip ──
+          - type: custom:auto-entities
+            card:
+              type: glance
+              show_state: false
+              columns: 8
+              card_mod:
+                style: |
+                  ha-card {
+                    background: linear-gradient(135deg, rgba(251, 191, 36, 0.10) 0%, rgba(34, 42, 61, 0.80) 100%) !important;
+                    border-radius: 8px !important;
+                    border: 1px solid rgba(251, 191, 36, 0.22) !important;
+                  }
+            show_empty: false
+            filter:
+              include:
+                - domain: light
+                  state: "on"
+                - domain: fan
+                  state: "on"
+                - domain: switch
+                  state: "on"
+                - domain: cover
+                  state: open
+              exclude:
+                - entity_id: "switch.homelab_*"
+                - entity_id: "switch.supermicro_*"

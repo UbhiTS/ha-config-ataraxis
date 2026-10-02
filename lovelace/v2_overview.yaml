@@ -1,130 +1,311 @@
 title: Overview
-path: overview
-icon: mdi:view-dashboard-outline
-type: custom:grid-layout
-layout:
-  grid-template-columns: 1fr
-  grid-gap: 10px
-  margin: 8px 12px 16px 12px
-  mediaquery:
-    "(max-width: 640px)":
-      grid-gap: 8px
-      margin: 6px 8px 14px 8px
+icon: mdi:view-dashboard-variant-outline
+panel: true
 cards:
-  # ════════════════════════════════════════════════════════════════════════════
-  #  COMPACT STATUS & QUICK ACTION BAR
-  # ════════════════════════════════════════════════════════════════════════════
-  - type: custom:mushroom-chips-card
-    alignment: justify
-    chips:
-      - type: template
-        entity: sensor.solar_power
-        icon: mdi:solar-power-variant
-        icon_color: amber
-        content: "Solar {{ states('sensor.solar_power') | float(0) | round(1) }} kW"
-        tap_action:
-          action: navigate
-          navigation_path: /lovelace/energy
-      - type: template
-        entity: sensor.powerwall_charge
-        icon: mdi:battery-high
-        icon_color: >-
-          {% set soc = states('sensor.powerwall_charge') | float(0) %}
-          {{ 'green' if soc >= 50 else ('amber' if soc >= 20 else 'red') }}
-        content: "PW {{ states('sensor.powerwall_charge') | float(0) | round(0) }}%"
-        tap_action:
-          action: navigate
-          navigation_path: /lovelace/energy
-      - type: template
-        entity: sensor.house_load
-        icon: mdi:home-lightning-bolt-outline
-        icon_color: cyan
-        content: "Load {{ states('sensor.house_load') | float(0) | round(1) }} kW"
-        tap_action:
-          action: navigate
-          navigation_path: /lovelace/energy
-      - type: template
-        entity: cover.garage_door_small
-        icon: >-
-          {% set g_open = ['cover.garage_door_small', 'cover.garage_door_big'] | select('is_state', 'open') | list | count %}
-          {% set d_open = ['binary_sensor.main_door', 'binary_sensor.backyard_left_door', 'binary_sensor.upper_big_bedroom_door', 'binary_sensor.upper_small_bedroom_door', 'binary_sensor.upper_guest_bedroom_door', 'binary_sensor.lower_common_bathroom_door'] | select('is_state', 'on') | list | count %}
-          {{ 'mdi:shield-alert' if (g_open + d_open) > 0 else 'mdi:shield-check' }}
-        icon_color: >-
-          {% set g_open = ['cover.garage_door_small', 'cover.garage_door_big'] | select('is_state', 'open') | list | count %}
-          {% set d_open = ['binary_sensor.main_door', 'binary_sensor.backyard_left_door', 'binary_sensor.upper_big_bedroom_door', 'binary_sensor.upper_small_bedroom_door', 'binary_sensor.upper_guest_bedroom_door', 'binary_sensor.lower_common_bathroom_door'] | select('is_state', 'on') | list | count %}
-          {{ 'red' if g_open > 0 else ('amber' if d_open > 0 else 'green') }}
-        content: >-
-          {% set g_open = ['cover.garage_door_small', 'cover.garage_door_big'] | select('is_state', 'open') | list | count %}
-          {% set d_open = ['binary_sensor.main_door', 'binary_sensor.backyard_left_door', 'binary_sensor.upper_big_bedroom_door', 'binary_sensor.upper_small_bedroom_door', 'binary_sensor.upper_guest_bedroom_door', 'binary_sensor.lower_common_bathroom_door'] | select('is_state', 'on') | list | count %}
-          {% set w_open = ['binary_sensor.living_room_window_left', 'binary_sensor.living_room_window_right', 'binary_sensor.kitchen_window_left', 'binary_sensor.kitchen_window_right', 'binary_sensor.welcome_window_front', 'binary_sensor.welcome_window_left', 'binary_sensor.welcome_window_right', 'binary_sensor.entryway_window_peep', 'binary_sensor.master_bedroom_window_left', 'binary_sensor.master_bedroom_window_right', 'binary_sensor.master_bedroom_window_left_small', 'binary_sensor.master_bedroom_window_right_small', 'binary_sensor.upper_big_bedroom_window_left', 'binary_sensor.upper_big_bedroom_window_right', 'binary_sensor.upper_small_bedroom_window', 'binary_sensor.upper_guest_bedroom_window', 'binary_sensor.lower_guest_bedroom_window', 'binary_sensor.entertainment_window_left', 'binary_sensor.entertainment_window_right'] | select('is_state', 'on') | list | count %}
-          {% if (g_open + d_open + w_open) == 0 %}Secure{% else %}{{ g_open }}G · {{ d_open }}D · {{ w_open }}W Open{% endif %}
-        tap_action:
-          action: navigate
-          navigation_path: /lovelace/security
-      - type: weather
-        entity: weather.home
-        show_temperature: true
-        show_conditions: true
-      - type: template
-        icon: mdi:shield-moon-outline
-        icon_color: indigo
-        content: "Goodnight Lockdown"
-        tap_action:
-          action: call-service
-          service: script.goodnight_lockdown
-
-  # ════════════════════════════════════════════════════════════════════════════
-  #  ROW 1 — 3-COLUMN COMMAND CENTER (GARAGES/SCENES · ENERGY · WEATHER/LIGHTS)
-  # ════════════════════════════════════════════════════════════════════════════
-  - type: custom:layout-card
-    layout_type: custom:grid-layout
-    layout:
-      grid-template-columns: repeat(3, minmax(0, 1fr))
-      grid-gap: 10px
-      margin: 0
-      mediaquery:
-        "(max-width: 1150px)":
-          grid-template-columns: repeat(2, minmax(0, 1fr))
-        "(max-width: 720px)":
-          grid-template-columns: 1fr
+  - type: vertical-stack
     cards:
-      # ── COLUMN 1: GARAGE BAYS & QUICK SCENES ──
-      - type: vertical-stack
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout:
+          grid-template-columns: 1fr
+          grid-gap: 14px
+          margin: 14px 18px 24px 18px
         cards:
-          - type: custom:mushroom-title-card
-            title: Garages & Quick Scenes
-            subtitle: 1-tap bay access & house modes
+
+          # ════════════════════════════════════════════════════════════════════
+          #  SOLSTICE EVENING COMMAND DECK — Hero Glass HUD
+          # ════════════════════════════════════════════════════════════════════
+          - type: markdown
+            content: >-
+              {% set h = now().hour %}
+              {% set greet = 'Good Morning' if h < 12 else ('Good Afternoon' if h < 17 else 'Good Evening') %}
+              {% set temps = [
+                state_attr('climate.thermostat_living_room','current_temperature') | float(0),
+                state_attr('climate.thermostat_master_bedroom','current_temperature') | float(0),
+                state_attr('climate.thermostat_entertainment_room','current_temperature') | float(0),
+                state_attr('climate.thermostat_upper_big_bedroom','current_temperature') | float(0),
+                state_attr('climate.thermostat_upper_small_bedroom','current_temperature') | float(0),
+                state_attr('climate.thermostat_upper_guest_bedroom','current_temperature') | float(0)
+              ] | reject('eq', 0) | list %}
+              {% set avg_t = (temps | sum / temps | count) | round(0) if temps | count > 0 else '--' %}
+              {% set doors = expand(["binary_sensor.main_door","binary_sensor.welcome_laundry_door","binary_sensor.garage_laundry_door","binary_sensor.kitchen_door","binary_sensor.master_bedroom_door","binary_sensor.upper_big_bedroom_door","binary_sensor.upper_small_bedroom_door","binary_sensor.upper_guest_bedroom_door","binary_sensor.upper_common_bathroom_door","binary_sensor.lower_common_bathroom_door"]) | selectattr("state","eq","on") | list | count %}
+              {% set wins = expand(["binary_sensor.welcome_window_left","binary_sensor.welcome_window_right","binary_sensor.welcome_window_front","binary_sensor.welcome_window_peep","binary_sensor.living_room_window_left","binary_sensor.living_room_window_right","binary_sensor.kitchen_window_left","binary_sensor.kitchen_window_right","binary_sensor.entertainment_room_window_left","binary_sensor.entertainment_room_window_right","binary_sensor.master_bedroom_window_left","binary_sensor.master_bedroom_window_right","binary_sensor.master_bedroom_window_left_small","binary_sensor.master_bedroom_window_right_small","binary_sensor.master_bathroom_window","binary_sensor.upper_big_bedroom_window_left","binary_sensor.upper_big_bedroom_window_right","binary_sensor.upper_small_bedroom_window","binary_sensor.upper_guest_bedroom_window"]) | selectattr("state","eq","on") | list | count %}
+              {% set garage = expand(["cover.garage_door_small","cover.garage_door_big"]) | selectattr("state","eq","open") | list | count %}
+              {% set total_open = doors + wins + garage %}
+              <div class="hud-bar">
+                <div class="hud-left">
+                  <div class="hud-eyebrow">SOLSTICE COMMAND DECK · EVENING ATMOSPHERE</div>
+                  <div class="hud-title">{{ greet }} <span class="hud-divider">·</span> <span class="hud-sub">Indoor Avg {{ avg_t }}°F · {{ states('weather.openweathermap') | title }}</span></div>
+                </div>
+                <div class="hud-badges">
+                  <span class="hud-pill {{ 'pill-alert' if total_open > 0 else 'pill-ok' }}">
+                    {{ '● All Entry Points Secure' if total_open == 0 else ('▲ ' ~ total_open ~ ' Entry Open') }}
+                  </span>
+                  <span class="hud-pill pill-amber">☀ Solar {{ states('sensor.solar_power') }} kW</span>
+                  <span class="hud-pill pill-emerald">⚡ Powerwall {{ states('sensor.powerwall_power_name') }}</span>
+                  <span class="hud-pill pill-sky">⌂ Load {{ states('sensor.house_load') }} kW</span>
+                </div>
+              </div>
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(41, 50, 72, 0.92) 0%, rgba(28, 35, 52, 0.96) 100%) !important;
+                  border-radius: 8px !important;
+                  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+                  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.14), 0 12px 30px -8px rgba(8, 12, 21, 0.5) !important;
+                  padding: 4px 10px !important;
+                }
+                .hud-bar {
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  flex-wrap: wrap;
+                  gap: 12px;
+                }
+                .hud-eyebrow {
+                  font-family: 'JetBrains Mono', monospace;
+                  font-size: 10.5px;
+                  font-weight: 600;
+                  letter-spacing: 1.8px;
+                  color: #38bdf8;
+                  margin-bottom: 2px;
+                }
+                .hud-title {
+                  font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+                  font-size: 22px;
+                  font-weight: 700;
+                  color: #f8fafc;
+                  letter-spacing: -0.3px;
+                }
+                .hud-divider {
+                  color: rgba(148, 163, 184, 0.45);
+                  margin: 0 4px;
+                }
+                .hud-sub {
+                  font-weight: 500;
+                  font-size: 16px;
+                  color: #94a3b8;
+                }
+                .hud-badges {
+                  display: flex;
+                  flex-wrap: wrap;
+                  gap: 8px;
+                  align-items: center;
+                }
+                .hud-pill {
+                  font-family: 'Plus Jakarta Sans', sans-serif;
+                  font-size: 12.5px;
+                  font-weight: 600;
+                  padding: 6px 14px;
+                  border-radius: 6px;
+                  border: 1px solid rgba(255, 255, 255, 0.08);
+                }
+                .pill-ok {
+                  background: rgba(52, 211, 153, 0.14);
+                  color: #6ee7b7;
+                  border-color: rgba(52, 211, 153, 0.3);
+                }
+                .pill-alert {
+                  background: rgba(251, 113, 133, 0.18);
+                  color: #fda4af;
+                  border-color: rgba(251, 113, 133, 0.38);
+                }
+                .pill-amber {
+                  background: rgba(251, 191, 36, 0.14);
+                  color: #fde68a;
+                  border-color: rgba(251, 191, 36, 0.3);
+                }
+                .pill-emerald {
+                  background: rgba(52, 211, 153, 0.14);
+                  color: #6ee7b7;
+                  border-color: rgba(52, 211, 153, 0.3);
+                }
+                .pill-sky {
+                  background: rgba(56, 189, 248, 0.14);
+                  color: #bae6fd;
+                  border-color: rgba(56, 189, 248, 0.3);
+                }
+
+          # ════════════════════════════════════════════════════════════════════
+          #  STATUS CHIP BAR — Soft-UI Floating Capsules
+          # ════════════════════════════════════════════════════════════════════
+          - type: custom:mushroom-chips-card
+            alignment: center
+            card_mod:
+              style: |
+                mushroom-chip {
+                  --chip-background: rgba(36, 45, 66, 0.82) !important;
+                  --chip-border-radius: 6px !important;
+                  --chip-box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.12), 0 4px 12px rgba(9, 13, 22, 0.28) !important;
+                  border: 1px solid rgba(255,255,255,0.07) !important;
+                }
+            chips:
+              - type: weather
+                entity: weather.openweathermap
+                show_conditions: true
+                show_temperature: true
+              - type: template
+                icon: mdi:solar-power-variant
+                icon_color: amber
+                content: "{{ states('sensor.solar_power') }} kW"
+                tap_action:
+                  action: navigate
+                  navigation_path: /lovelace/3
+              - type: template
+                icon: mdi:battery-heart-variant
+                icon_color: >-
+                  {% set pct = states('sensor.home_energy_gateway_charge') | float(0) %}
+                  {% if pct > 50 %}green{% elif pct > 20 %}amber{% else %}red{% endif %}
+                content: "{{ states('sensor.powerwall_power_name') }}"
+                tap_action:
+                  action: navigate
+                  navigation_path: /lovelace/3
+              - type: template
+                icon: mdi:home-lightning-bolt-outline
+                icon_color: "{{ 'red' if states('sensor.house_load') | float(0) > 5 else 'orange' }}"
+                content: "{{ states('sensor.house_load') }} kW"
+              - type: template
+                icon: mdi:shield-home-outline
+                icon_color: |-
+                  {% set doors = expand(["binary_sensor.main_door","binary_sensor.welcome_laundry_door","binary_sensor.garage_laundry_door","binary_sensor.kitchen_door","binary_sensor.master_bedroom_door","binary_sensor.upper_big_bedroom_door","binary_sensor.upper_small_bedroom_door","binary_sensor.upper_guest_bedroom_door","binary_sensor.upper_common_bathroom_door","binary_sensor.lower_common_bathroom_door"]) | selectattr("state","eq","on") | list | count %}
+                  {% set wins = expand(["binary_sensor.welcome_window_left","binary_sensor.welcome_window_right","binary_sensor.welcome_window_front","binary_sensor.welcome_window_peep","binary_sensor.living_room_window_left","binary_sensor.living_room_window_right","binary_sensor.kitchen_window_left","binary_sensor.kitchen_window_right","binary_sensor.entertainment_room_window_left","binary_sensor.entertainment_room_window_right","binary_sensor.master_bedroom_window_left","binary_sensor.master_bedroom_window_right","binary_sensor.master_bedroom_window_left_small","binary_sensor.master_bedroom_window_right_small","binary_sensor.master_bathroom_window","binary_sensor.upper_big_bedroom_window_left","binary_sensor.upper_big_bedroom_window_right","binary_sensor.upper_small_bedroom_window","binary_sensor.upper_guest_bedroom_window"]) | selectattr("state","eq","on") | list | count %}
+                  {% set garage = expand(["cover.garage_door_small","cover.garage_door_big"]) | selectattr("state","eq","open") | list | count %}
+                  {{ 'red' if (doors + wins + garage) > 0 else 'green' }}
+                content: >-
+                  {% set doors = expand(["binary_sensor.main_door","binary_sensor.welcome_laundry_door","binary_sensor.garage_laundry_door","binary_sensor.kitchen_door","binary_sensor.master_bedroom_door","binary_sensor.upper_big_bedroom_door","binary_sensor.upper_small_bedroom_door","binary_sensor.upper_guest_bedroom_door","binary_sensor.upper_common_bathroom_door","binary_sensor.lower_common_bathroom_door"]) | selectattr("state","eq","on") | list | count %}
+                  {% set wins = expand(["binary_sensor.welcome_window_left","binary_sensor.welcome_window_right","binary_sensor.welcome_window_front","binary_sensor.welcome_window_peep","binary_sensor.living_room_window_left","binary_sensor.living_room_window_right","binary_sensor.kitchen_window_left","binary_sensor.kitchen_window_right","binary_sensor.entertainment_room_window_left","binary_sensor.entertainment_room_window_right","binary_sensor.master_bedroom_window_left","binary_sensor.master_bedroom_window_right","binary_sensor.master_bedroom_window_left_small","binary_sensor.master_bedroom_window_right_small","binary_sensor.master_bathroom_window","binary_sensor.upper_big_bedroom_window_left","binary_sensor.upper_big_bedroom_window_right","binary_sensor.upper_small_bedroom_window","binary_sensor.upper_guest_bedroom_window"]) | selectattr("state","eq","on") | list | count %}
+                  {% set garage = expand(["cover.garage_door_small","cover.garage_door_big"]) | selectattr("state","eq","open") | list | count %}
+                  {% set total = doors + wins + garage %}
+                  {{ 'All Secure' if total == 0 else (total | string + ' open') }}
+                tap_action:
+                  action: navigate
+                  navigation_path: /lovelace/4
+              - type: template
+                icon: mdi:account-group-outline
+                icon_color: >-
+                  {% set home = states.device_tracker | selectattr('state','eq','home') | list | count %}
+                  {{ 'green' if home > 0 else 'grey' }}
+                content: >-
+                  {% set home = states.device_tracker | selectattr('state','eq','home') | list | count %}
+                  {{ home | string + ' home' if home > 0 else 'Nobody' }}
+              - type: template
+                icon: mdi:wan
+                icon_color: |-
+                  {% if states('sensor.xfinity_usage') | int(0) > states('sensor.data_allowance_till_date') | int(0) %}red
+                  {% else %}cyan{% endif %}
+                content: "{{ states('sensor.xfinity_usage') | int(0) }} / 1229 GB"
+
+          # ════════════════════════════════════════════════════════════════════
+          #  CRITICAL GRID OUTAGE OR GARAGE UL LOCKOUT ALERT (Auto-Shows on Fault)
+          # ════════════════════════════════════════════════════════════════════
+          - type: conditional
+            conditions:
+              - condition: or
+                conditions:
+                  - condition: state
+                    entity: binary_sensor.grid_status
+                    state: "off"
+                  - condition: state
+                    entity: binary_sensor.garage_door_small_barrier_ul_disabling_status
+                    state: "on"
+                  - condition: state
+                    entity: binary_sensor.garage_barrier_ul_disabling_status
+                    state: "on"
+            card:
+              type: custom:mushroom-template-card
+              primary: >-
+                {% if is_state('binary_sensor.grid_status', 'off') %}
+                  ⚡ GRID OUTAGE ACTIVE — Running on Tesla Powerwall ({{ states('sensor.powerwall_charge') }}%)
+                {% else %}
+                  ⚠️ Garage Z-Wave Barrier UL Lockout Detected — Cycle Wall Button Once
+                {% endif %}
+              secondary: >-
+                {% if is_state('binary_sensor.grid_status', 'off') %}
+                  Current House Load: {{ states('sensor.house_load') }} kW · Solar: {{ states('sensor.solar_power') }} kW
+                {% else %}
+                  Moto Tilt Battery: {{ states('sensor.garage_door_small_battery_level') }}% · Big Tilt Battery: {{ states('sensor.garage_battery_level') }}%
+                {% endif %}
+              icon: mdi:alert-octagon
+              icon_color: red
+              card_mod:
+                style: |
+                  ha-card {
+                    background: linear-gradient(135deg, rgba(225, 29, 72, 0.28) 0%, rgba(30, 38, 56, 0.94) 100%) !important;
+                    border: 1px solid rgba(251, 113, 133, 0.55) !important;
+                    border-radius: 8px !important;
+                  }
+
+          # ════════════════════════════════════════════════════════════════════
+          #  🏍️ MOTO BAY & GARAGE QUICK-COMMAND DECK (1-Tap Gloved-Thumb Bar)
+          # ════════════════════════════════════════════════════════════════════
           - type: custom:layout-card
             layout_type: custom:grid-layout
             layout:
-              grid-template-columns: repeat(2, minmax(0, 1fr))
-              grid-gap: 8px
-              margin: 0
+              grid-template-columns: 1.25fr 1.25fr 1fr 1fr
+              grid-gap: 12px
+              mediaquery:
+                "(max-width: 900px)":
+                  grid-template-columns: 1fr 1fr
             cards:
+              # 1. 🏍️ MOTO BAY (Small Garage) — 1-Tap Toggle + Auto Entry Lights
               - type: custom:mushroom-template-card
                 entity: cover.garage_door_small
-                primary: Moto Bay (Small)
+                primary: >-
+                  🏍️ Moto Bay · {{ states('cover.garage_door_small') | upper }}
                 secondary: >-
-                  {{ states('cover.garage_door_small') | title }} · Tap to Toggle
+                  {% if is_state('cover.garage_door_small', 'closed') %}
+                    1-Tap Open + Entry Lights · Tilt Batt {{ states('sensor.garage_door_small_battery_level') }}%
+                  {% else %}
+                    ⚡ BAY OPEN — 1-Tap to Close Moto Bay
+                  {% endif %}
                 icon: >-
-                  {{ 'mdi:garage-open' if is_state('cover.garage_door_small', 'open') else 'mdi:motorbike' }}
+                  {{ 'mdi:motorbike' if is_state('cover.garage_door_small', 'closed') else 'mdi:garage-open-variant' }}
                 icon_color: >-
-                  {{ 'red' if is_state('cover.garage_door_small', 'open') else ('amber' if states('cover.garage_door_small') in ['opening', 'closing'] else 'green') }}
+                  {{ 'cyan' if is_state('cover.garage_door_small', 'closed') else 'red' }}
+                layout: horizontal
                 tap_action:
                   action: call-service
                   service: script.moto_garage_bay
                 hold_action:
                   action: more-info
+                  entity: camera.garage_right_camera
+                card_mod:
+                  style: |
+                    ha-card {
+                      {% if not is_state('cover.garage_door_small', 'closed') %}
+                      background: linear-gradient(135deg, rgba(244, 63, 94, 0.28) 0%, rgba(36, 45, 66, 0.92) 100%) !important;
+                      border: 1.5px solid rgba(251, 113, 133, 0.65) !important;
+                      box-shadow: 0 0 22px rgba(244, 63, 94, 0.28), inset 0 1px 0 0 rgba(255, 255, 255, 0.18) !important;
+                      {% else %}
+                      background: linear-gradient(135deg, rgba(14, 165, 233, 0.18) 0%, rgba(30, 38, 56, 0.90) 100%) !important;
+                      border: 1px solid rgba(56, 189, 248, 0.38) !important;
+                      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.14), 0 10px 24px -6px rgba(8, 12, 21, 0.45) !important;
+                      {% endif %}
+                      border-radius: 8px !important;
+                      min-height: 66px !important;
+                    }
+                    mushroom-state-info {
+                      --card-primary-font-size: 15px;
+                      --card-primary-font-weight: 700;
+                      --card-secondary-font-size: 11.5px;
+                    }
 
+              # 2. 🚗 BIG GARAGE — 1-Tap Toggle
               - type: custom:mushroom-template-card
                 entity: cover.garage_door_big
-                primary: Big Garage Door
+                primary: >-
+                  🚗 Big Garage · {{ states('cover.garage_door_big') | upper }}
                 secondary: >-
-                  {{ states('cover.garage_door_big') | title }} · Tap to Toggle
+                  {% if is_state('cover.garage_door_big', 'closed') %}
+                    1-Tap Open Main Bay · Tilt Batt {{ states('sensor.garage_battery_level') }}%
+                  {% else %}
+                    ⚡ BAY OPEN — 1-Tap to Close Big Garage
+                  {% endif %}
                 icon: >-
-                  {{ 'mdi:garage-open-variant' if is_state('cover.garage_door_big', 'open') else 'mdi:garage-variant' }}
+                  {{ 'mdi:garage' if is_state('cover.garage_door_big', 'closed') else 'mdi:garage-open' }}
                 icon_color: >-
-                  {{ 'red' if is_state('cover.garage_door_big', 'open') else ('amber' if states('cover.garage_door_big') in ['opening', 'closing'] else 'green') }}
+                  {{ 'green' if is_state('cover.garage_door_big', 'closed') else 'red' }}
+                layout: horizontal
                 tap_action:
                   action: call-service
                   service: cover.toggle
@@ -132,447 +313,715 @@ cards:
                     entity_id: cover.garage_door_big
                 hold_action:
                   action: more-info
+                  entity: camera.garage_left_camera
+                card_mod:
+                  style: |
+                    ha-card {
+                      {% if not is_state('cover.garage_door_big', 'closed') %}
+                      background: linear-gradient(135deg, rgba(244, 63, 94, 0.28) 0%, rgba(36, 45, 66, 0.92) 100%) !important;
+                      border: 1.5px solid rgba(251, 113, 133, 0.65) !important;
+                      box-shadow: 0 0 22px rgba(244, 63, 94, 0.28), inset 0 1px 0 0 rgba(255, 255, 255, 0.18) !important;
+                      {% else %}
+                      background: linear-gradient(145deg, rgba(41, 50, 72, 0.82) 0%, rgba(30, 37, 54, 0.90) 100%) !important;
+                      border: 1px solid rgba(52, 211, 153, 0.28) !important;
+                      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.12), 0 10px 24px -6px rgba(8, 12, 21, 0.45) !important;
+                      {% endif %}
+                      border-radius: 8px !important;
+                      min-height: 66px !important;
+                    }
+                    mushroom-state-info {
+                      --card-primary-font-size: 15px;
+                      --card-primary-font-weight: 700;
+                      --card-secondary-font-size: 11.5px;
+                    }
 
+              # 3. 🔒 SEAL BOTH GARAGES
               - type: custom:mushroom-template-card
-                entity: binary_sensor.main_door
-                primary: Front Entry Door
+                primary: Seal Both Bays
                 secondary: >-
-                  {{ 'OPEN' if is_state('binary_sensor.main_door', 'on') else 'Closed' }} · Motion {{ 'Active' if is_state('binary_sensor.main_door_motion', 'on') else 'Clear' }}
-                icon: >-
-                  {{ 'mdi:door-open' if is_state('binary_sensor.main_door', 'on') else 'mdi:door-closed-lock' }}
-                icon_color: >-
-                  {{ 'red' if is_state('binary_sensor.main_door', 'on') else 'green' }}
-                tap_action:
-                  action: more-info
-
-              - type: custom:mushroom-template-card
-                entity: script.close_all_garages
-                primary: Close Both Bays
-                secondary: Immediate Garage Lockdown
+                  Laundry Door: {{ 'Open!' if is_state('binary_sensor.garage_laundry_door', 'on') else 'Closed' }}
                 icon: mdi:garage-lock
-                icon_color: cyan
+                icon_color: >-
+                  {{ 'amber' if (not is_state('cover.garage_door_small', 'closed') or not is_state('cover.garage_door_big', 'closed')) else 'teal' }}
+                layout: horizontal
                 tap_action:
                   action: call-service
                   service: script.close_all_garages
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: linear-gradient(145deg, rgba(41, 50, 72, 0.82) 0%, rgba(30, 37, 54, 0.90) 100%) !important;
+                      border: 1px solid rgba(255, 255, 255, 0.09) !important;
+                      border-radius: 8px !important;
+                      min-height: 66px !important;
+                    }
+                    mushroom-state-info {
+                      --card-primary-font-size: 14px;
+                      --card-primary-font-weight: 700;
+                      --card-secondary-font-size: 11px;
+                    }
 
+              # 4. 🌙 GOODNIGHT HOUSE LOCKDOWN
               - type: custom:mushroom-template-card
-                entity: script.scene_daylight_work
-                primary: Daylight Mode
-                secondary: Work & main floor lights
-                icon: mdi:white-balance-sunny
-                icon_color: amber
-                tap_action:
-                  action: call-service
-                  service: script.scene_daylight_work
-
-              - type: custom:mushroom-template-card
-                entity: script.scene_evening_relax
-                primary: Evening Relax
-                secondary: Warm lounge & patio
-                icon: mdi:weather-sunset
-                icon_color: orange
-                tap_action:
-                  action: call-service
-                  service: script.scene_evening_relax
-
-              - type: custom:mushroom-template-card
-                entity: script.lights_all_off
-                primary: All Lights Off
-                secondary: Shut off interior & yard
-                icon: mdi:lightbulb-Group-off
-                icon_color: blue
-                tap_action:
-                  action: call-service
-                  service: script.lights_all_off
-
-              - type: custom:mushroom-template-card
-                entity: script.goodnight_lockdown
-                primary: Goodnight
-                secondary: Garages + Lights + Sleep 67°
+                primary: Goodnight Lockdown
+                secondary: Garages · Lights · Sleep 67°F
                 icon: mdi:shield-moon-outline
                 icon_color: indigo
+                layout: horizontal
                 tap_action:
                   action: call-service
                   service: script.goodnight_lockdown
+                  confirmation:
+                    text: "Run Goodnight Lockdown (Close both garages, turn off downstairs/outdoor lights, and set HVAC to Sleep 67°F)?"
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: linear-gradient(145deg, rgba(49, 46, 129, 0.34) 0%, rgba(30, 37, 54, 0.90) 100%) !important;
+                      border: 1px solid rgba(129, 140, 248, 0.32) !important;
+                      border-radius: 8px !important;
+                      min-height: 66px !important;
+                    }
+                    mushroom-state-info {
+                      --card-primary-font-size: 14px;
+                      --card-primary-font-weight: 700;
+                      --card-secondary-font-size: 11px;
+                    }
 
-      # ── COLUMN 2: SOLAR, POWERWALL & HOME LOAD ──
-      - type: vertical-stack
-        cards:
-          - type: custom:mushroom-title-card
-            title: Energy & Powerwall
-            subtitle: Real-time microgrid telemetry
+          # ── Auto-Expanding Live Garage Camera Optics (Visible Automatically Whenever Any Bay is Open/Moving) ──
+          - type: conditional
+            conditions:
+              - condition: or
+                conditions:
+                  - condition: state
+                    entity: cover.garage_door_small
+                    state_not: "closed"
+                  - condition: state
+                    entity: cover.garage_door_big
+                    state_not: "closed"
+            card:
+              type: custom:layout-card
+              layout_type: custom:grid-layout
+              layout:
+                grid-template-columns: 1fr 1fr
+                grid-gap: 12px
+                mediaquery:
+                  "(max-width: 700px)":
+                    grid-template-columns: 1fr
+              cards:
+                - type: picture-glance
+                  title: "🏍️ Moto Bay Optics (Garage Right)"
+                  camera_image: camera.garage_right_camera
+                  camera_view: live
+                  entities:
+                    - cover.garage_door_small
+                    - binary_sensor.garage_laundry_door
+                - type: picture-glance
+                  title: "🚗 Big Garage Optics (Garage Left)"
+                  camera_image: camera.garage_left_camera
+                  camera_view: live
+                  entities:
+                    - cover.garage_door_big
+
+          # ════════════════════════════════════════════════════════════════════
+          #  HERO BENTO ROW — Weather | Live Energy Flow | Power Telemetry Bars
+          # ════════════════════════════════════════════════════════════════════
           - type: custom:layout-card
             layout_type: custom:grid-layout
             layout:
-              grid-template-columns: repeat(2, minmax(0, 1fr))
-              grid-gap: 8px
-              margin: 0
+              grid-template-columns: 1.15fr 1.15fr 1fr
+              grid-gap: 14px
+              mediaquery:
+                "(max-width: 1150px)":
+                  grid-template-columns: 1fr 1fr
+                "(max-width: 720px)":
+                  grid-template-columns: 1fr
             cards:
-              - type: custom:mushroom-entity-card
-                entity: sensor.solar_power
-                name: Solar Generation
-                icon: mdi:solar-power-variant
-                icon_color: amber
-              - type: custom:mushroom-entity-card
-                entity: sensor.house_load
-                name: Home Load
-                icon: mdi:home-lightning-bolt-outline
-                icon_color: cyan
-              - type: custom:mushroom-template-card
-                entity: sensor.powerwall_charge
-                primary: Powerwall Battery
-                secondary: >-
-                  {{ states('sensor.powerwall_charge') | float(0) | round(0) }}% · {{ states('sensor.powerwall_power') | float(0) | round(2) }} kW
-                icon: mdi:battery-charging-80
-                icon_color: green
-                tap_action:
-                  action: navigate
-                  navigation_path: /lovelace/energy
-              - type: custom:mushroom-template-card
-                entity: sensor.grid_power
-                primary: Utility Grid
-                secondary: >-
-                  {{ states('sensor.grid_power') | float(0) | round(2) }} kW · {{ states('binary_sensor.grid_status') | title }}
-                icon: mdi:transmission-tower
-                icon_color: >-
-                  {{ 'green' if is_state('binary_sensor.grid_status', 'on') else 'red' }}
-                tap_action:
-                  action: navigate
-                  navigation_path: /lovelace/energy
-          - type: energy-distribution
-            link_dashboard: true
+              - type: custom:clock-weather-card
+                entity: weather.openweathermap
+                card_mod: &card_style
+                  style: |
+                    ha-card {
+                      background: linear-gradient(145deg, rgba(41, 50, 72, 0.90) 0%, rgba(30, 37, 54, 0.94) 100%) !important;
+                      border-radius: 8px !important;
+                      border: 1px solid rgba(255, 255, 255, 0.085) !important;
+                      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.12), 0 12px 28px -8px rgba(9, 13, 22, 0.45) !important;
+                    }
 
-      # ── COLUMN 3: WEATHER & PRIMARY LIGHTING ──
-      - type: vertical-stack
-        cards:
-          - type: custom:mushroom-title-card
-            title: Weather & Quick Lights
-            subtitle: Forecast & frequent switches
-          - type: weather-forecast
-            entity: weather.home
-            show_current: true
-            show_forecast: true
-            forecast_type: daily
+              - type: vertical-stack
+                cards:
+                  - type: energy-date-selection
+                    card_mod: *card_style
+                  - type: energy-distribution
+                    card_mod: *card_style
+
+              - type: "custom:config-template-card"
+                entities:
+                  - sensor.solar_power
+                  - sensor.grid_power
+                  - sensor.grid_power_target
+                  - sensor.powerwall_power
+                  - sensor.powerwall_power_target
+                  - sensor.powerwall_power_name
+                  - sensor.house_load
+                card:
+                  type: custom:bar-card
+                  columns: 4
+                  height: 155px
+                  width: 92%
+                  decimal: 1
+                  direction: up
+                  positions:
+                    icon: inside
+                    name: 'off'
+                    value: outside
+                    indicator: 'off'
+                  animation:
+                    state: 'on'
+                    speed: 5
+                  card_mod:
+                    style: |
+                      ha-card {
+                        background: linear-gradient(145deg, rgba(41, 50, 72, 0.90) 0%, rgba(30, 37, 54, 0.94) 100%) !important;
+                        border-radius: 8px !important;
+                        border: 1px solid rgba(255, 255, 255, 0.085) !important;
+                        box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.12), 0 12px 28px -8px rgba(9, 13, 22, 0.45) !important;
+                        padding: 12px 8px !important;
+                      }
+                      bar-card-backgroundbar {
+                        border-radius: 6px !important;
+                        background: rgba(15, 23, 42, 0.45) !important;
+                      }
+                      bar-card-currentbar, bar-card-targetbar {
+                        border-radius: 6px !important;
+                      }
+                      bar-card-value {
+                        font-family: 'JetBrains Mono', monospace !important;
+                        font-weight: 600 !important;
+                        font-size: 13px !important;
+                      }
+                  entities:
+                    - entity: sensor.solar_power
+                      name: "Solar"
+                      target: "${states['sensor.solar_power'].state}"
+                      min: 0
+                      max: 8
+                      icon: mdi:solar-power-variant
+                      severity:
+                        - color: '#fbbf24'
+                          from: 0
+                          to: 8
+                    - entity: sensor.grid_power
+                      name: "Grid"
+                      target: "${states['sensor.grid_power_target'].state}"
+                      min: 0
+                      max: 8
+                      icon: mdi:transmission-tower
+                      severity:
+                        - color: '#38bdf8'
+                          from: 0
+                          to: 8
+                    - entity: sensor.powerwall_power
+                      name: "${states['sensor.powerwall_power_name'].state}"
+                      target: "${states['sensor.powerwall_power_target'].state}"
+                      min: 0
+                      max: 8
+                      icon: mdi:battery-charging
+                      severity:
+                        - color: '#34d399'
+                          from: 0
+                          to: 8
+                      positions:
+                        name: inside
+                    - entity: sensor.house_load
+                      name: "Load"
+                      target: "${states['sensor.house_load'].state}"
+                      min: 0
+                      max: 8
+                      icon: mdi:home-lightning-bolt
+                      severity:
+                        - color: '#fb7185'
+                          from: 0
+                          to: 8
+
+          # ════════════════════════════════════════════════════════════════════
+          #  7-ZONE ARCHITECTURAL CLIMATE STRIP — Dynamic Thermal Glow Tiles
+          # ════════════════════════════════════════════════════════════════════
           - type: custom:layout-card
             layout_type: custom:grid-layout
             layout:
-              grid-template-columns: repeat(2, minmax(0, 1fr))
-              grid-gap: 8px
+              grid-template-columns: repeat(7, 1fr)
+              grid-gap: 10px
               margin: 0
+              mediaquery:
+                "(max-width: 1200px)":
+                  grid-template-columns: repeat(4, 1fr)
+                "(max-width: 600px)":
+                  grid-template-columns: repeat(2, 1fr)
             cards:
-              - type: custom:mushroom-light-card
-                entity: light.living_room_light
-                name: Living Room
-                show_brightness_control: false
+              - type: custom:mushroom-template-card
+                entity: climate.thermostat_master_bedroom
+                primary: >-
+                  {% set c = 'climate.master_bedroom_thermostat_master_bedroom_thermostat_thermostat' if states('climate.master_bedroom_thermostat_master_bedroom_thermostat_thermostat') not in ['unknown', 'unavailable', 'none'] else 'climate.thermostat_master_bedroom' %}
+                  {{ state_attr(c,'current_temperature') | float(0) | round(0) }}°F
+                secondary: >-
+                  {% set m = states('input_select.thermostat_master_bedroom_mode') %}{% set hi = states('input_number.thermostat_master_bedroom_setpoint') | int(73) %}{% set lo = states('input_number.thermostat_master_bedroom_heat_setpoint') | int(68) %}Master BR · {{ m | upper }}{% if m == 'Auto' %} {{ lo }}°–{{ hi }}°{% elif m == 'Heat' %} {{ lo }}°{% elif m == 'Cool' %} {{ hi }}°{% endif %}
+                icon: mdi:bed-king-outline
+                icon_color: |-
+                  {% set m = states('input_select.thermostat_master_bedroom_mode') %}
+                  {% if m == 'Heat' %}orange{% elif m == 'Cool' %}light-blue{% elif m == 'Auto' %}green{% else %}blue-grey{% endif %}
+                layout: vertical
                 tap_action:
-                  action: toggle
-              - type: custom:mushroom-entity-card
-                entity: switch.kitchen_light
-                name: Kitchen Light
-                icon: mdi:countertop-outline
-                icon_color: amber
-                tap_action:
-                  action: toggle
-              - type: custom:mushroom-entity-card
-                entity: switch.welcome_room_light
-                name: Welcome Room
-                icon: mdi:sofa-single-outline
-                icon_color: amber
-                tap_action:
-                  action: toggle
-              - type: custom:mushroom-entity-card
-                entity: switch.backyard_patio_lights
-                name: Patio Lights
-                icon: mdi:outdoor-lamp
-                icon_color: orange
-                tap_action:
-                  action: toggle
-
-  # ════════════════════════════════════════════════════════════════════════════
-  #  ROW 2 — 7-ZONE CLIMATE MATRIX (RESPONSIVE 4-COL LAPTOP / 2-COL PHONE)
-  # ════════════════════════════════════════════════════════════════════════════
-  - type: vertical-stack
-    cards:
-      - type: custom:layout-card
-        layout_type: custom:grid-layout
-        layout:
-          grid-template-columns: 1fr auto
-          align-items: center
-          grid-gap: 8px
-          margin: 0
-          mediaquery:
-            "(max-width: 720px)":
-              grid-template-columns: 1fr
-        cards:
-          - type: custom:mushroom-title-card
-            title: Whole-Home Climate (7 Zones)
-            subtitle: Tap any zone for controls or use whole-home presets
-          - type: custom:mushroom-chips-card
-            alignment: end
-            chips:
-              - type: template
-                icon: mdi:thermostat-auto
-                icon_color: green
-                content: "All Auto"
-                tap_action:
+                  action: navigate
+                  navigation_path: /lovelace/climate
+                hold_action:
                   action: call-service
-                  service: script.climate_all_zones_preset
+                  service: script.climate_smart_mode
                   data:
-                    preset_mode: auto
-                    target_temp: 73
-              - type: template
-                icon: mdi:snowflake
-                icon_color: blue
-                content: "All Cool 72°"
+                    entity_id: climate.thermostat_master_bedroom
+                    mode: toggle
+                card_mod: &temp_card
+                  style: |
+                    ha-card {
+                      {% set z = config.entity | replace('climate.thermostat_', '') %}
+                      {% set m = states('input_select.thermostat_' ~ z ~ '_mode') %}
+                      {% if m == 'Heat' %}
+                      background: radial-gradient(circle at 50% 0%, rgba(251, 146, 60, 0.20), rgba(31, 38, 56, 0.88) 75%) !important;
+                      border: 1px solid rgba(251, 146, 60, 0.34) !important;
+                      {% elif m == 'Cool' %}
+                      background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.20), rgba(31, 38, 56, 0.88) 75%) !important;
+                      border: 1px solid rgba(56, 189, 248, 0.34) !important;
+                      {% elif m == 'Auto' %}
+                      background: radial-gradient(circle at 50% 0%, rgba(52, 211, 153, 0.18), rgba(31, 38, 56, 0.88) 75%) !important;
+                      border: 1px solid rgba(52, 211, 153, 0.30) !important;
+                      {% else %}
+                      background: linear-gradient(145deg, rgba(41, 50, 72, 0.90) 0%, rgba(30, 37, 54, 0.94) 100%) !important;
+                      border: 1px solid rgba(255, 255, 255, 0.09) !important;
+                      {% endif %}
+                      border-radius: 8px !important;
+                      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.12), 0 10px 22px -6px rgba(9, 13, 22, 0.42) !important;
+                    }
+                    mushroom-state-info {
+                      --card-primary-font-size: 21px;
+                      --card-primary-font-weight: 700;
+                      font-family: 'Space Grotesk', 'Plus Jakarta Sans', sans-serif;
+                    }
+
+              - type: custom:mushroom-template-card
+                entity: climate.thermostat_living_room
+                primary: >-
+                  {% set c = 'climate.living_room_thermostat_living_room_thermostat_thermostat' if states('climate.living_room_thermostat_living_room_thermostat_thermostat') not in ['unknown', 'unavailable', 'none'] else 'climate.thermostat_living_room' %}
+                  {{ state_attr(c,'current_temperature') | float(0) | round(0) }}°F
+                secondary: >-
+                  {% set m = states('input_select.thermostat_living_room_mode') %}{% set hi = states('input_number.thermostat_living_room_setpoint') | int(73) %}{% set lo = states('input_number.thermostat_living_room_heat_setpoint') | int(68) %}Living · {{ m | upper }}{% if m == 'Auto' %} {{ lo }}°–{{ hi }}°{% elif m == 'Heat' %} {{ lo }}°{% elif m == 'Cool' %} {{ hi }}°{% endif %}
+                icon: mdi:sofa-outline
+                icon_color: |-
+                  {% set m = states('input_select.thermostat_living_room_mode') %}
+                  {% if m == 'Heat' %}orange{% elif m == 'Cool' %}light-blue{% elif m == 'Auto' %}green{% else %}blue-grey{% endif %}
+                layout: vertical
                 tap_action:
+                  action: navigate
+                  navigation_path: /lovelace/climate
+                hold_action:
                   action: call-service
-                  service: script.climate_all_zones_preset
+                  service: script.climate_smart_mode
                   data:
-                    preset_mode: cool
-                    target_temp: 72
-              - type: template
-                icon: mdi:fire
-                icon_color: orange
-                content: "All Heat 69°"
+                    entity_id: climate.thermostat_living_room
+                    mode: toggle
+                card_mod: *temp_card
+
+              - type: custom:mushroom-template-card
+                entity: climate.thermostat_entertainment_room
+                primary: >-
+                  {{ state_attr('climate.thermostat_entertainment_room','current_temperature') | float(0) | round(0) }}°F
+                secondary: >-
+                  {% set m = states('input_select.thermostat_entertainment_room_mode') %}{% set hi = states('input_number.thermostat_entertainment_room_setpoint') | int(73) %}{% set lo = states('input_number.thermostat_entertainment_room_heat_setpoint') | int(68) %}Media · {{ m | upper }}{% if m == 'Auto' %} {{ lo }}°–{{ hi }}°{% elif m == 'Heat' %} {{ lo }}°{% elif m == 'Cool' %} {{ hi }}°{% endif %}
+                icon: mdi:television-ambient-light
+                icon_color: |-
+                  {% set m = states('input_select.thermostat_entertainment_room_mode') %}
+                  {% if m == 'Heat' %}orange{% elif m == 'Cool' %}light-blue{% elif m == 'Auto' %}green{% else %}blue-grey{% endif %}
+                layout: vertical
                 tap_action:
+                  action: navigate
+                  navigation_path: /lovelace/climate
+                hold_action:
                   action: call-service
-                  service: script.climate_all_zones_preset
+                  service: script.climate_smart_mode
                   data:
-                    preset_mode: heat
-                    target_temp: 69
-              - type: template
-                icon: mdi:power-standby
-                icon_color: grey
-                content: "All Off"
+                    entity_id: climate.thermostat_entertainment_room
+                    mode: toggle
+                card_mod: *temp_card
+
+              - type: custom:mushroom-template-card
+                entity: climate.thermostat_upper_big_bedroom
+                primary: >-
+                  {{ state_attr('climate.thermostat_upper_big_bedroom','current_temperature') | float(0) | round(0) }}°F
+                secondary: >-
+                  {% set m = states('input_select.thermostat_upper_big_bedroom_mode') %}{% set hi = states('input_number.thermostat_upper_big_bedroom_setpoint') | int(73) %}{% set lo = states('input_number.thermostat_upper_big_bedroom_heat_setpoint') | int(68) %}Big BR · {{ m | upper }}{% if m == 'Auto' %} {{ lo }}°–{{ hi }}°{% elif m == 'Heat' %} {{ lo }}°{% elif m == 'Cool' %} {{ hi }}°{% endif %}
+                icon: mdi:bed-outline
+                icon_color: |-
+                  {% set m = states('input_select.thermostat_upper_big_bedroom_mode') %}
+                  {% if m == 'Heat' %}orange{% elif m == 'Cool' %}light-blue{% elif m == 'Auto' %}green{% else %}blue-grey{% endif %}
+                layout: vertical
                 tap_action:
+                  action: navigate
+                  navigation_path: /lovelace/climate
+                hold_action:
                   action: call-service
-                  service: script.climate_all_zones_preset
+                  service: script.climate_smart_mode
                   data:
-                    preset_mode: "off"
+                    entity_id: climate.thermostat_upper_big_bedroom
+                    mode: toggle
+                card_mod: *temp_card
 
-      - type: custom:layout-card
-        layout_type: custom:grid-layout
-        layout:
-          grid-template-columns: repeat(4, minmax(0, 1fr))
-          grid-gap: 8px
-          margin: 0
-          mediaquery:
-            "(max-width: 1100px)":
-              grid-template-columns: repeat(3, minmax(0, 1fr))
-            "(max-width: 768px)":
-              grid-template-columns: repeat(2, minmax(0, 1fr))
-            "(max-width: 400px)":
-              grid-template-columns: 1fr
-        cards:
-          # 1. Living Room
-          - type: custom:mushroom-template-card
-            entity: climate.thermostat_living_room
-            primary: Living Room
-            secondary: >-
-              {% set t = states('sensor.thermostat_living_room_temperature') | float(state_attr('climate.thermostat_living_room', 'current_temperature') | float(0)) | round(0) %}
-              {% set h = states('sensor.thermostat_living_room_humidity') | float(0) | round(0) %}
-              {% set m = states('input_select.thermostat_living_room_mode') | lower %}
-              {% set lo = states('input_number.thermostat_living_room_heat_setpoint') | float(68) | round(0) %}
-              {% set hi = states('input_number.thermostat_living_room_setpoint') | float(73) | round(0) %}
-              {{ t }}°F · {{ h }}% · {% if m == 'auto' %}Auto {{ lo }}°–{{ hi }}°{% elif m == 'heat' %}Heat {{ lo }}°{% elif m == 'cool' %}Cool {{ hi }}°{% else %}Off{% endif %}
-            icon: mdi:sofa-outline
-            icon_color: >-
-              {% set m = states('input_select.thermostat_living_room_mode') | lower %}
-              {{ 'blue' if m == 'cool' else ('orange' if m == 'heat' else ('green' if m == 'auto' else 'disabled')) }}
-            tap_action:
-              action: navigate
-              navigation_path: /lovelace/climate
-            hold_action:
-              action: more-info
+              - type: custom:mushroom-template-card
+                entity: climate.thermostat_upper_small_bedroom
+                primary: >-
+                  {{ state_attr('climate.thermostat_upper_small_bedroom','current_temperature') | float(0) | round(0) }}°F
+                secondary: >-
+                  {% set m = states('input_select.thermostat_upper_small_bedroom_mode') %}{% set hi = states('input_number.thermostat_upper_small_bedroom_setpoint') | int(73) %}{% set lo = states('input_number.thermostat_upper_small_bedroom_heat_setpoint') | int(68) %}Small BR · {{ m | upper }}{% if m == 'Auto' %} {{ lo }}°–{{ hi }}°{% elif m == 'Heat' %} {{ lo }}°{% elif m == 'Cool' %} {{ hi }}°{% endif %}
+                icon: mdi:bed-single-outline
+                icon_color: |-
+                  {% set m = states('input_select.thermostat_upper_small_bedroom_mode') %}
+                  {% if m == 'Heat' %}orange{% elif m == 'Cool' %}light-blue{% elif m == 'Auto' %}green{% else %}blue-grey{% endif %}
+                layout: vertical
+                tap_action:
+                  action: navigate
+                  navigation_path: /lovelace/climate
+                hold_action:
+                  action: call-service
+                  service: script.climate_smart_mode
+                  data:
+                    entity_id: climate.thermostat_upper_small_bedroom
+                    mode: toggle
+                card_mod: *temp_card
 
-          # 2. Master Suite
-          - type: custom:mushroom-template-card
-            entity: climate.thermostat_master_bedroom
-            primary: Master Suite
-            secondary: >-
-              {% set t = states('sensor.thermostat_master_bedroom_temperature') | float(state_attr('climate.thermostat_master_bedroom', 'current_temperature') | float(0)) | round(0) %}
-              {% set h = states('sensor.thermostat_master_bedroom_humidity') | float(0) | round(0) %}
-              {% set m = states('input_select.thermostat_master_bedroom_mode') | lower %}
-              {% set lo = states('input_number.thermostat_master_bedroom_heat_setpoint') | float(68) | round(0) %}
-              {% set hi = states('input_number.thermostat_master_bedroom_setpoint') | float(73) | round(0) %}
-              {{ t }}°F · {{ h }}% · {% if m == 'auto' %}Auto {{ lo }}°–{{ hi }}°{% elif m == 'heat' %}Heat {{ lo }}°{% elif m == 'cool' %}Cool {{ hi }}°{% else %}Off{% endif %}
-            icon: mdi:bed-king-outline
-            icon_color: >-
-              {% set m = states('input_select.thermostat_master_bedroom_mode') | lower %}
-              {{ 'blue' if m == 'cool' else ('orange' if m == 'heat' else ('green' if m == 'auto' else 'disabled')) }}
-            tap_action:
-              action: navigate
-              navigation_path: /lovelace/climate
-            hold_action:
-              action: more-info
+              - type: custom:mushroom-template-card
+                entity: climate.thermostat_upper_guest_bedroom
+                primary: >-
+                  {{ state_attr('climate.thermostat_upper_guest_bedroom','current_temperature') | float(0) | round(0) }}°F
+                secondary: >-
+                  {% set m = states('input_select.thermostat_upper_guest_bedroom_mode') %}{% set hi = states('input_number.thermostat_upper_guest_bedroom_setpoint') | int(73) %}{% set lo = states('input_number.thermostat_upper_guest_bedroom_heat_setpoint') | int(68) %}Guest BR · {{ m | upper }}{% if m == 'Auto' %} {{ lo }}°–{{ hi }}°{% elif m == 'Heat' %} {{ lo }}°{% elif m == 'Cool' %} {{ hi }}°{% endif %}
+                icon: mdi:bed-queen-outline
+                icon_color: |-
+                  {% set m = states('input_select.thermostat_upper_guest_bedroom_mode') %}
+                  {% if m == 'Heat' %}orange{% elif m == 'Cool' %}light-blue{% elif m == 'Auto' %}green{% else %}blue-grey{% endif %}
+                layout: vertical
+                tap_action:
+                  action: navigate
+                  navigation_path: /lovelace/climate
+                hold_action:
+                  action: call-service
+                  service: script.climate_smart_mode
+                  data:
+                    entity_id: climate.thermostat_upper_guest_bedroom
+                    mode: toggle
+                card_mod: *temp_card
 
-          # 3. Upper Big Bedroom
-          - type: custom:mushroom-template-card
-            entity: climate.thermostat_upper_big_bedroom
-            primary: Upper Big Bed
-            secondary: >-
-              {% set t = states('sensor.thermostat_upper_big_bedroom_temperature') | float(state_attr('climate.thermostat_upper_big_bedroom', 'current_temperature') | float(0)) | round(0) %}
-              {% set h = states('sensor.thermostat_upper_big_bedroom_humidity') | float(0) | round(0) %}
-              {% set m = states('input_select.thermostat_upper_big_bedroom_mode') | lower %}
-              {% set lo = states('input_number.thermostat_upper_big_bedroom_heat_setpoint') | float(68) | round(0) %}
-              {% set hi = states('input_number.thermostat_upper_big_bedroom_setpoint') | float(73) | round(0) %}
-              {{ t }}°F · {{ h }}% · {% if m == 'auto' %}Auto {{ lo }}°–{{ hi }}°{% elif m == 'heat' %}Heat {{ lo }}°{% elif m == 'cool' %}Cool {{ hi }}°{% else %}Off{% endif %}
-            icon: mdi:bed-double-outline
-            icon_color: >-
-              {% set m = states('input_select.thermostat_upper_big_bedroom_mode') | lower %}
-              {{ 'blue' if m == 'cool' else ('orange' if m == 'heat' else ('green' if m == 'auto' else 'disabled')) }}
-            tap_action:
-              action: navigate
-              navigation_path: /lovelace/climate
-            hold_action:
-              action: more-info
+              - type: custom:mushroom-template-card
+                entity: climate.thermostat_attic
+                primary: >-
+                  {% set c = 'climate.attic_thermostat_attic_thermostat_thermostat' if states('climate.attic_thermostat_attic_thermostat_thermostat') not in ['unknown', 'unavailable', 'none'] else 'climate.thermostat_attic' %}
+                  {{ state_attr(c,'current_temperature') | float(0) | round(0) }}°F
+                secondary: >-
+                  {% set m = states('input_select.thermostat_attic_mode') %}{% set hi = states('input_number.thermostat_attic_setpoint') | int(74) %}{% set lo = states('input_number.thermostat_attic_heat_setpoint') | int(68) %}Attic · {{ m | upper }}{% if m == 'Auto' %} {{ lo }}°–{{ hi }}°{% elif m == 'Heat' %} {{ lo }}°{% elif m == 'Cool' %} {{ hi }}°{% endif %}
+                icon: mdi:home-roof
+                icon_color: |-
+                  {% set m = states('input_select.thermostat_attic_mode') %}
+                  {% if m == 'Heat' %}orange{% elif m == 'Cool' %}light-blue{% elif m == 'Auto' %}green{% else %}blue-grey{% endif %}
+                layout: vertical
+                tap_action:
+                  action: navigate
+                  navigation_path: /lovelace/climate
+                hold_action:
+                  action: call-service
+                  service: script.climate_smart_mode
+                  data:
+                    entity_id: climate.thermostat_attic
+                    mode: toggle
+                card_mod: *temp_card
 
-          # 4. Upper Small Bedroom
-          - type: custom:mushroom-template-card
-            entity: climate.thermostat_upper_small_bedroom
-            primary: Upper Small Bed
-            secondary: >-
-              {% set t = states('sensor.thermostat_upper_small_bedroom_temperature') | float(state_attr('climate.thermostat_upper_small_bedroom', 'current_temperature') | float(0)) | round(0) %}
-              {% set h = states('sensor.thermostat_upper_small_bedroom_humidity') | float(0) | round(0) %}
-              {% set m = states('input_select.thermostat_upper_small_bedroom_mode') | lower %}
-              {% set lo = states('input_number.thermostat_upper_small_bedroom_heat_setpoint') | float(68) | round(0) %}
-              {% set hi = states('input_number.thermostat_upper_small_bedroom_setpoint') | float(73) | round(0) %}
-              {{ t }}°F · {{ h }}% · {% if m == 'auto' %}Auto {{ lo }}°–{{ hi }}°{% elif m == 'heat' %}Heat {{ lo }}°{% elif m == 'cool' %}Cool {{ hi }}°{% else %}Off{% endif %}
-            icon: mdi:bed-single-outline
-            icon_color: >-
-              {% set m = states('input_select.thermostat_upper_small_bedroom_mode') | lower %}
-              {{ 'blue' if m == 'cool' else ('orange' if m == 'heat' else ('green' if m == 'auto' else 'disabled')) }}
-            tap_action:
-              action: navigate
-              navigation_path: /lovelace/climate
-            hold_action:
-              action: more-info
 
-          # 5. Upper Guest Bedroom
-          - type: custom:mushroom-template-card
-            entity: climate.thermostat_upper_guest_bedroom
-            primary: Upper Guest Bed
-            secondary: >-
-              {% set t = states('sensor.thermostat_upper_guest_bedroom_temperature') | float(state_attr('climate.thermostat_upper_guest_bedroom', 'current_temperature') | float(0)) | round(0) %}
-              {% set h = states('sensor.thermostat_upper_guest_bedroom_humidity') | float(0) | round(0) %}
-              {% set m = states('input_select.thermostat_upper_guest_bedroom_mode') | lower %}
-              {% set lo = states('input_number.thermostat_upper_guest_bedroom_heat_setpoint') | float(68) | round(0) %}
-              {% set hi = states('input_number.thermostat_upper_guest_bedroom_setpoint') | float(73) | round(0) %}
-              {{ t }}°F · {{ h }}% · {% if m == 'auto' %}Auto {{ lo }}°–{{ hi }}°{% elif m == 'heat' %}Heat {{ lo }}°{% elif m == 'cool' %}Cool {{ hi }}°{% else %}Off{% endif %}
-            icon: mdi:bed-queen-outline
-            icon_color: >-
-              {% set m = states('input_select.thermostat_upper_guest_bedroom_mode') | lower %}
-              {{ 'blue' if m == 'cool' else ('orange' if m == 'heat' else ('green' if m == 'auto' else 'disabled')) }}
-            tap_action:
-              action: navigate
-              navigation_path: /lovelace/climate
-            hold_action:
-              action: more-info
+          # ════════════════════════════════════════════════════════════════════
+          #  AGENDA + PRESENCE / GARAGE / QUICK ACTIONS BENTO
+          # ════════════════════════════════════════════════════════════════════
+          - type: custom:layout-card
+            layout_type: custom:grid-layout
+            layout:
+              grid-template-columns: 1.45fr 1fr
+              grid-gap: 14px
+              mediaquery:
+                "(max-width: 1000px)":
+                  grid-template-columns: 1fr
+            cards:
+              # ── Left: Evening Glass Agenda Calendar ──
+              - type: custom:atomic-calendar
+                enableModeChange: true
+                defaultMode: 2
+                entities:
+                  - entity: calendar.important_dates
+                    type: icon1
+                  - entity: calendar.birthdays
+                    type: icon2
+                  - entity: calendar.holidays_in_united_states
+                    type: holiday
+                fullDayEventText: 'All Day'
+                firstDayOfWeek: 0
+                untilText: 'Until'
+                showColors: true
+                showDate: true
+                showNoEventsForToday: true
+                maxDaysToShow: 30
+                showLocation: false
+                showMonth: true
+                showCurrentEventLine: false
+                dateColor: '#94a3b8'
+                dateSize: 90
+                timeColor: '#38bdf8'
+                timeSize: 90
+                titleColor: '#f1f5f9'
+                titleSize: 108
+                locationIconColor: '#fb7185'
+                locationLinkColor: '#94a3b8'
+                locationTextSize: 90
+                dimFinishedEvents: true
+                finishedEventOpacity: 0.55
+                finishedEventFilter: 'grayscale(80%)'
+                dayWrapperLineColor: 'rgba(148, 163, 184, 0.12)'
+                eventBarColor: '#38bdf8'
+                showProgressBar: false
+                CalEventHolidayColor: '#a78bfa'
+                CalEventIcon1Color: '#22d3ee'
+                CalEventIcon2Color: '#fb7185'
+                CalEventIcon3Color: '#34d399'
+                CalEventIcon1: mdi:home-heart
+                CalEventIcon2: mdi:gift-outline
+                CalEventIcon3: mdi:star-four-points
+                card_mod: *card_style
 
-          # 6. Entertainment Room (Lower Floor)
-          - type: custom:mushroom-template-card
-            entity: climate.thermostat_entertainment_room
-            primary: Entertainment Rm
-            secondary: >-
-              {% set t = states('sensor.thermostat_entertainment_room_temperature') | float(state_attr('climate.thermostat_entertainment_room', 'current_temperature') | float(0)) | round(0) %}
-              {% set h = states('sensor.thermostat_entertainment_room_humidity') | float(0) | round(0) %}
-              {% set m = states('input_select.thermostat_entertainment_room_mode') | lower %}
-              {% set lo = states('input_number.thermostat_entertainment_room_heat_setpoint') | float(68) | round(0) %}
-              {% set hi = states('input_number.thermostat_entertainment_room_setpoint') | float(73) | round(0) %}
-              {{ t }}°F · {{ h }}% · {% if m == 'auto' %}Auto {{ lo }}°–{{ hi }}°{% elif m == 'heat' %}Heat {{ lo }}°{% elif m == 'cool' %}Cool {{ hi }}°{% else %}Off{% endif %}
-            icon: mdi:television-ambient-light
-            icon_color: >-
-              {% set m = states('input_select.thermostat_entertainment_room_mode') | lower %}
-              {{ 'blue' if m == 'cool' else ('orange' if m == 'heat' else ('green' if m == 'auto' else 'disabled')) }}
-            tap_action:
-              action: navigate
-              navigation_path: /lovelace/climate
-            hold_action:
-              action: more-info
+              # ── Right: Who's Home + Garage + Quick Actions ──
+              - type: vertical-stack
+                cards:
+                  - type: custom:layout-card
+                    layout_type: custom:grid-layout
+                    layout:
+                      grid-template-columns: 1fr 1fr
+                      grid-gap: 10px
+                    cards:
+                      - type: custom:mushroom-entity-card
+                        entity: device_tracker.funky_monkey_s_iphone
+                        icon_color: green
+                        layout: horizontal
+                        card_mod: *card_style
+                      - type: custom:mushroom-entity-card
+                        entity: device_tracker.ivavvays_iphone
+                        icon_color: green
+                        layout: horizontal
+                        card_mod: *card_style
 
-          # 7. Attic Zone
-          - type: custom:mushroom-template-card
-            entity: climate.thermostat_attic
-            primary: Attic Zone
-            secondary: >-
-              {% set t = state_attr('climate.thermostat_attic', 'current_temperature') | float(0) | round(0) %}
-              {% set h = states('sensor.thermostat_attic_humidity') | float(0) | round(0) %}
-              {% set m = states('input_select.thermostat_attic_mode') | lower %}
-              {% set lo = states('input_number.thermostat_attic_heat_setpoint') | float(68) | round(0) %}
-              {% set hi = states('input_number.thermostat_attic_setpoint') | float(74) | round(0) %}
-              {{ t }}°F · {{ h }}% · {% if m == 'auto' %}Auto {{ lo }}°–{{ hi }}°{% elif m == 'heat' %}Heat {{ lo }}°{% elif m == 'cool' %}Cool {{ hi }}°{% else %}Off{% endif %}
-            icon: mdi:home-roof
-            icon_color: >-
-              {% set m = states('input_select.thermostat_attic_mode') | lower %}
-              {{ 'blue' if m == 'cool' else ('orange' if m == 'heat' else ('green' if m == 'auto' else 'disabled')) }}
-            tap_action:
-              action: navigate
-              navigation_path: /lovelace/climate
-            hold_action:
-              action: more-info
+                  - type: custom:layout-card
+                    layout_type: custom:grid-layout
+                    layout:
+                      grid-template-columns: 1fr 1fr
+                      grid-gap: 10px
+                    cards:
+                      - type: custom:mushroom-cover-card
+                        entity: cover.garage_door_big
+                        name: Big Garage
+                        icon: mdi:garage
+                        show_buttons_control: true
+                        show_position_control: false
+                        layout: horizontal
+                        card_mod: *card_style
+                      - type: custom:mushroom-cover-card
+                        entity: cover.garage_door_small
+                        name: Small Garage
+                        icon: mdi:garage-variant
+                        show_buttons_control: true
+                        show_position_control: false
+                        layout: horizontal
+                        card_mod: *card_style
 
-          # 8. Open Interactive Climate Sliders
-          - type: custom:mushroom-template-card
-            primary: All Zone Sliders
-            secondary: Open full 7-zone range bars
-            icon: mdi:tune-variant
-            icon_color: cyan
-            tap_action:
-              action: navigate
-              navigation_path: /lovelace/climate
+                  - type: custom:layout-card
+                    layout_type: custom:grid-layout
+                    layout:
+                      grid-template-columns: repeat(4, 1fr)
+                      grid-gap: 10px
+                    cards:
+                      - type: custom:mushroom-entity-card
+                        entity: input_boolean.buzz_home
+                        icon: mdi:bullhorn-outline
+                        icon_color: amber
+                        name: Buzz
+                        tap_action:
+                          action: toggle
+                        icon_tap_action:
+                          action: toggle
+                        layout: vertical
+                        card_mod: *card_style
+                      - type: custom:mushroom-entity-card
+                        entity: input_boolean.reset_internet
+                        icon: mdi:wifi-refresh
+                        icon_color: light-blue
+                        name: Reset Net
+                        tap_action:
+                          action: more-info
+                        icon_tap_action:
+                          action: more-info
+                        layout: vertical
+                        card_mod: *card_style
+                      - type: custom:mushroom-template-card
+                        primary: UbhiNAS
+                        secondary: "{{ states('sensor.ubhinas_status') | title }}"
+                        icon: mdi:nas
+                        icon_color: "{{ 'green' if is_state('sensor.ubhinas_status','good') else 'red' }}"
+                        layout: vertical
+                        tap_action:
+                          action: more-info
+                          entity: sensor.ubhinas_status
+                        card_mod: *card_style
+                      - type: custom:mushroom-template-card
+                        primary: PlexNAS
+                        secondary: "{{ states('sensor.plexnas_status') | title }}"
+                        icon: mdi:nas
+                        icon_color: "{{ 'green' if is_state('sensor.plexnas_status','good') else 'red' }}"
+                        layout: vertical
+                        tap_action:
+                          action: more-info
+                          entity: sensor.plexnas_status
+                        card_mod: *card_style
 
-  # ════════════════════════════════════════════════════════════════════════════
-  #  ROW 3 — PRIMARY PERIMETER CAMERAS (4-COL LAPTOP / 2-COL MOBILE)
-  # ════════════════════════════════════════════════════════════════════════════
-  - type: vertical-stack
-    cards:
-      - type: custom:mushroom-title-card
-        title: Primary Perimeter Cameras
-        subtitle: Snapshot view for fast loading — tap any feed for live HD stream
-      - type: custom:layout-card
-        layout_type: custom:grid-layout
-        layout:
-          grid-template-columns: repeat(4, minmax(0, 1fr))
-          grid-gap: 10px
-          margin: 0
-          mediaquery:
-            "(max-width: 1100px)":
-              grid-template-columns: repeat(2, minmax(0, 1fr))
-            "(max-width: 520px)":
-              grid-template-columns: 1fr
-        cards:
-          - type: picture-glance
-            title: Driveway
-            camera_image: camera.driveway_high
-            camera_view: auto
-            aspect_ratio: "16:9"
-            entities:
-              - entity: cover.garage_door_big
-              - entity: cover.garage_door_small
+          # ════════════════════════════════════════════════════════════════════
+          #  CHARTS ROW — Solar + Home Consumption + Efficiency Gauges
+          # ════════════════════════════════════════════════════════════════════
+          - type: custom:layout-card
+            layout_type: custom:grid-layout
+            layout:
+              grid-template-columns: 1.2fr 1.2fr 0.9fr
+              grid-gap: 14px
+              mediaquery:
+                "(max-width: 1200px)":
+                  grid-template-columns: 1fr 1fr
+                "(max-width: 600px)":
+                  grid-template-columns: 1fr
+            cards:
+              - type: energy-solar-graph
+                title: Solar Production
+                card_mod: *card_style
+              - type: energy-usage-graph
+                title: Home Consumption
+                card_mod: *card_style
+              - type: vertical-stack
+                cards:
+                  - type: energy-grid-neutrality-gauge
+                    card_mod: *card_style
+                  - type: energy-self-sufficiency-gauge
+                    card_mod: *card_style
 
-          - type: picture-glance
-            title: Front Door
-            camera_image: camera.front_door_high
-            camera_view: auto
-            aspect_ratio: "16:9"
-            entities:
-              - entity: binary_sensor.main_door
-              - entity: binary_sensor.main_door_motion
-              - entity: switch.entryway_light
+          # ════════════════════════════════════════════════════════════════════
+          #  NETWORK & ISP TELEMETRY — Smooth Bezier Curve + Speedtest Tiles
+          # ════════════════════════════════════════════════════════════════════
+          - type: custom:layout-card
+            layout_type: custom:grid-layout
+            layout:
+              grid-template-columns: 1.8fr 1fr
+              grid-gap: 14px
+              mediaquery:
+                "(max-width: 850px)":
+                  grid-template-columns: 1fr
+            cards:
+              - type: custom:mini-graph-card
+                name: ISP Data Telemetry (72h)
+                icon: mdi:wan
+                entities:
+                  - entity: sensor.xfinity_usage
+                    name: Used GB
+                    show_state: true
+                    show_points: false
+                    color: '#38bdf8'
+                  - entity: sensor.data_allowance_till_date
+                    name: Pace Target
+                    show_state: true
+                    show_line: true
+                    show_points: false
+                    color: '#fbbf24'
+                  - entity: binary_sensor.sleep_time
+                    show_fill: true
+                    show_state: false
+                    show_line: false
+                    show_legend: false
+                    show_points: false
+                    color: '#0f172a'
+                    y_axis: secondary
+                cache: false
+                hours_to_show: 72
+                points_per_hour: 1
+                aggregate_func: max
+                line_width: 2.5
+                smoothing: true
+                font_size: 85
+                show:
+                  legend: true
+                  extrema: false
+                  labels: false
+                  labels_secondary: false
+                  fill: fade
+                state_map:
+                  - value: "off"
+                  - value: "on"
+                card_mod: *card_style
 
-          - type: picture-glance
-            title: Backyard
-            camera_image: camera.backyard_high
-            camera_view: auto
-            aspect_ratio: "16:9"
-            entities:
-              - entity: binary_sensor.backyard_left_door
-              - entity: switch.backyard_patio_lights
+              - type: custom:layout-card
+                layout_type: custom:grid-layout
+                layout:
+                  grid-template-columns: 1fr 1fr 1fr
+                  grid-gap: 10px
+                cards:
+                  - type: custom:mushroom-template-card
+                    primary: "{{ states('sensor.speedtest_ping') | float(0) | round(0) }} ms"
+                    secondary: Latency
+                    icon: mdi:timer-sand
+                    icon_color: |-
+                      {% set p = states('sensor.speedtest_ping') | float(0) %}
+                      {% if p < 30 %}green{% elif p < 60 %}amber{% else %}red{% endif %}
+                    layout: vertical
+                    tap_action:
+                      action: more-info
+                      entity: sensor.speedtest_ping
+                    card_mod: &speed_card
+                      style: |
+                        ha-card {
+                          background: linear-gradient(145deg, rgba(41, 50, 72, 0.90) 0%, rgba(30, 37, 54, 0.94) 100%) !important;
+                          border-radius: 8px !important;
+                          border: 1px solid rgba(255, 255, 255, 0.085) !important;
+                          box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.12), 0 10px 24px -6px rgba(9, 13, 22, 0.45) !important;
+                        }
+                        mushroom-state-info {
+                          --card-primary-font-size: 20px;
+                          --card-primary-font-weight: 700;
+                        }
 
-          - type: picture-glance
-            title: Side Yard
-            camera_image: camera.side_yard_high
-            camera_view: auto
-            aspect_ratio: "16:9"
-            entities:
-              - entity: switch.side_deck_light
+                  - type: custom:mushroom-template-card
+                    primary: "{{ states('sensor.speedtest_download') | float(0) | round(0) }} Mbps"
+                    secondary: Downlink
+                    icon: mdi:arrow-down-circle-outline
+                    icon_color: |-
+                      {% set d = states('sensor.speedtest_download') | float(0) %}
+                      {% if d > 200 %}cyan{% elif d > 100 %}amber{% else %}red{% endif %}
+                    layout: vertical
+                    tap_action:
+                      action: more-info
+                      entity: sensor.speedtest_download
+                    card_mod: *speed_card
+
+                  - type: custom:mushroom-template-card
+                    primary: "{{ states('sensor.speedtest_upload') | float(0) | round(0) }} Mbps"
+                    secondary: Uplink
+                    icon: mdi:arrow-up-circle-outline
+                    icon_color: |-
+                      {% set u = states('sensor.speedtest_upload') | float(0) %}
+                      {% if u > 20 %}purple{% elif u > 10 %}amber{% else %}red{% endif %}
+                    layout: vertical
+                    tap_action:
+                      action: more-info
+                      entity: sensor.speedtest_upload
+                    card_mod: *speed_card

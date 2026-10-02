@@ -1,988 +1,1082 @@
-/**
- * ThermostatRangeBar (v10)
- * High-performance, optimistic-reactive dual/single range slider + mode/fan bar
- * for Home Assistant Z-Wave & MQTT climate entities.
- *
- * Performance, Reactivity & Security Highlights:
- *  - Zero innerHTML usage (100% DOM API createElement/textContent for XSS safety)
- *  - O(1) memoized `set hass()` — skips DOM updates when zone state is unchanged
- *  - Native integration with zone helpers (`input_select.thermostat_<zone>_mode`,
- *    `input_select.thermostat_<zone>_fan_mode`, `input_number.thermostat_<zone>_heat_setpoint`,
- *    `input_number.thermostat_<zone>_setpoint`) and hardware sync scripts
- *    (`script.climate_smart_mode`, `script.climate_smart_fan_mode`,
- *    `script.climate_apply_zone_selection`) for instant (<16ms) UI reactivity
- *  - Mobile- & laptop-friendly responsive layout with pointercancel safety and +/- steppers
- */
 class ThermostatRangeBar extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
     this._hass = null;
     this._config = null;
-    this._dragging = null;
-    this._low = 68;
-    this._high = 73;
-    this._single = 70;
-    this._lastSignature = '';
-    this._legacyCleaned = false;
-
-    // Optimistic state for immediate UI feedback (<16ms)
-    this._optMode = null;
-    this._optFan = null;
+    this._dragging = null; // 'low' | 'high' | 'single' | null
+    this._dragLow = null;
+    this._dragHigh = null;
+    this._dragSingle = null;
     this._optLow = null;
     this._optHigh = null;
     this._optSingle = null;
+    this._optMode = null;
+    this._optFanMode = null;
     this._optUntil = 0;
-    this._optTimer = null;
-  }
-
-  setConfig(config) {
-    if (!config || !config.entity) {
-      throw new Error('thermostat-range-bar: "entity" is required');
-    }
-    this._config = {
-      min: 55,
-      max: 85,
-      step: 1,
-      min_gap: 2,
-      show_controls: true,
-      ...config,
-    };
+    this._optModeUntil = 0;
+    this._optFanModeUntil = 0;
+    this._min = 55;
+    this._max = 85;
+    this._minGap = 2;
+    this._initialized = false;
+    this._legacyHidden = false;
     this._lastSignature = '';
-    this._renderSkeleton();
+    this._lastStateSig = '';
   }
 
   connectedCallback() {
-    if (!this._legacyCleaned) {
-      requestAnimationFrame(() => this._hideLegacyButtonRow());
+    if (!this._legacyHidden) {
+      this._hideLegacyButtonRow();
+      this._legacyHidden = true;
     }
   }
 
-  _getZoneSlug() {
-    if (!this._config || !this._config.entity) return null;
-    const raw = this._config.entity.replace(/^climate\.thermostat_/, '').replace(/^climate\./, '');
-    if (
-      raw === 'lower_guest_bedroom' &&
-      this._hass &&
-      !this._hass.states['climate.thermostat_lower_guest_bedroom'] &&
-      this._hass.states['climate.thermostat_entertainment_room']
-    ) {
-      return 'entertainment_room';
+  setConfig(config) {
+    if (!config || (!config.entity && !config.climate_entity)) {
+      throw new Error('thermostat-range-bar requires a climate entity (e.g. entity: climate.living_room)');
     }
-    return raw;
+    this._config = config;
+    this._min = Number.isFinite(Number(config.min)) ? Number(config.min) : null;
+    this._max = Number.isFinite(Number(config.max)) ? Number(config.max) : null;
+    this._minGap = Number.isFinite(Number(config.min_gap)) ? Number(config.min_gap) : 2;
+    this._lastStateSig = '';
+    this._renderSkeleton();
   }
 
-  _getResolvedEntities() {
-    const slug = this._getZoneSlug();
-    const climateId = slug ? `climate.thermostat_${slug}` : this._config.entity;
-    const modeHelperId = slug ? `input_select.thermostat_${slug}_mode` : null;
-    const fanHelperId = slug ? `input_select.thermostat_${slug}_fan_mode` : null;
-    const coolHelperId = slug ? `input_number.thermostat_${slug}_setpoint` : null;
-    const heatHelperId = slug ? `input_number.thermostat_${slug}_heat_setpoint` : null;
-    const tempSensorId = slug ? `sensor.thermostat_${slug}_temperature` : null;
+  static getStubConfig(hass) {
+    const climateEntity = hass
+      ? Object.keys(hass.states).find((e) => e.startsWith('climate.'))
+      : 'climate.thermostat';
     return {
-      slug,
-      climateId,
-      modeHelperId,
-      fanHelperId,
-      coolHelperId,
-      heatHelperId,
-      tempSensorId,
+      entity: climateEntity || 'climate.thermostat'
     };
+  }
+
+  _resolveEntityId() {
+    if (!this._config) return null;
+    return this._config.entity || this._config.climate_entity || null;
+  }
+
+  _getClimateStateObj() {
+    if (!this._hass) return null;
+    const entityId = this._resolveEntityId();
+    if (!entityId) return null;
+    return this._hass.states[entityId] || null;
   }
 
   set hass(hass) {
     this._hass = hass;
-    if (!this._config || !hass) return;
-    if (!this._legacyCleaned) {
+    if (!this._initialized) {
+      this._renderSkeleton();
+    }
+    if (!this._legacyHidden) {
       this._hideLegacyButtonRow();
+      this._legacyHidden = true;
     }
     if (this._dragging) return;
 
-    const ids = this._getResolvedEntities();
-    const cObj = hass.states[ids.climateId] || hass.states[this._config.entity];
-    const mObj = ids.modeHelperId ? hass.states[ids.modeHelperId] : null;
-    const fObj = ids.fanHelperId ? hass.states[ids.fanHelperId] : null;
-    const coolObj = ids.coolHelperId ? hass.states[ids.coolHelperId] : null;
-    const heatObj = ids.heatHelperId ? hass.states[ids.heatHelperId] : null;
-    const tempObj = ids.tempSensorId ? hass.states[ids.tempSensorId] : null;
-
-    if (!cObj && !mObj) return;
-
-    const attrs = (cObj && cObj.attributes) || {};
-    const optActive = Date.now() < this._optUntil ? '1' : '0';
-    const sig = [
-      cObj ? cObj.state : '',
-      mObj ? mObj.state : '',
-      fObj ? fObj.state : '',
-      coolObj ? coolObj.state : '',
-      heatObj ? heatObj.state : '',
-      tempObj ? tempObj.state : '',
-      attrs.temperature,
-      attrs.target_temp_low,
-      attrs.target_temp_high,
-      attrs.current_temperature,
-      attrs.fan_mode,
-      optActive,
-    ].join('|');
-
-    if (sig === this._lastSignature) return;
-    this._lastSignature = sig;
+    const stateObj = this._getClimateStateObj();
+    if (!stateObj) return;
+    const a = stateObj.attributes || {};
+    const now = Date.now();
+    const optActive = (now < this._optUntil || now < this._optModeUntil || now < this._optFanModeUntil) ? '1' : '0';
+    const stateSig = `${stateObj.state}|${a.temperature}|${a.target_temp_low}|${a.target_temp_high}|${a.fan_mode}|${a.min_temp}|${a.max_temp}|${a.supported_features}|${optActive}`;
+    if (stateSig === this._lastStateSig && optActive === '0') {
+      return;
+    }
+    this._lastStateSig = stateSig;
     this._updateUI();
   }
 
-  getCardSize() {
-    return 2;
-  }
-
+  /**
+   * If a browser tab has cached Lovelace YAML with the old mushroom-template-card
+   * horizontal-stack above this element, hide it automatically so only the native
+   * capability-driven controls inside this component are visible.
+   */
   _hideLegacyButtonRow() {
     try {
-      let node = this;
-      for (let i = 0; i < 6 && node; i++) {
-        const root = node.getRootNode && node.getRootNode();
-        const host = root && root.host ? root.host : node.parentElement;
-        if (host && host.children && host.children.length > 1) {
-          Array.from(host.children).forEach((child) => {
-            if (child === this || (child.contains && child.contains(this))) return;
-            const tag = (child.tagName || '').toLowerCase();
-            if (tag.includes('horizontal-stack')) {
-              child.style.display = 'none';
+      let host = this;
+      for (let i = 0; i < 6 && host; i++) {
+        if (host.parentElement) {
+          const children = Array.from(host.parentElement.children);
+          for (const sibling of children) {
+            if (sibling !== host && sibling.tagName && sibling.tagName.toLowerCase().includes('horizontal-stack')) {
+              sibling.style.display = 'none';
             }
-          });
+          }
+          host = host.parentElement;
+        } else if (host.getRootNode && host.getRootNode().host) {
+          host = host.getRootNode().host;
+        } else {
+          break;
         }
-        node = host;
       }
-      this._legacyCleaned = true;
-    } catch (_e) {
-      this._legacyCleaned = true;
+    } catch (_) {}
+  }
+
+  /**
+   * Normalize HVAC mode strings across Home Assistant integrations.
+   */
+  _normalizeHvacMode(raw) {
+    const s = String(raw ?? '').trim().toLowerCase();
+    if (s === 'heat_cool' || s === 'auto') return 'auto';
+    if (s === 'heat') return 'heat';
+    if (s === 'cool') return 'cool';
+    if (s === 'dry') return 'dry';
+    if (s === 'fan_only') return 'fan_only';
+    if (s === 'off') return 'off';
+    return s || 'off';
+  }
+
+  /**
+   * Return the list of supported HVAC mode descriptors for this specific entity.
+   * Any mode not in stateObj.attributes.hvac_modes is strictly omitted.
+   */
+  _getSupportedHvacModes(stateObj) {
+    const rawModes = Array.isArray(stateObj?.attributes?.hvac_modes)
+      ? stateObj.attributes.hvac_modes
+      : [];
+    if (rawModes.length === 0) return [];
+
+    const catalog = [
+      {
+        canonical: 'off',
+        match: ['off'],
+        icon: 'mdi:power',
+        label: 'System Off',
+        activeColor: '#e2e8f0',
+        activeBg: 'linear-gradient(180deg, rgba(148, 163, 184, 0.24) 0%, rgba(100, 116, 139, 0.12) 100%)',
+        activeBorder: '1.5px solid rgba(226, 232, 240, 0.72)',
+        activeShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.22), 0 4px 12px -2px rgba(15, 23, 42, 0.35)'
+      },
+      {
+        canonical: 'heat',
+        match: ['heat'],
+        icon: 'mdi:fire',
+        label: 'Heat Mode',
+        activeColor: '#fb923c',
+        activeBg: 'linear-gradient(180deg, rgba(251, 146, 60, 0.26) 0%, rgba(251, 146, 60, 0.12) 100%)',
+        activeBorder: '1.5px solid rgba(251, 146, 60, 0.80)',
+        activeShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.22), 0 4px 12px -2px rgba(251, 146, 60, 0.30)'
+      },
+      {
+        canonical: 'cool',
+        match: ['cool'],
+        icon: 'mdi:snowflake',
+        label: 'Cool Mode',
+        activeColor: '#38bdf8',
+        activeBg: 'linear-gradient(180deg, rgba(56, 189, 248, 0.26) 0%, rgba(56, 189, 248, 0.12) 100%)',
+        activeBorder: '1.5px solid rgba(56, 189, 248, 0.80)',
+        activeShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.22), 0 4px 12px -2px rgba(56, 189, 248, 0.30)'
+      },
+      {
+        canonical: 'auto',
+        match: ['auto', 'heat_cool'],
+        icon: 'mdi:thermostat-auto',
+        label: 'Auto Mode',
+        activeColor: '#34d399',
+        activeBg: 'linear-gradient(180deg, rgba(52, 211, 153, 0.26) 0%, rgba(52, 211, 153, 0.12) 100%)',
+        activeBorder: '1.5px solid rgba(52, 211, 153, 0.80)',
+        activeShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.22), 0 4px 12px -2px rgba(52, 211, 153, 0.30)'
+      },
+      {
+        canonical: 'dry',
+        match: ['dry'],
+        icon: 'mdi:water-percent',
+        label: 'Dry Mode',
+        activeColor: '#a78bfa',
+        activeBg: 'linear-gradient(180deg, rgba(167, 139, 250, 0.26) 0%, rgba(167, 139, 250, 0.12) 100%)',
+        activeBorder: '1.5px solid rgba(167, 139, 250, 0.80)',
+        activeShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.22), 0 4px 12px -2px rgba(167, 139, 250, 0.30)'
+      },
+      {
+        canonical: 'fan_only',
+        match: ['fan_only'],
+        icon: 'mdi:fan',
+        label: 'Fan Only Mode',
+        activeColor: '#38bdf8',
+        activeBg: 'linear-gradient(180deg, rgba(56, 189, 248, 0.26) 0%, rgba(56, 189, 248, 0.12) 100%)',
+        activeBorder: '1.5px solid rgba(56, 189, 248, 0.80)',
+        activeShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.22), 0 4px 12px -2px rgba(56, 189, 248, 0.30)'
+      }
+    ];
+
+    const result = [];
+    for (const item of catalog) {
+      const exactMode = rawModes.find(m => item.match.includes(String(m).trim().toLowerCase()));
+      if (exactMode !== undefined) {
+        result.push({
+          ...item,
+          serviceValue: exactMode
+        });
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Normalize fan mode strings (including Z-Wave / Honeywell aliases like "Auto low" and "Low").
+   */
+  _normalizeFanMode(raw) {
+    const s = String(raw ?? '').trim().toLowerCase();
+    if (!s || s === 'unknown' || s === 'unavailable') return '';
+    if (s === 'auto' || s === 'auto low' || s === 'auto_low' || s === 'auto high' || s === 'auto_high') {
+      return 'auto';
+    }
+    if (s === 'on' || s === 'low' || s === 'high' || s === 'medium' || s === 'continuous') {
+      return 'on';
+    }
+    return s;
+  }
+
+  /**
+   * Return the list of supported Fan mode descriptors for this specific entity.
+   * If fan modes are not supported by the thermostat, returns [].
+   */
+  _getSupportedFanModes(stateObj) {
+    const features = Number(stateObj?.attributes?.supported_features ?? 0);
+    const rawFanModes = Array.isArray(stateObj?.attributes?.fan_modes)
+      ? stateObj.attributes.fan_modes
+      : [];
+
+    // ClimateEntityFeature.FAN_MODE = 8
+    const supportsFan = (features & 8) !== 0 || rawFanModes.length > 0;
+    if (!supportsFan || rawFanModes.length === 0) return [];
+
+    const result = [];
+
+    // Check if an "Auto" fan mode is supported
+    const autoMatch = rawFanModes.find(m => {
+      const lower = String(m).trim().toLowerCase();
+      return lower === 'auto' || lower === 'auto low' || lower === 'auto_low';
+    });
+    if (autoMatch !== undefined) {
+      // Prefer 'auto' if present in rawFanModes, otherwise the matched string
+      const preferredAuto = rawFanModes.find(m => String(m).trim().toLowerCase() === 'auto') || autoMatch;
+      result.push({
+        canonical: 'auto',
+        serviceValue: preferredAuto,
+        icon: 'mdi:fan-auto',
+        label: 'Fan Auto',
+        activeColor: '#e2e8f0',
+        activeBg: 'linear-gradient(180deg, rgba(148, 163, 184, 0.24) 0%, rgba(100, 116, 139, 0.12) 100%)',
+        activeBorder: '1.5px solid rgba(226, 232, 240, 0.72)',
+        activeShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.22), 0 4px 12px -2px rgba(15, 23, 42, 0.35)'
+      });
+    }
+
+    // Check if an "On" / continuous fan mode is supported
+    const onMatch = rawFanModes.find(m => {
+      const lower = String(m).trim().toLowerCase();
+      return lower === 'on' || lower === 'low' || lower === 'high' || lower === 'medium';
+    });
+    if (onMatch !== undefined) {
+      const preferredOn = rawFanModes.find(m => String(m).trim().toLowerCase() === 'on') || onMatch;
+      result.push({
+        canonical: 'on',
+        serviceValue: preferredOn,
+        icon: 'mdi:fan',
+        label: 'Fan On',
+        activeColor: '#38bdf8',
+        activeBg: 'linear-gradient(180deg, rgba(56, 189, 248, 0.26) 0%, rgba(56, 189, 248, 0.12) 100%)',
+        activeBorder: '1.5px solid rgba(56, 189, 248, 0.80)',
+        activeShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.22), 0 4px 12px -2px rgba(56, 189, 248, 0.30)'
+      });
+    }
+
+    // Include any other custom fan modes exposed by a non-standard thermostat
+    for (const raw of rawFanModes) {
+      const norm = this._normalizeFanMode(raw);
+      if (norm !== 'auto' && norm !== 'on' && !result.some(r => r.canonical === norm)) {
+        result.push({
+          canonical: norm,
+          serviceValue: raw,
+          icon: 'mdi:fan',
+          label: `Fan ${raw}`,
+          activeColor: '#38bdf8',
+          activeBg: 'linear-gradient(180deg, rgba(56, 189, 248, 0.26) 0%, rgba(56, 189, 248, 0.12) 100%)',
+          activeBorder: '1.5px solid rgba(56, 189, 248, 0.80)',
+          activeShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.22), 0 4px 12px -2px rgba(56, 189, 248, 0.30)'
+        });
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * Determine setpoint capabilities for this thermostat.
+   */
+  _getSetpointCapabilities(stateObj) {
+    if (!stateObj || !stateObj.attributes) {
+      return { supportsSingle: false, supportsRange: false, supportsAny: false };
+    }
+    const attr = stateObj.attributes;
+    const features = Number(attr.supported_features ?? 0);
+    // ClimateEntityFeature.TARGET_TEMPERATURE = 1, TARGET_TEMPERATURE_RANGE = 2
+    const hasSingleFeature = (features & 1) !== 0;
+    const hasRangeFeature = (features & 2) !== 0;
+    const hasSingleAttr = attr.temperature !== undefined && attr.temperature !== null;
+    const hasRangeAttr =
+      attr.target_temp_low !== undefined &&
+      attr.target_temp_low !== null &&
+      attr.target_temp_high !== undefined &&
+      attr.target_temp_high !== null;
+
+    const supportsSingle = hasSingleFeature || hasSingleAttr;
+    const supportsRange = hasRangeFeature || hasRangeAttr;
+    return {
+      supportsSingle,
+      supportsRange,
+      supportsAny: supportsSingle || supportsRange
+    };
+  }
+
+  _getActiveHvacMode(stateObj) {
+    if (Date.now() < this._optModeUntil && this._optMode) {
+      return this._optMode;
+    }
+    if (!stateObj) return 'off';
+    return this._normalizeHvacMode(stateObj.state);
+  }
+
+  _getActiveFanMode(stateObj) {
+    if (Date.now() < this._optFanModeUntil && this._optFanMode) {
+      return this._optFanMode;
+    }
+    if (!stateObj || !stateObj.attributes) return '';
+    return this._normalizeFanMode(stateObj.attributes.fan_mode);
+  }
+
+  _getSetpoints(stateObj) {
+    const attr = stateObj?.attributes || {};
+    const rawLow = Number(attr.target_temp_low ?? attr.temperature ?? 68);
+    const rawHigh = Number(attr.target_temp_high ?? attr.temperature ?? 73);
+    const rawSingle = Number(attr.temperature ?? attr.target_temp_low ?? attr.target_temp_high ?? 70);
+
+    const now = Date.now();
+    const low =
+      this._dragging && this._dragLow !== null
+        ? this._dragLow
+        : now < this._optUntil && this._optLow !== null
+        ? this._optLow
+        : Number.isFinite(rawLow)
+        ? rawLow
+        : 68;
+
+    const high =
+      this._dragging && this._dragHigh !== null
+        ? this._dragHigh
+        : now < this._optUntil && this._optHigh !== null
+        ? this._optHigh
+        : Number.isFinite(rawHigh)
+        ? rawHigh
+        : 73;
+
+    const single =
+      this._dragging && this._dragSingle !== null
+        ? this._dragSingle
+        : now < this._optUntil && this._optSingle !== null
+        ? this._optSingle
+        : Number.isFinite(rawSingle)
+        ? rawSingle
+        : 70;
+
+    return {
+      low: Math.round(low),
+      high: Math.round(high),
+      single: Math.round(single)
+    };
+  }
+
+  _selectHvacMode(modeDesc) {
+    const stateObj = this._getClimateStateObj();
+    if (!stateObj || !this._hass) return;
+
+    this._optMode = modeDesc.canonical;
+    this._optModeUntil = Date.now() + 3500;
+    this._updateUI();
+
+    this._hass.callService('climate', 'set_hvac_mode', {
+      entity_id: stateObj.entity_id,
+      hvac_mode: modeDesc.serviceValue
+    });
+  }
+
+  _selectFanMode(fanDesc) {
+    const stateObj = this._getClimateStateObj();
+    if (!stateObj || !this._hass) return;
+
+    this._optFanMode = fanDesc.canonical;
+    this._optFanModeUntil = Date.now() + 3500;
+    this._updateUI();
+
+    this._hass.callService('climate', 'set_fan_mode', {
+      entity_id: stateObj.entity_id,
+      fan_mode: fanDesc.serviceValue
+    });
+  }
+
+  _commitTemperature(changedThumb, newLow, newHigh, newSingle) {
+    const stateObj = this._getClimateStateObj();
+    if (!stateObj || !this._hass) return;
+
+    const entityId = stateObj.entity_id;
+    const mode = this._getActiveHvacMode(stateObj);
+    const caps = this._getSetpointCapabilities(stateObj);
+    const features = Number(stateObj.attributes?.supported_features ?? 0);
+
+    this._optLow = newLow;
+    this._optHigh = newHigh;
+    this._optSingle = newSingle;
+    this._optUntil = Date.now() + 4000;
+
+    if (mode === 'auto' && caps.supportsRange) {
+      this._hass.callService('climate', 'set_temperature', {
+        entity_id: entityId,
+        target_temp_low: newLow,
+        target_temp_high: newHigh
+      });
+      return;
+    }
+
+    const targetVal =
+      changedThumb === 'low'
+        ? newLow
+        : changedThumb === 'high'
+        ? newHigh
+        : newSingle;
+
+    // If entity supports single temperature (ClimateEntityFeature.TARGET_TEMPERATURE = 1)
+    if ((features & 1) !== 0 || !caps.supportsRange) {
+      this._hass.callService('climate', 'set_temperature', {
+        entity_id: entityId,
+        temperature: targetVal
+      });
+    }
+
+    // If entity also maintains target_temp_low / target_temp_high in state attributes, update range separately
+    if ((features & 2) !== 0 && stateObj.attributes?.target_temp_low != null && stateObj.attributes?.target_temp_high != null) {
+      this._hass.callService('climate', 'set_temperature', {
+        entity_id: entityId,
+        target_temp_low: newLow,
+        target_temp_high: newHigh
+      });
     }
   }
 
   _renderSkeleton() {
-    const root = this.shadowRoot;
-    while (root.firstChild) {
-      root.removeChild(root.firstChild);
-    }
-
-    const style = document.createElement('style');
-    style.textContent = `
-      :host {
-        display: block;
-        contain: content;
-      }
-      ha-card {
-        background: #1a2233;
-        border-radius: 10px;
-        border: 1px solid rgba(148, 163, 184, 0.14);
-        box-shadow: 0 2px 6px rgba(6, 10, 18, 0.28);
-        padding: 8px 12px 10px 12px;
-        box-sizing: border-box;
-        user-select: none;
-        -webkit-user-select: none;
-      }
-      .bar-wrap {
-        position: relative;
-        height: 28px;
-        display: flex;
-        align-items: center;
-        touch-action: pan-y;
-      }
-      .track {
-        position: relative;
-        width: 100%;
-        height: 8px;
-        border-radius: 999px;
-        background: rgba(15, 23, 42, 0.85);
-        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.55);
-        cursor: pointer;
-      }
-      .fill {
-        position: absolute;
-        top: 0;
-        height: 100%;
-        border-radius: 999px;
-        background: linear-gradient(90deg, #fb923c 0%, #34d399 50%, #38bdf8 100%);
-        pointer-events: none;
-      }
-      .current-tick {
-        position: absolute;
-        top: -4px;
-        width: 3px;
-        height: 16px;
-        border-radius: 2px;
-        background: #f8fafc;
-        transform: translateX(-50%);
-        box-shadow: 0 0 4px rgba(248, 250, 252, 0.8);
-        pointer-events: none;
-        z-index: 2;
-      }
-      .handle {
-        position: absolute;
-        top: 50%;
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
-        cursor: grab;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: var(--primary-font-family, -apple-system, BlinkMacSystemFont, sans-serif);
-        font-size: 10.5px;
-        font-weight: 700;
-        color: #0f172a;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
-        transition: transform 0.1s ease;
-        z-index: 3;
-        touch-action: none;
-      }
-      .handle:active {
-        cursor: grabbing;
-        transform: translate(-50%, -50%) scale(1.12);
-      }
-      .handle.heat {
-        background: #fb923c;
-        border: 2px solid #fff7ed;
-      }
-      .handle.cool {
-        background: #38bdf8;
-        border: 2px solid #f0f9ff;
-      }
-      .handle.single {
-        background: #fbbf24;
-        border: 2px solid #fefce8;
-      }
-      .labels-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 6px;
-        margin-top: 2px;
-        font-family: var(--primary-font-family, -apple-system, BlinkMacSystemFont, sans-serif);
-        font-size: 10.5px;
-        font-weight: 600;
-        color: #94a3b8;
-        white-space: nowrap;
-      }
-      .labels-row .heat-lbl { color: #fdba74; }
-      .labels-row .cool-lbl { color: #7dd3fc; }
-      .labels-row .cur-lbl { color: #cbd5e1; }
-      .step-btns {
-        display: inline-flex;
-        gap: 4px;
-        align-items: center;
-      }
-      .step-btn {
-        background: rgba(51, 65, 85, 0.6);
-        border: 1px solid rgba(148, 163, 184, 0.22);
-        color: #f1f5f9;
-        border-radius: 5px;
-        width: 22px;
-        height: 20px;
-        font-size: 13px;
-        font-weight: 700;
-        line-height: 1;
-        padding: 0;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .step-btn:active {
-        background: rgba(56, 189, 248, 0.35);
-      }
-      .controls-row {
-        display: grid;
-        grid-template-columns: repeat(6, minmax(0, 1fr));
-        gap: 4px;
-        margin-top: 7px;
-        padding-top: 7px;
-        border-top: 1px solid rgba(148, 163, 184, 0.12);
-      }
-      @media (max-width: 420px) {
-        .controls-row {
-          grid-template-columns: repeat(3, minmax(0, 1fr));
+    this.shadowRoot.innerHTML = `
+      <style>
+        :host {
+          display: block;
+          width: 100%;
+          box-sizing: border-box;
+          user-select: none;
+          -webkit-user-select: none;
+          font-family: var(--primary-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
         }
-        .labels-row .cur-lbl {
+        .card-body {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          padding: 4px 12px 10px 12px;
+        }
+        .controls-row {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          width: 100%;
+        }
+        .controls-row.hidden {
           display: none;
         }
-      }
-      .ctrl-btn {
-        appearance: none;
-        border: 1px solid rgba(148, 163, 184, 0.14);
-        background: rgba(30, 41, 59, 0.65);
-        color: #94a3b8;
-        border-radius: 6px;
-        height: 28px;
-        padding: 0 4px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 3px;
-        font-family: var(--primary-font-family, -apple-system, BlinkMacSystemFont, sans-serif);
-        font-size: 10px;
-        font-weight: 700;
-        letter-spacing: 0.02em;
-        cursor: pointer;
-        transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
-        min-width: 0;
-        overflow: hidden;
-      }
-      .ctrl-btn ha-icon {
-        --mdc-icon-size: 13px;
-        flex-shrink: 0;
-      }
-      .ctrl-btn span {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-      .ctrl-btn:hover {
-        background: rgba(51, 65, 85, 0.75);
-        color: #f1f5f9;
-      }
-      .ctrl-btn.active-heat {
-        background: rgba(251, 146, 60, 0.22);
-        border-color: rgba(251, 146, 60, 0.6);
-        color: #fdba74;
-      }
-      .ctrl-btn.active-cool {
-        background: rgba(56, 189, 248, 0.22);
-        border-color: rgba(56, 189, 248, 0.6);
-        color: #7dd3fc;
-      }
-      .ctrl-btn.active-auto {
-        background: rgba(52, 211, 153, 0.22);
-        border-color: rgba(52, 211, 153, 0.6);
-        color: #6ee7b7;
-      }
-      .ctrl-btn.active-off {
-        background: rgba(148, 163, 184, 0.22);
-        border-color: rgba(148, 163, 184, 0.45);
-        color: #e2e8f0;
-      }
-      .ctrl-btn.active-fan {
-        background: rgba(34, 211, 238, 0.2);
-        border-color: rgba(34, 211, 238, 0.55);
-        color: #67e8f9;
-      }
-      .off-banner {
-        font-family: var(--primary-font-family, -apple-system, BlinkMacSystemFont, sans-serif);
-        font-size: 11.5px;
-        font-weight: 600;
-        color: #94a3b8;
-        text-align: center;
-        padding: 5px 0 3px 0;
-      }
+        .ctrl-btn {
+          flex: 1 1 0;
+          height: 42px;
+          min-width: 0;
+          border-radius: 8px;
+          background: rgba(15, 23, 42, 0.48);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          box-shadow: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          color: #64748b;
+          transition: all 0.16s cubic-bezier(0.4, 0, 0.2, 1);
+          padding: 0;
+          outline: none;
+          -webkit-tap-highlight-color: transparent;
+        }
+        .ctrl-btn:hover {
+          background: rgba(30, 41, 59, 0.68);
+          color: #cbd5e1;
+          border-color: rgba(255, 255, 255, 0.16);
+        }
+        .ctrl-btn:active {
+          transform: scale(0.96);
+        }
+        .ctrl-btn ha-icon {
+          --mdc-icon-size: 22px;
+          pointer-events: none;
+        }
+        .ctrl-divider {
+          width: 1.5px;
+          height: 26px;
+          background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.22) 50%, rgba(255,255,255,0.03) 100%);
+          margin: 0 2px;
+          flex-shrink: 0;
+          border-radius: 2px;
+        }
+        .bar-wrap {
+          position: relative;
+          height: 54px;
+          border-radius: 12px;
+          background: rgba(15, 23, 42, 0.62);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.45);
+          padding: 0 18px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          transition: opacity 0.25s ease;
+        }
+        .bar-wrap.hidden {
+          display: none;
+        }
+        .bar-wrap.off-state {
+          opacity: 0.48;
+        }
+        .labels-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 7px;
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.4px;
+          text-transform: uppercase;
+          pointer-events: none;
+        }
+        .lbl-low {
+          color: #fb923c;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+        }
+        .lbl-center {
+          color: #94a3b8;
+          font-size: 10.5px;
+          font-weight: 600;
+        }
+        .lbl-high {
+          color: #38bdf8;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+        }
+        .track-area {
+          position: relative;
+          height: 22px;
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+          touch-action: pan-y;
+        }
+        .track-bg {
+          width: 100%;
+          height: 8px;
+          border-radius: 999px;
+          background: rgba(30, 41, 59, 0.95);
+          box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6);
+          position: relative;
+          overflow: hidden;
+        }
+        .track-fill {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          border-radius: 999px;
+          transition: left 0.08s ease-out, width 0.08s ease-out, background 0.2s ease;
+        }
+        .track-Area-dragging .track-fill,
+        .track-Area-dragging .thumb {
+          transition: none !important;
+        }
+        .ticks {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          height: 4px;
+          display: flex;
+          justify-content: space-between;
+          padding: 0 2px;
+          pointer-events: none;
+          opacity: 0.28;
+        }
+        .tick {
+          width: 1px;
+          height: 4px;
+          background: #cbd5e1;
+        }
+        .thumb {
+          position: absolute;
+          top: 50%;
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          transform: translate(-50%, -50%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 10px;
+          font-weight: 800;
+          color: #0f172a;
+          cursor: grab;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.55), 0 0 0 2px rgba(255, 255, 255, 0.22);
+          transition: left 0.08s ease-out, transform 0.12s ease, opacity 0.2s ease;
+          z-index: 2;
+          touch-action: none;
+        }
+        .thumb:hover {
+          transform: translate(-50%, -50%) scale(1.12);
+        }
+        .thumb.active-drag {
+          cursor: grabbing;
+          transform: translate(-50%, -50%) scale(1.18);
+          z-index: 4;
+        }
+        .thumb-low {
+          background: linear-gradient(135deg, #fdba74 0%, #f97316 100%);
+          color: #fff;
+          text-shadow: 0 1px 2px rgba(0,0,0,0.45);
+        }
+        .thumb-high {
+          background: linear-gradient(135deg, #7dd3fc 0%, #0284c7 100%);
+          color: #fff;
+          text-shadow: 0 1px 2px rgba(0,0,0,0.45);
+        }
+        .thumb.hidden {
+          opacity: 0;
+          pointer-events: none;
+          transform: translate(-50%, -50%) scale(0.5);
+        }
+      </style>
+      <div class="card-body">
+        <div class="controls-row" id="controlsRow"></div>
+        <div class="bar-wrap" id="barWrap">
+          <div class="labels-row">
+            <span class="lbl-low" id="lblLow"></span>
+            <span class="lbl-center" id="lblCenter"></span>
+            <span class="lbl-high" id="lblHigh"></span>
+          </div>
+          <div class="track-area" id="trackArea">
+            <div class="track-bg">
+              <div class="ticks">
+                <span class="tick"></span><span class="tick"></span><span class="tick"></span>
+                <span class="tick"></span><span class="tick"></span><span class="tick"></span>
+                <span class="tick"></span>
+              </div>
+              <div class="track-fill" id="trackFill"></div>
+            </div>
+            <div class="thumb thumb-low" id="thumbLow"></div>
+            <div class="thumb thumb-high" id="thumbHigh"></div>
+          </div>
+        </div>
+      </div>
     `;
-    root.appendChild(style);
 
-    const card = document.createElement('ha-card');
+    this._controlsRow = this.shadowRoot.getElementById('controlsRow');
+    this._barWrap = this.shadowRoot.getElementById('barWrap');
+    this._trackArea = this.shadowRoot.getElementById('trackArea');
+    this._trackFill = this.shadowRoot.getElementById('trackFill');
+    this._thumbLow = this.shadowRoot.getElementById('thumbLow');
+    this._thumbHigh = this.shadowRoot.getElementById('thumbHigh');
+    this._lblLow = this.shadowRoot.getElementById('lblLow');
+    this._lblCenter = this.shadowRoot.getElementById('lblCenter');
+    this._lblHigh = this.shadowRoot.getElementById('lblHigh');
 
-    const body = document.createElement('div');
-    body.id = 'body';
+    this._bindSliderEvents();
+    this._initialized = true;
+  }
 
-    const barWrap = document.createElement('div');
-    barWrap.className = 'bar-wrap';
+  _bindSliderEvents() {
+    const startDrag = (which, e) => {
+      const stateObj = this._getClimateStateObj();
+      if (!stateObj) return;
+      const mode = this._getActiveHvacMode(stateObj);
+      if (mode === 'off' || mode === 'fan_only') return;
 
-    const track = document.createElement('div');
-    track.className = 'track';
-    track.id = 'track';
-
-    const fill = document.createElement('div');
-    fill.className = 'fill';
-    fill.id = 'fill';
-
-    const curTick = document.createElement('div');
-    curTick.className = 'current-tick';
-    curTick.id = 'curTick';
-
-    const hLow = document.createElement('div');
-    hLow.className = 'handle heat';
-    hLow.id = 'hLow';
-
-    const hHigh = document.createElement('div');
-    hHigh.className = 'handle cool';
-    hHigh.id = 'hHigh';
-
-    const hSingle = document.createElement('div');
-    hSingle.className = 'handle single';
-    hSingle.id = 'hSingle';
-    hSingle.style.display = 'none';
-
-    track.appendChild(fill);
-    track.appendChild(curTick);
-    track.appendChild(hLow);
-    track.appendChild(hHigh);
-    track.appendChild(hSingle);
-    barWrap.appendChild(track);
-
-    const labelsRow = document.createElement('div');
-    labelsRow.className = 'labels-row';
-
-    const lblLow = document.createElement('span');
-    lblLow.className = 'heat-lbl';
-    lblLow.id = 'lblLow';
-
-    const lblMid = document.createElement('span');
-    lblMid.className = 'cur-lbl';
-    lblMid.id = 'lblMid';
-
-    const rightWrap = document.createElement('span');
-    rightWrap.style.display = 'inline-flex';
-    rightWrap.style.alignItems = 'center';
-    rightWrap.style.gap = '6px';
-
-    const lblHigh = document.createElement('span');
-    lblHigh.className = 'cool-lbl';
-    lblHigh.id = 'lblHigh';
-
-    const stepBtns = document.createElement('span');
-    stepBtns.className = 'step-btns';
-    stepBtns.id = 'stepBtns';
-
-    const btnMinus = document.createElement('button');
-    btnMinus.type = 'button';
-    btnMinus.className = 'step-btn';
-    btnMinus.textContent = '−';
-    btnMinus.title = 'Decrease 1°F';
-    btnMinus.addEventListener('click', (e) => {
       e.stopPropagation();
-      this._nudgeTemp(-1);
-    });
+      if (e.cancelable) e.preventDefault();
 
-    const btnPlus = document.createElement('button');
-    btnPlus.type = 'button';
-    btnPlus.className = 'step-btn';
-    btnPlus.textContent = '+';
-    btnPlus.title = 'Increase 1°F';
-    btnPlus.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this._nudgeTemp(1);
-    });
+      const pts = this._getSetpoints(stateObj);
+      this._dragging = which;
+      this._dragLow = pts.low;
+      this._dragHigh = pts.high;
+      this._dragSingle = pts.single;
 
-    stepBtns.appendChild(btnMinus);
-    stepBtns.appendChild(btnPlus);
-    rightWrap.appendChild(lblHigh);
-    rightWrap.appendChild(stepBtns);
-
-    labelsRow.appendChild(lblLow);
-    labelsRow.appendChild(lblMid);
-    labelsRow.appendChild(rightWrap);
-
-    body.appendChild(barWrap);
-    body.appendChild(labelsRow);
-
-    const offMsg = document.createElement('div');
-    offMsg.className = 'off-banner';
-    offMsg.id = 'offMsg';
-    offMsg.style.display = 'none';
-    offMsg.textContent = 'HVAC System Off — Select a mode below';
-
-    const controls = document.createElement('div');
-    controls.className = 'controls-row';
-    controls.id = 'controls';
-
-    card.appendChild(body);
-    card.appendChild(offMsg);
-    card.appendChild(controls);
-    root.appendChild(card);
-
-    this._track = track;
-    this._fill = fill;
-    this._curTick = curTick;
-    this._hLow = hLow;
-    this._hHigh = hHigh;
-    this._hSingle = hSingle;
-    this._lblLow = lblLow;
-    this._lblMid = lblMid;
-    this._lblHigh = lblHigh;
-    this._body = body;
-    this._offMsg = offMsg;
-    this._controls = controls;
-
-    this._bindDrag(this._hLow, 'low');
-    this._bindDrag(this._hHigh, 'high');
-    this._bindDrag(this._hSingle, 'single');
-
-    this._track.addEventListener('pointerdown', (e) => {
-      if (e.target === this._hLow || e.target === this._hHigh || e.target === this._hSingle) return;
-      const val = this._posToValue(e.clientX);
-      const mode = this._getEffectiveMode();
-      if (mode === 'heat_cool' || mode === 'auto') {
-        const distLow = Math.abs(val - this._low);
-        const distHigh = Math.abs(val - this._high);
-        this._onPointerDown(e, distLow <= distHigh ? 'low' : 'high');
-      } else if (mode === 'heat' || mode === 'cool') {
-        this._onPointerDown(e, 'single');
-      }
-    });
-
-    this._renderControlsRow();
-  }
-
-  _createControlButton(iconName, labelText, onClick) {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'ctrl-btn';
-    const icon = document.createElement('ha-icon');
-    icon.setAttribute('icon', iconName);
-    const span = document.createElement('span');
-    span.textContent = labelText;
-    btn.appendChild(icon);
-    btn.appendChild(span);
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      onClick();
-    });
-    return btn;
-  }
-
-  _renderControlsRow() {
-    if (!this._controls) return;
-    while (this._controls.firstChild) {
-      this._controls.removeChild(this._controls.firstChild);
-    }
-    if (this._config && this._config.show_controls === false) {
-      this._controls.style.display = 'none';
-      return;
-    }
-    this._controls.style.display = 'grid';
-
-    const modeSpecs = [
-      { key: 'heat', label: 'Heat', icon: 'mdi:fire' },
-      { key: 'cool', label: 'Cool', icon: 'mdi:snowflake' },
-      { key: 'auto', label: 'Auto', icon: 'mdi:thermostat-auto' },
-      { key: 'off', label: 'Off', icon: 'mdi:power' },
-    ];
-    const fanSpecs = [
-      { key: 'auto', label: 'Fan Auto', icon: 'mdi:fan-auto' },
-      { key: 'on', label: 'Fan On', icon: 'mdi:fan' },
-    ];
-
-    this._modeBtns = {};
-    modeSpecs.forEach((m) => {
-      const btn = this._createControlButton(m.icon, m.label, () => this._setHvacMode(m.key));
-      this._controls.appendChild(btn);
-      this._modeBtns[m.key] = btn;
-    });
-
-    this._fanBtns = {};
-    fanSpecs.forEach((f) => {
-      const btn = this._createControlButton(f.icon, f.label, () => this._setFanMode(f.key));
-      this._controls.appendChild(btn);
-      this._fanBtns[f.key] = btn;
-    });
-  }
-
-  _getEffectiveMode() {
-    if (Date.now() < this._optUntil && this._optMode !== null) {
-      return this._optMode;
-    }
-    if (!this._hass) return 'off';
-    const ids = this._getResolvedEntities();
-    const mObj = ids.modeHelperId ? this._hass.states[ids.modeHelperId] : null;
-    if (mObj && mObj.state && !['unknown', 'unavailable'].includes(mObj.state)) {
-      const s = mObj.state.toLowerCase();
-      if (s === 'auto' || s === 'heat_cool') return 'auto';
-      if (s === 'heat' || s === 'cool' || s === 'off') return s;
-    }
-    const cObj = this._hass.states[ids.climateId] || this._hass.states[this._config.entity];
-    const raw = cObj ? String(cObj.state).toLowerCase() : 'off';
-    return raw === 'heat_cool' ? 'auto' : raw;
-  }
-
-  _getEffectiveFan() {
-    if (Date.now() < this._optUntil && this._optFan !== null) {
-      return this._optFan;
-    }
-    if (!this._hass) return 'auto';
-    const ids = this._getResolvedEntities();
-    const fObj = ids.fanHelperId ? this._hass.states[ids.fanHelperId] : null;
-    if (fObj && fObj.state && !['unknown', 'unavailable'].includes(fObj.state)) {
-      return fObj.state.toLowerCase();
-    }
-    const cObj = this._hass.states[ids.climateId] || this._hass.states[this._config.entity];
-    const fanAttr = String((cObj && cObj.attributes && cObj.attributes.fan_mode) || 'auto').toLowerCase();
-    return fanAttr.includes('auto') ? 'auto' : 'on';
-  }
-
-  _setHvacMode(modeKey) {
-    if (!this._hass || !this._config) return;
-    const ids = this._getResolvedEntities();
-
-    // Immediate optimistic UI update
-    this._optMode = modeKey;
-    this._optUntil = Date.now() + 7000;
-    this._scheduleOptExpiry();
-    this._lastSignature = '';
-    this._updateUI();
-
-    const uiOption =
-      modeKey === 'heat'
-        ? 'Heat'
-        : modeKey === 'cool'
-          ? 'Cool'
-          : modeKey === 'auto'
-            ? 'Auto'
-            : 'Off';
-
-    if (ids.modeHelperId && this._hass.states[ids.modeHelperId]) {
-      this._hass.callService('input_select', 'select_option', {
-        entity_id: ids.modeHelperId,
-        option: uiOption,
-      });
-    }
-
-    if (this._hass.states['script.climate_smart_mode']) {
-      this._hass.callService('script', 'climate_smart_mode', {
-        entity_id: ids.climateId,
-        mode: modeKey,
-      });
-    } else {
-      this._hass.callService('climate', 'set_hvac_mode', {
-        entity_id: ids.climateId,
-        hvac_mode: modeKey === 'auto' ? 'heat_cool' : modeKey,
-      });
-    }
-  }
-
-  _setFanMode(fanKey) {
-    if (!this._hass || !this._config) return;
-    const ids = this._getResolvedEntities();
-
-    // Immediate optimistic UI update
-    this._optFan = fanKey;
-    this._optUntil = Date.now() + 7000;
-    this._scheduleOptExpiry();
-    this._lastSignature = '';
-    this._updateUI();
-
-    if (ids.fanHelperId && this._hass.states[ids.fanHelperId]) {
-      this._hass.callService('input_select', 'select_option', {
-        entity_id: ids.fanHelperId,
-        option: fanKey === 'on' ? 'On' : 'Auto',
-      });
-    }
-
-    if (this._hass.states['script.climate_smart_fan_mode']) {
-      this._hass.callService('script', 'climate_smart_fan_mode', {
-        entity_id: ids.climateId,
-        fan_mode: fanKey,
-      });
-    } else {
-      this._hass.callService('climate', 'set_fan_mode', {
-        entity_id: ids.climateId,
-        fan_mode: fanKey,
-      });
-    }
-  }
-
-  _nudgeTemp(delta) {
-    if (!this._hass || !this._config) return;
-    const mode = this._getEffectiveMode();
-    const { min, max, min_gap } = this._config;
-    if (mode === 'auto' || mode === 'heat_cool') {
-      this._low = Math.max(min, Math.min(this._low + delta, this._high - min_gap));
-      this._high = Math.min(max, Math.max(this._high + delta, this._low + min_gap));
-    } else if (mode === 'heat' || mode === 'cool') {
-      this._single = Math.max(min, Math.min(max, this._single + delta));
-    } else {
-      return;
-    }
-    this._renderPositions(mode);
-    this._commitValues();
-  }
-
-  _scheduleOptExpiry() {
-    if (this._optTimer) clearTimeout(this._optTimer);
-    this._optTimer = setTimeout(() => {
-      this._optMode = null;
-      this._optFan = null;
-      this._optLow = null;
-      this._optHigh = null;
-      this._optSingle = null;
-      this._lastSignature = '';
-      if (!this._dragging) this._updateUI();
-    }, 7100);
-  }
-
-  _bindDrag(handle, which) {
-    handle.addEventListener('pointerdown', (e) => this._onPointerDown(e, which));
-  }
-
-  _posToValue(clientX) {
-    const rect = this._track.getBoundingClientRect();
-    const { min, max, step } = this._config;
-    const pct = Math.max(0, Math.min(1, (clientX - rect.left) / (rect.width || 1)));
-    const raw = min + pct * (max - min);
-    return Math.round(raw / step) * step;
-  }
-
-  _onPointerDown(e, which) {
-    e.preventDefault();
-    e.stopPropagation();
-    this._dragging = which;
-
-    const applyMove = (clientX) => {
-      const val = this._posToValue(clientX);
-      const { min, max, min_gap } = this._config;
+      this._trackArea.classList.add('track-Area-dragging');
       if (which === 'low') {
-        this._low = Math.min(val, this._high - min_gap);
-        this._low = Math.max(min, this._low);
-      } else if (which === 'high') {
-        this._high = Math.max(val, this._low + min_gap);
-        this._high = Math.min(max, this._high);
+        this._thumbLow.classList.add('active-drag');
       } else {
-        this._single = Math.max(min, Math.min(max, val));
+        this._thumbHigh.classList.add('active-drag');
       }
-      this._renderPositions(this._getEffectiveMode());
+
+      const moveHandler = (ev) => this._onPointerMove(ev);
+      const upHandler = () => {
+        window.removeEventListener('mousemove', moveHandler);
+        window.removeEventListener('touchmove', moveHandler);
+        window.removeEventListener('mouseup', upHandler);
+        window.removeEventListener('touchend', upHandler);
+        window.removeEventListener('touchcancel', upHandler);
+        this._endDrag();
+      };
+
+      window.addEventListener('mousemove', moveHandler);
+      window.addEventListener('touchmove', moveHandler, { passive: false });
+      window.addEventListener('mouseup', upHandler);
+      window.addEventListener('touchend', upHandler);
+      window.addEventListener('touchcancel', upHandler);
     };
 
-    applyMove(e.clientX);
+    this._thumbLow.addEventListener('mousedown', (e) => startDrag('low', e));
+    this._thumbLow.addEventListener('touchstart', (e) => startDrag('low', e), { passive: false });
 
-    const moveHandler = (ev) => applyMove(ev.clientX);
-    const finishHandler = () => {
-      if (!this._dragging) return;
-      this._dragging = null;
-      window.removeEventListener('pointermove', moveHandler);
-      window.removeEventListener('pointerup', finishHandler);
-      window.removeEventListener('pointercancel', finishHandler);
-      this._commitValues();
-    };
+    this._thumbHigh.addEventListener('mousedown', (e) => startDrag('high', e));
+    this._thumbHigh.addEventListener('touchstart', (e) => startDrag('high', e), { passive: false });
 
-    window.addEventListener('pointermove', moveHandler);
-    window.addEventListener('pointerup', finishHandler);
-    window.addEventListener('pointercancel', finishHandler);
+    this._trackArea.addEventListener('mousedown', (e) => {
+      if (e.target === this._thumbLow || e.target === this._thumbHigh) return;
+      this._onTrackClick(e, startDrag);
+    });
+    this._trackArea.addEventListener('touchstart', (e) => {
+      if (e.target === this._thumbLow || e.target === this._thumbHigh) return;
+      this._onTrackClick(e, startDrag);
+    }, { passive: false });
+  }
+
+  _clientXToTemp(clientX) {
+    const rect = this._trackArea.getBoundingClientRect();
+    if (!rect.width) return this._min;
+    const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    return Math.round(this._min + pct * (this._max - this._min));
+  }
+
+  _onTrackClick(e, startDragFn) {
+    const stateObj = this._getClimateStateObj();
+    if (!stateObj) return;
+    const mode = this._getActiveHvacMode(stateObj);
+    if (mode === 'off' || mode === 'fan_only') return;
+
+    const clientX = e.touches && e.touches[0] ? e.touches[0].clientX : e.clientX;
+    const clickedTemp = this._clientXToTemp(clientX);
+    const pts = this._getSetpoints(stateObj);
+    const caps = this._getSetpointCapabilities(stateObj);
+
+    let targetThumb = 'low';
+    if (mode === 'cool') {
+      targetThumb = 'high';
+    } else if (mode === 'heat') {
+      targetThumb = 'low';
+    } else if (mode === 'auto' && caps.supportsRange) {
+      const distLow = Math.abs(clickedTemp - pts.low);
+      const distHigh = Math.abs(clickedTemp - pts.high);
+      targetThumb = distLow <= distHigh ? 'low' : 'high';
+    } else {
+      targetThumb = 'low';
+    }
+
+    startDragFn(targetThumb, e);
+    this._onPointerMove(e);
+  }
+
+  _onPointerMove(e) {
+    if (!this._dragging) return;
+    if (e.cancelable) e.preventDefault();
+
+    const stateObj = this._getClimateStateObj();
+    const mode = this._getActiveHvacMode(stateObj);
+    const caps = this._getSetpointCapabilities(stateObj);
+
+    const clientX = e.touches && e.touches[0] ? e.touches[0].clientX : e.clientX;
+    const val = this._clientXToTemp(clientX);
+
+    if (this._dragging === 'low') {
+      if (mode === 'auto' && caps.supportsRange) {
+        this._dragLow = Math.min(val, this._dragHigh - this._minGap);
+        this._dragLow = Math.max(this._min, this._dragLow);
+      } else {
+        this._dragLow = Math.max(this._min, Math.min(this._max, val));
+        this._dragSingle = this._dragLow;
+      }
+    } else if (this._dragging === 'high') {
+      if (mode === 'auto' && caps.supportsRange) {
+        this._dragHigh = Math.max(val, this._dragLow + this._minGap);
+        this._dragHigh = Math.min(this._max, this._dragHigh);
+      } else {
+        this._dragHigh = Math.max(this._min, Math.min(this._max, val));
+        this._dragSingle = this._dragHigh;
+      }
+    }
+
+    this._updateUI();
+  }
+
+  _endDrag() {
+    if (!this._dragging) return;
+    const changedThumb = this._dragging;
+    const finalLow = this._dragLow;
+    const finalHigh = this._dragHigh;
+    const finalSingle = this._dragSingle;
+
+    this._dragging = null;
+    this._dragLow = null;
+    this._dragHigh = null;
+    this._dragSingle = null;
+
+    this._trackArea.classList.remove('track-Area-dragging');
+    this._thumbLow.classList.remove('active-drag');
+    this._thumbHigh.classList.remove('active-drag');
+
+    if (finalLow !== null && finalHigh !== null) {
+      this._commitTemperature(changedThumb, finalLow, finalHigh, finalSingle);
+    }
+    this._updateUI();
   }
 
   _valToPct(val) {
-    const { min, max } = this._config;
-    return Math.max(0, Math.min(100, ((val - min) / (max - min)) * 100));
+    const clamped = Math.max(this._min, Math.min(this._max, val));
+    return ((clamped - this._min) / (this._max - this._min)) * 100;
   }
 
-  _updateUI() {
-    if (!this._hass || !this._config || !this._track) return;
-    const ids = this._getResolvedEntities();
-    const cObj = this._hass.states[ids.climateId] || this._hass.states[this._config.entity];
-    const coolObj = ids.coolHelperId ? this._hass.states[ids.coolHelperId] : null;
-    const heatObj = ids.heatHelperId ? this._hass.states[ids.heatHelperId] : null;
-    const tempObj = ids.tempSensorId ? this._hass.states[ids.tempSensorId] : null;
+  _renderControlsRow(stateObj) {
+    if (!this._controlsRow) return;
 
-    const attrs = (cObj && cObj.attributes) || {};
-    const optActive = Date.now() < this._optUntil;
-    const mode = this._getEffectiveMode();
-    const fan = this._getEffectiveFan();
+    const hvacModes = this._getSupportedHvacModes(stateObj);
+    const fanModes = this._getSupportedFanModes(stateObj);
 
-    let cur = attrs.current_temperature;
-    if (tempObj && tempObj.state && !['unknown', 'unavailable'].includes(tempObj.state)) {
-      const parsed = Number(tempObj.state);
-      if (!Number.isNaN(parsed) && parsed > 0) cur = parsed;
-    }
-
-    // Update active state on control buttons
-    if (this._modeBtns) {
-      Object.entries(this._modeBtns).forEach(([key, btn]) => {
-        btn.className = 'ctrl-btn';
-        if (mode === key || (key === 'auto' && mode === 'heat_cool')) {
-          btn.classList.add(`active-${key}`);
-        }
-      });
-    }
-    if (this._fanBtns) {
-      const isFanAuto = fan.includes('auto');
-      if (this._fanBtns.auto) {
-        this._fanBtns.auto.className = `ctrl-btn${isFanAuto ? ' active-fan' : ''}`;
-      }
-      if (this._fanBtns.on) {
-        this._fanBtns.on.className = `ctrl-btn${!isFanAuto ? ' active-fan' : ''}`;
-      }
-    }
-
-    if (mode === 'off' || mode === 'unavailable' || mode === 'unknown') {
-      this._body.style.display = 'none';
-      this._offMsg.style.display = 'block';
-      this._offMsg.textContent =
-        mode === 'off' ? 'HVAC Off — Tap Heat, Cool, or Auto below' : `Thermostat ${mode}`;
+    if (hvacModes.length === 0 && fanModes.length === 0) {
+      this._controlsRow.classList.add('hidden');
+      this._controlsRow.textContent = '';
       return;
     }
 
-    this._body.style.display = 'block';
-    this._offMsg.style.display = 'none';
+    this._controlsRow.classList.remove('hidden');
 
-    if (cur != null && !Number.isNaN(Number(cur)) && Number(cur) > 0) {
-      this._curTick.style.display = 'block';
-      this._curTick.style.left = `${this._valToPct(Number(cur))}%`;
-      this._lblMid.textContent = `Now ${Math.round(Number(cur))}°F`;
-    } else {
-      this._curTick.style.display = 'none';
-      this._lblMid.textContent = '';
-    }
+    const activeHvac = this._getActiveHvacMode(stateObj);
+    const activeFan = this._getActiveFanMode(stateObj);
 
-    const helperLow =
-      heatObj && !['unknown', 'unavailable'].includes(heatObj.state) ? Number(heatObj.state) : null;
-    const helperHigh =
-      coolObj && !['unknown', 'unavailable'].includes(coolObj.state) ? Number(coolObj.state) : null;
+    const signature = JSON.stringify({
+      hvac: hvacModes.map(m => m.canonical),
+      fan: fanModes.map(f => f.canonical)
+    });
 
-    if (mode === 'auto' || mode === 'heat_cool') {
-      const lowVal =
-        helperLow != null && !Number.isNaN(helperLow)
-          ? helperLow
-          : attrs.target_temp_low != null
-            ? Number(attrs.target_temp_low)
-            : 68;
-      const highVal =
-        helperHigh != null && !Number.isNaN(helperHigh)
-          ? helperHigh
-          : attrs.target_temp_high != null
-            ? Number(attrs.target_temp_high)
-            : 73;
-      this._low = optActive && this._optLow !== null ? this._optLow : lowVal;
-      this._high =
-        optActive && this._optHigh !== null
-          ? this._optHigh
-          : Math.max(this._low + this._config.min_gap, highVal);
-      this._hLow.style.display = 'flex';
-      this._hHigh.style.display = 'flex';
-      this._hSingle.style.display = 'none';
-      this._fill.style.background = 'linear-gradient(90deg, #fb923c 0%, #34d399 50%, #38bdf8 100%)';
-    } else {
-      let singleVal = 70;
-      if (mode === 'heat') {
-        singleVal =
-          helperLow != null && !Number.isNaN(helperLow)
-            ? helperLow
-            : attrs.temperature != null
-              ? Number(attrs.temperature)
-              : 68;
-      } else {
-        singleVal =
-          helperHigh != null && !Number.isNaN(helperHigh)
-            ? helperHigh
-            : attrs.temperature != null
-              ? Number(attrs.temperature)
-              : 72;
+    if (this._lastSignature !== signature) {
+      this._lastSignature = signature;
+      this._controlsRow.textContent = '';
+
+      for (const modeDesc of hvacModes) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'ctrl-btn';
+        btn.dataset.kind = 'hvac';
+        btn.dataset.canonical = modeDesc.canonical;
+        btn.title = modeDesc.label;
+        btn.setAttribute('aria-label', modeDesc.label);
+        const ico = document.createElement('ha-icon');
+        ico.setAttribute('icon', modeDesc.icon);
+        btn.appendChild(ico);
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this._selectHvacMode(modeDesc);
+        });
+        this._controlsRow.appendChild(btn);
       }
-      this._single = optActive && this._optSingle !== null ? this._optSingle : singleVal;
-      this._hLow.style.display = 'none';
-      this._hHigh.style.display = 'none';
-      this._hSingle.style.display = 'flex';
-      this._hSingle.className = `handle ${mode === 'heat' ? 'heat' : mode === 'cool' ? 'cool' : 'single'}`;
-      this._fill.style.background = mode === 'heat' ? '#fb923c' : '#38bdf8';
+
+      if (hvacModes.length > 0 && fanModes.length > 0) {
+        const div = document.createElement('div');
+        div.className = 'ctrl-divider';
+        this._controlsRow.appendChild(div);
+      }
+
+      for (const fanDesc of fanModes) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'ctrl-btn';
+        btn.dataset.kind = 'fan';
+        btn.dataset.canonical = fanDesc.canonical;
+        btn.title = fanDesc.label;
+        btn.setAttribute('aria-label', fanDesc.label);
+        const ico = document.createElement('ha-icon');
+        ico.setAttribute('icon', fanDesc.icon);
+        btn.appendChild(ico);
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this._selectFanMode(fanDesc);
+        });
+        this._controlsRow.appendChild(btn);
+      }
     }
 
-    this._renderPositions(mode);
+    // Update active visual states on all buttons
+    const buttons = this._controlsRow.querySelectorAll('.ctrl-btn');
+    buttons.forEach((btn) => {
+      const kind = btn.dataset.kind;
+      const canonical = btn.dataset.canonical;
+      const descList = kind === 'hvac' ? hvacModes : fanModes;
+      const desc = descList.find(d => d.canonical === canonical);
+      if (!desc) return;
+
+      const isActive = kind === 'hvac' ? canonical === activeHvac : canonical === activeFan;
+      if (isActive) {
+        btn.style.background = desc.activeBg;
+        btn.style.border = desc.activeBorder;
+        btn.style.boxShadow = desc.activeShadow;
+        btn.style.color = desc.activeColor;
+      } else {
+        btn.style.background = 'rgba(15, 23, 42, 0.48)';
+        btn.style.border = '1px solid rgba(255, 255, 255, 0.08)';
+        btn.style.boxShadow = 'none';
+        btn.style.color = '#64748b';
+      }
+    });
   }
 
-  _renderPositions(mode) {
-    if (mode === 'auto' || mode === 'heat_cool') {
-      const pLow = this._valToPct(this._low);
-      const pHigh = this._valToPct(this._high);
-      this._hLow.style.left = `${pLow}%`;
-      this._hHigh.style.left = `${pHigh}%`;
-      this._hLow.textContent = `${Math.round(this._low)}°`;
-      this._hHigh.textContent = `${Math.round(this._high)}°`;
-      this._fill.style.left = `${pLow}%`;
-      this._fill.style.width = `${Math.max(0, pHigh - pLow)}%`;
-      this._lblLow.className = 'heat-lbl';
-      this._lblLow.textContent = `Heat ${Math.round(this._low)}°F`;
-      this._lblHigh.className = 'cool-lbl';
-      this._lblHigh.textContent = `Cool ${Math.round(this._high)}°F`;
+  _updateUI() {
+    if (!this._initialized) return;
+    const stateObj = this._getClimateStateObj();
+    if (!stateObj) return;
+
+    // Respect card config min/max if provided; otherwise use the climate entity's native min_temp / max_temp attributes
+    this._min = Number.isFinite(Number(this._config.min))
+      ? Number(this._config.min)
+      : Number.isFinite(Number(stateObj.attributes?.min_temp))
+      ? Number(stateObj.attributes.min_temp)
+      : 55;
+    this._max = Number.isFinite(Number(this._config.max))
+      ? Number(this._config.max)
+      : Number.isFinite(Number(stateObj.attributes?.max_temp))
+      ? Number(stateObj.attributes.max_temp)
+      : 85;
+
+    // 1. Update dynamic capability-driven mode & fan controls row
+    this._renderControlsRow(stateObj);
+
+    // 2. Update setpoint bar (or hide if thermostat does not support temperature setpoints)
+    const caps = this._getSetpointCapabilities(stateObj);
+    if (!caps.supportsAny) {
+      this._barWrap.classList.add('hidden');
+      return;
+    }
+    this._barWrap.classList.remove('hidden');
+
+    const mode = this._getActiveHvacMode(stateObj);
+    const { low, high, single } = this._getSetpoints(stateObj);
+
+    const lowPct = this._valToPct(low);
+    const highPct = this._valToPct(high);
+    const singlePct = this._valToPct(single);
+
+    this._thumbLow.textContent = `${low}°`;
+    this._thumbHigh.textContent = `${high}°`;
+
+    if (mode === 'off' || mode === 'fan_only') {
+      this._barWrap.classList.add('off-state');
+      this._thumbLow.classList.add('hidden');
+      this._thumbHigh.classList.add('hidden');
+      this._trackFill.style.left = `${lowPct}%`;
+      this._trackFill.style.width = `${Math.max(0, highPct - lowPct)}%`;
+      this._trackFill.style.background = 'rgba(100, 116, 139, 0.35)';
+      this._lblLow.style.color = '#94a3b8';
+      this._lblLow.textContent = mode === 'fan_only' ? 'FAN ONLY' : 'SYSTEM OFF';
+      this._lblCenter.textContent =
+        caps.supportsRange ? `STANDBY (${low}°–${high}°F)` : `STANDBY (${single}°F)`;
+      this._lblHigh.style.color = '#64748b';
+      this._lblHigh.textContent = `${this._min}°–${this._max}°F`;
+    } else if (mode === 'heat') {
+      const heatVal = caps.supportsRange ? low : single;
+      const heatPct = this._valToPct(heatVal);
+      this._thumbLow.textContent = `${heatVal}°`;
+      this._barWrap.classList.remove('off-state');
+      this._thumbLow.classList.remove('hidden');
+      this._thumbHigh.classList.add('hidden');
+      this._thumbLow.style.left = `${heatPct}%`;
+      this._trackFill.style.left = '0%';
+      this._trackFill.style.width = `${heatPct}%`;
+      this._trackFill.style.background = 'linear-gradient(90deg, rgba(251, 146, 60, 0.20) 0%, rgba(249, 115, 22, 0.85) 100%)';
+      this._lblLow.style.color = '#fb923c';
+      this._lblLow.textContent = `🔥 HEAT TARGET: ${heatVal}°F`;
+      this._lblCenter.textContent = 'DRAG SLIDER TO ADJUST';
+      this._lblHigh.style.color = '#64748b';
+      this._lblHigh.textContent = `MAX ${this._max}°F`;
+    } else if (mode === 'cool') {
+      const coolVal = caps.supportsRange ? high : single;
+      const coolPct = this._valToPct(coolVal);
+      this._thumbHigh.textContent = `${coolVal}°`;
+      this._barWrap.classList.remove('off-state');
+      this._thumbLow.classList.add('hidden');
+      this._thumbHigh.classList.remove('hidden');
+      this._thumbHigh.style.left = `${coolPct}%`;
+      this._trackFill.style.left = `${coolPct}%`;
+      this._trackFill.style.width = `${Math.max(0, 100 - coolPct)}%`;
+      this._trackFill.style.background = 'linear-gradient(90deg, rgba(56, 189, 248, 0.85) 0%, rgba(56, 189, 248, 0.20) 100%)';
+      this._lblLow.style.color = '#64748b';
+      this._lblLow.textContent = `MIN ${this._min}°F`;
+      this._lblCenter.textContent = 'DRAG SLIDER TO ADJUST';
+      this._lblHigh.style.color = '#38bdf8';
+      this._lblHigh.textContent = `❄️ COOL TARGET: ${coolVal}°F`;
+    } else if (mode === 'auto' && caps.supportsRange) {
+      this._barWrap.classList.remove('off-state');
+      this._thumbLow.classList.remove('hidden');
+      this._thumbHigh.classList.remove('hidden');
+      this._thumbLow.style.left = `${lowPct}%`;
+      this._thumbHigh.style.left = `${highPct}%`;
+      this._trackFill.style.left = `${lowPct}%`;
+      this._trackFill.style.width = `${Math.max(0, highPct - lowPct)}%`;
+      this._trackFill.style.background = 'linear-gradient(90deg, #f97316 0%, #34d399 50%, #38bdf8 100%)';
+      this._lblLow.style.color = '#fb923c';
+      this._lblLow.textContent = `🔥 HEAT ${low}°F`;
+      this._lblCenter.textContent = `BAND ${high - low}°F`;
+      this._lblHigh.style.color = '#38bdf8';
+      this._lblHigh.textContent = `❄️ COOL ${high}°F`;
     } else {
-      const p = this._valToPct(this._single);
-      this._hSingle.style.left = `${p}%`;
-      this._hSingle.textContent = `${Math.round(this._single)}°`;
-      if (mode === 'heat') {
-        this._fill.style.left = '0%';
-        this._fill.style.width = `${p}%`;
-        this._lblLow.className = 'heat-lbl';
-        this._lblLow.textContent = `Heat Target ${Math.round(this._single)}°F`;
-        this._lblHigh.className = '';
-        this._lblHigh.textContent = `Max ${this._config.max}°F`;
-      } else {
-        this._fill.style.left = `${p}%`;
-        this._fill.style.width = `${Math.max(0, 100 - p)}%`;
-        this._lblLow.className = '';
-        this._lblLow.textContent = `Min ${this._config.min}°F`;
-        this._lblHigh.className = 'cool-lbl';
-        this._lblHigh.textContent = `Cool Target ${Math.round(this._single)}°F`;
-      }
+      // Single-setpoint Auto / Dry mode
+      this._thumbLow.textContent = `${single}°`;
+      this._barWrap.classList.remove('off-state');
+      this._thumbLow.classList.remove('hidden');
+      this._thumbHigh.classList.add('hidden');
+      this._thumbLow.style.left = `${singlePct}%`;
+      this._trackFill.style.left = '0%';
+      this._trackFill.style.width = `${singlePct}%`;
+      this._trackFill.style.background = 'linear-gradient(90deg, rgba(52, 211, 153, 0.25) 0%, rgba(52, 211, 153, 0.85) 100%)';
+      this._lblLow.style.color = '#fb923c';
+      this._lblLow.textContent = `🎯 TARGET: ${single}°F`;
+      this._lblCenter.textContent = 'DRAG SLIDER TO ADJUST';
+      this._lblHigh.style.color = '#64748b';
+      this._lblHigh.textContent = `${this._min}°–${this._max}°F`;
     }
   }
 
-  _commitValues() {
-    if (!this._hass || !this._config) return;
-    const mode = this._getEffectiveMode();
-    const ids = this._getResolvedEntities();
-
-    if (mode === 'auto' || mode === 'heat_cool') {
-      this._optLow = this._low;
-      this._optHigh = this._high;
-      this._optUntil = Date.now() + 7000;
-      this._scheduleOptExpiry();
-
-      if (ids.heatHelperId && this._hass.states[ids.heatHelperId]) {
-        this._hass.callService('input_number', 'set_value', {
-          entity_id: ids.heatHelperId,
-          value: this._low,
-        });
-      }
-      if (ids.coolHelperId && this._hass.states[ids.coolHelperId]) {
-        this._hass.callService('input_number', 'set_value', {
-          entity_id: ids.coolHelperId,
-          value: this._high,
-        });
-      }
-      if (ids.slug && this._hass.states['script.climate_apply_zone_selection']) {
-        this._hass.callService('script', 'climate_apply_zone_selection', {
-          zone: ids.slug,
-        });
-      } else {
-        this._hass.callService('climate', 'set_temperature', {
-          entity_id: ids.climateId,
-          target_temp_low: this._low,
-          target_temp_high: this._high,
-        });
-      }
-    } else if (mode === 'heat' || mode === 'cool') {
-      this._optSingle = this._single;
-      this._optUntil = Date.now() + 7000;
-      this._scheduleOptExpiry();
-
-      if (mode === 'heat' && ids.heatHelperId && this._hass.states[ids.heatHelperId]) {
-        this._hass.callService('input_number', 'set_value', {
-          entity_id: ids.heatHelperId,
-          value: this._single,
-        });
-      }
-      if (ids.coolHelperId && this._hass.states[ids.coolHelperId]) {
-        this._hass.callService('input_number', 'set_value', {
-          entity_id: ids.coolHelperId,
-          value: this._single,
-        });
-      }
-      if (ids.slug && this._hass.states['script.climate_apply_zone_selection']) {
-        this._hass.callService('script', 'climate_apply_zone_selection', {
-          zone: ids.slug,
-        });
-      } else {
-        this._hass.callService('climate', 'set_temperature', {
-          entity_id: ids.climateId,
-          temperature: this._single,
-        });
-      }
-    }
+  getCardSize() {
+    return 2;
   }
 }
 
 if (!customElements.get('thermostat-range-bar')) {
   customElements.define('thermostat-range-bar', ThermostatRangeBar);
 }
+
 window.customCards = window.customCards || [];
-if (!window.customCards.some((c) => c.type === 'thermostat-range-bar')) {
+if (!window.customCards.some((card) => card.type === 'thermostat-range-bar')) {
   window.customCards.push({
     type: 'thermostat-range-bar',
     name: 'Thermostat Range Bar',
-    description: 'High-performance optimistic dual/single range slider for climate entities',
+    description: 'Generic capability-driven HVAC & Fan Mode controller with single/dual-thumb setpoint slider for any Home Assistant climate entity.',
+    preview: true
   });
 }
